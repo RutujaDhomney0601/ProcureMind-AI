@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ProcureMind AI - UAE Healthcare Sourcing Workspace</title>
   
-  <!-- Tailwind CSS for modern responsive aesthetics -->
+  <!-- Tailwind CSS for premium fluid modern layouts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts (Inter) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -16,11 +16,10 @@
     body {
       font-family: 'Inter', sans-serif;
     }
-    /* Simple smooth transition definitions */
     .transition-all {
       transition: all 0.2s ease-in-out;
     }
-    /* Custom scrollbar matching system standards */
+    /* Custom scrollbar matching standard operating systems */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -45,7 +44,7 @@
     </div>
   </div>
 
-  <!-- --- DIALOG MODALS FOR DISPATCHES & BACKUPS --- -->
+  <!-- --- SYSTEM DIALOG MODALS --- -->
   <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm hidden">
     <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xl max-w-md w-full space-y-4">
       <div class="flex items-center gap-2 text-indigo-600 border-b pb-3 border-slate-100">
@@ -53,7 +52,7 @@
         <h3 id="modal-title" class="font-extrabold text-sm text-slate-900">Confirm Action</h3>
       </div>
       <p id="modal-description" class="text-xs text-slate-500 leading-relaxed">Detailed verification request context.</p>
-      <div id="modal-content-area" class="bg-slate-50 p-3 rounded-xl text-[11px] font-mono text-slate-700 border border-slate-200">
+      <div id="modal-content-area" class="bg-slate-50 p-3 rounded-xl text-[11px] font-mono text-slate-700 border border-slate-200 max-h-48 overflow-y-auto whitespace-pre-wrap">
         <!-- Rendered dynamically -->
       </div>
       <div class="flex justify-end gap-2 pt-2">
@@ -76,13 +75,13 @@
             UAE Sourcing Workspace
           </span>
         </div>
-        <p class="text-[10px] text-slate-500 font-medium">
-          Virtual Purchase Supervisor & File Persistence Engine
+        <p class="text-[10px] text-slate-500 font-medium font-mono">
+          Virtual Purchase Supervisor & Document Workspace
         </p>
       </div>
     </div>
 
-    <!-- Main Dynamic Navigation Modules -->
+    <!-- Main Navigation Modules -->
     <div class="flex flex-wrap gap-2">
       <button 
         id="nav-btn-lifecycle" 
@@ -107,7 +106,7 @@
       </button>
     </div>
 
-    <!-- Live Gemini API Key Input -->
+    <!-- Live Gemini API Credentials -->
     <div class="flex items-center gap-2">
       <div class="relative">
         <i data-lucide="key" class="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400"></i>
@@ -116,17 +115,17 @@
           id="api-key-input" 
           onchange="saveApiKey(this.value)"
           placeholder="Gemini API Key..." 
-          class="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs w-48 focus:outline-none focus:bg-white text-slate-700"
+          class="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs w-42 focus:outline-none focus:bg-white text-slate-700"
         >
       </div>
       <div class="hidden sm:flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100">
         <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-[10px] font-extrabold text-emerald-700 font-mono">DHA SYNCED</span>
+        <span class="text-[10px] font-extrabold text-emerald-700 font-mono">MOHAP SYNCED</span>
       </div>
     </div>
   </header>
 
-  <!-- --- MAIN THREE-PANEL CORE CONTAINER --- -->
+  <!-- --- MAIN THREE-PANEL SYSTEM CORE --- -->
   <div class="flex-grow flex flex-col lg:flex-row overflow-hidden">
 
     <!-- ==========================================
@@ -143,7 +142,7 @@
           </span>
         </div>
 
-        <!-- Simulated Instant Drag & Drop File Upload -->
+        <!-- Drag-and-Drop Ingestion Dropzone -->
         <div 
           id="dropzone"
           ondragover="handleDragOver(event)"
@@ -162,43 +161,43 @@
           >
           <div id="upload-idle" class="space-y-1.5">
             <i data-lucide="upload-cloud" class="h-7 w-7 text-indigo-500 mx-auto animate-bounce"></i>
-            <p class="text-[11px] font-bold text-slate-700">Upload Vendor Docs</p>
-            <p class="text-[9px] text-slate-400">Instant parsing of quotation text</p>
+            <p class="text-[11px] font-bold text-slate-700">Upload / Drag Quotes</p>
+            <p class="text-[9px] text-slate-400 font-medium">Automatic OCR parsing support</p>
           </div>
           <div id="upload-loading" class="hidden space-y-2 py-2">
             <i data-lucide="loader-2" class="h-7 w-7 text-indigo-600 mx-auto animate-spin"></i>
-            <p class="text-[10px] font-extrabold text-indigo-700">Analyzing Document Specs...</p>
+            <p class="text-[10px] font-extrabold text-indigo-700">Extracting Technical Fields...</p>
           </div>
         </div>
 
-        <!-- Grid target selection modifier toggles -->
+        <!-- Grid matrix selection tools -->
         <div class="flex justify-between items-center text-[10px] bg-slate-100 p-2 rounded-lg border border-slate-200 font-medium">
-          <span class="text-slate-500 font-bold">Grid Matrix Targets:</span>
+          <span class="text-slate-500 font-bold">Compare Selection:</span>
           <div class="flex gap-1.5">
             <button onclick="toggleAllComparisonTargets(true)" class="px-2 py-0.5 bg-white text-indigo-600 font-bold rounded border border-slate-200">All</button>
             <button onclick="toggleAllComparisonTargets(false)" class="px-2 py-0.5 bg-white text-slate-500 font-bold rounded border border-slate-200">None</button>
           </div>
         </div>
 
-        <!-- Scrollable list of loaded documents -->
-        <div id="document-vault-list" class="space-y-2 max-h-[300px] lg:max-h-none overflow-y-auto pr-1">
+        <!-- Active Document Vault List -->
+        <div id="document-vault-list" class="space-y-2 max-h-[250px] lg:max-h-none overflow-y-auto pr-1">
           <!-- Rendered dynamically -->
         </div>
 
-        <!-- Explicit manual entry form -->
-        <form id="manual-ingestion-form" onsubmit="handleManualSubmission(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-250 space-y-3">
+        <!-- Manual Product Ingestion -->
+        <form id="manual-ingestion-form" onsubmit="handleManualSubmission(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
           <div class="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1 border-b border-slate-200 pb-2">
-            <i data-lucide="plus" class="h-3.5 w-3.5 text-indigo-600"></i> Ingest Manual Quote
+            <i data-lucide="plus" class="h-3.5 w-3.5 text-indigo-600"></i> Log Quote Manually
           </div>
 
           <div class="space-y-1">
-            <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Product Description</label>
+            <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Product Name</label>
             <input 
               type="text" 
               id="form-product-name" 
               required 
-              placeholder="e.g., Alaris Syringe Pump" 
-              class="w-full bg-white text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 focus:outline-indigo-500"
+              placeholder="e.g., Alaris Infusion Pump" 
+              class="w-full bg-white text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 focus:outline-indigo-500 font-medium text-slate-700"
             >
           </div>
 
@@ -207,7 +206,7 @@
               <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Product Type</label>
               <select 
                 id="form-product-type" 
-                class="w-full bg-white text-[11px] px-1.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-medium"
+                class="w-full bg-white text-[11px] px-1.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold"
               >
                 <option value="Machine">Machine</option>
                 <option value="Product">Product</option>
@@ -216,13 +215,13 @@
               </select>
             </div>
             <div class="space-y-1">
-              <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Base Price (AED)</label>
+              <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Base Cost (AED)</label>
               <input 
                 type="number" 
                 id="form-product-price" 
                 required 
-                placeholder="250000" 
-                class="w-full bg-white text-xs px-2 py-1.5 rounded-lg border border-slate-200 font-semibold"
+                placeholder="15000" 
+                class="w-full bg-white text-xs px-2 py-1.5 rounded-lg border border-slate-200 font-bold text-slate-700"
               >
             </div>
           </div>
@@ -236,7 +235,7 @@
         </form>
       </div>
 
-      <!-- Quick persistent storage control module -->
+      <!-- Persistence controls -->
       <div class="border-t border-slate-100 pt-4 hidden lg:block space-y-2">
         <p class="font-bold text-slate-600 text-[10px] flex items-center gap-1">
           <i data-lucide="database" class="h-3 w-3 text-indigo-500"></i> Local Storage Synced
@@ -246,7 +245,7 @@
             <i data-lucide="download" class="h-2.5 w-2.5"></i> Backup State
           </button>
           <button onclick="triggerRestoreBackup()" class="w-1/2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[9px] rounded-md flex items-center justify-center gap-1">
-            <i data-lucide="upload" class="h-2.5 w-2.5"></i> Restore Backup
+            <i data-lucide="upload" class="h-2.5 w-2.5"></i> Restore State
           </button>
           <input type="file" id="backup-picker" onchange="restoreBackup(event)" class="hidden" accept=".json">
         </div>
@@ -261,7 +260,7 @@
       <!-- --- VIEW A: SOURCING LIFECYCLE WIZARD & EXCEL GRID --- -->
       <section id="tab-view-lifecycle" class="space-y-6">
         
-        <!-- Step Wizard Switch Bar -->
+        <!-- Wizard Navigation Switch Bar -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="switchWizardStep(1)" id="wizard-btn-1" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700">1. Resourcing & RFP</button>
@@ -270,7 +269,7 @@
             <button onclick="switchWizardStep(4)" id="wizard-btn-4" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700">4. Final Negotiations</button>
             <button onclick="switchWizardStep(5)" id="wizard-btn-5" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700">5. Board Sign-Off</button>
           </div>
-          <div class="text-[10px] font-extrabold text-slate-500 uppercase">
+          <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest font-mono">
             ACTIVE PHASING: <span id="wizard-phase-indicator" class="text-indigo-600 font-extrabold">Step 2 of 5</span>
           </div>
         </div>
@@ -278,7 +277,7 @@
         <!-- STEP 1 VIEW CONTENT -->
         <div id="step-content-1" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
           <div>
-            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 1</span>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100 font-mono">Stage 1</span>
             <h2 class="text-base font-extrabold text-slate-900 mt-2">DHA Supplier Directories & Requisition Queries</h2>
             <p class="text-xs text-slate-500">Scan regional directories to shortlist potential healthcare candidates, then customize the RFP document below.</p>
           </div>
@@ -310,7 +309,7 @@
                 <span class="text-xs font-bold text-slate-600 flex items-center gap-1">
                   <i data-lucide="mail" class="h-4 w-4 text-indigo-500"></i> Direct RFP Email Template
                 </span>
-                <span class="text-[9px] font-mono text-slate-400">Standard Dubai Health Authority Format</span>
+                <span class="text-[9px] font-mono text-slate-450">Standard Dubai Health Authority Format</span>
               </div>
               <div class="bg-slate-50 p-3 rounded-xl text-xs space-y-2 border border-slate-200">
                 <div class="flex gap-1.5"><span class="font-bold text-slate-500 w-12">To:</span> <input type="text" id="rfp-to-input" class="bg-transparent flex-1 border-none outline-none font-bold text-slate-700" value="distributors@dha.gov.ae"></div>
@@ -319,10 +318,19 @@
               <textarea 
                 id="rfp-email-text" 
                 class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[11px] font-mono text-slate-700 h-48 focus:outline-indigo-500 focus:bg-white transition-all"
-              >Subject: Sourcing Quote Request: Medical Equipment Infrastructure\n\nDear Partner,\n\nDubai Health Authority (DHA) central procurement is requesting official pricing proposals and comprehensive service scopes for a 1.5T MRI Scanner. \n\nPlease provide technical specification details, cold-head logistics parameters, comprehensive warranty options, and pricing breakdowns.\n\nBest Regards,\nCentral Sourcing Division | Dubai Health Authority</textarea>
+              >Subject: Sourcing Quote Request: Medical Equipment Infrastructure
+
+Dear Partner,
+
+Dubai Health Authority (DHA) central procurement is requesting official pricing proposals and comprehensive service scopes for a 1.5T MRI Scanner. 
+
+Please provide technical specification details, cold-head logistics parameters, comprehensive warranty options, and pricing breakdowns.
+
+Best Regards,
+Central Sourcing Division | Dubai Health Authority</textarea>
               <button 
                 onclick="dispatchRfpMessage()" 
-                class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
+                class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
               >
                 <i data-lucide="send" class="h-4 w-4"></i> Dispatch Custom RFP to Shortlisted Targets
               </button>
@@ -334,11 +342,11 @@
         <div id="step-content-2" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
           <div class="flex flex-wrap justify-between items-center gap-3">
             <div>
-              <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 2</span>
+              <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100 font-mono">Stage 2</span>
               <h2 class="text-base font-extrabold text-slate-900 mt-2">Interactive Comparison Matrix & Sheet Engine</h2>
               <p class="text-xs text-slate-500 flex items-center gap-1">
                 <i data-lucide="info" class="h-3.5 w-3.5 text-indigo-500"></i>
-                <span>Double-click any cell to edit details inline. Press <kbd class="px-1 bg-slate-100 border rounded font-mono">Enter</kbd> to save. Changes automatically commit to persistent storage & logs.</span>
+                <span>Double-click any cell to edit details inline. Press <kbd class="px-1 bg-slate-100 border rounded font-mono">Enter</kbd> to save. Updates commit instantly to storage.</span>
               </p>
             </div>
             <div class="flex gap-2">
@@ -346,7 +354,7 @@
                 onclick="downloadComparisonMatrixCsv()" 
                 class="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg flex items-center gap-1.5 border border-indigo-100 transition-all shadow-sm"
               >
-                <i data-lucide="download" class="h-3.5 w-3.5"></i> Export Comparison Sheet (.CSV)
+                <i data-lucide="download" class="h-3.5 w-3.5"></i> Export Spreadsheet (.CSV)
               </button>
             </div>
           </div>
@@ -379,7 +387,7 @@
         <!-- STEP 3 VIEW CONTENT -->
         <div id="step-content-3" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
           <div>
-            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 3</span>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100 font-mono">Stage 3</span>
             <h2 class="text-base font-extrabold text-slate-900 mt-2">Technical Department Evaluation</h2>
             <p class="text-xs text-slate-500">Record clinical recommendations and technical checklists from radiology/laboratory review boards.</p>
           </div>
@@ -387,7 +395,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-4">
               <div class="space-y-1.5">
-                <label class="text-[10px] font-extrabold text-slate-600 uppercase">Vendor Shortlist Pick</label>
+                <label class="text-[10px] font-extrabold text-slate-600 uppercase font-mono">Vendor Shortlist Pick</label>
                 <select 
                   id="department-preferred-select" 
                   onchange="syncDepartmentSourcingValues()"
@@ -398,7 +406,7 @@
               </div>
 
               <div class="space-y-1.5">
-                <label class="text-[10px] font-extrabold text-slate-600 uppercase">Clinical Review Board Justifications</label>
+                <label class="text-[10px] font-extrabold text-slate-600 uppercase font-mono">Clinical Review Justifications</label>
                 <textarea 
                   id="department-justification-notes" 
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-700 font-medium h-24"
@@ -417,7 +425,7 @@
               </div>
               <button 
                 onclick="switchWizardStep(4)" 
-                class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-lg shadow-sm transition-all text-xs"
+                class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm transition-all text-xs"
               >
                 Launch Negotiation Calculators
               </button>
@@ -428,14 +436,14 @@
         <!-- STEP 4 VIEW CONTENT -->
         <div id="step-content-4" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
           <div>
-            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 4</span>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100 font-mono">Stage 4</span>
             <h2 class="text-base font-extrabold text-slate-900 mt-2">Active Negotiation Variance Ledger</h2>
             <p class="text-xs text-slate-500">Record successive pricing models to verify net procurement budget optimization margins.</p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
             <div class="space-y-1.5">
-              <label class="text-[10px] font-extrabold text-slate-500 uppercase">Initial Quoted Baseline (AED)</label>
+              <label class="text-[10px] font-extrabold text-slate-500 uppercase font-mono">Initial Quoted Baseline (AED)</label>
               <input 
                 type="number" 
                 id="nego-initial-input" 
@@ -444,7 +452,7 @@
               >
             </div>
             <div class="space-y-1.5">
-              <label class="text-[10px] font-extrabold text-slate-500 uppercase text-indigo-700">Negotiated Target Rate (AED)</label>
+              <label class="text-[10px] font-extrabold text-slate-500 uppercase text-indigo-700 font-mono">Negotiated Target Rate (AED)</label>
               <input 
                 type="number" 
                 id="nego-target-input" 
@@ -453,7 +461,7 @@
               >
             </div>
             <div class="space-y-1.5">
-              <label class="text-[10px] font-extrabold text-slate-500 uppercase text-emerald-700">Final Discounted Agreement (AED)</label>
+              <label class="text-[10px] font-extrabold text-slate-500 uppercase text-emerald-700 font-mono">Final Discounted Agreement (AED)</label>
               <input 
                 type="number" 
                 id="nego-final-input" 
@@ -468,7 +476,7 @@
               <p class="font-bold text-slate-800">Recorded Budget Savings Target</p>
               <p class="text-[10px] text-slate-400 mt-0.5">Calculated: Initial Baseline minus Final Discounted Price</p>
             </div>
-            <div id="nego-savings-output" class="text-base font-black text-indigo-600">
+            <div id="nego-savings-output" class="text-base font-black text-indigo-600 font-mono">
               AED 0 Sourcing Improvements
             </div>
           </div>
@@ -486,9 +494,9 @@
         <!-- STEP 5 VIEW CONTENT -->
         <div id="step-content-5" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
           <div>
-            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 5</span>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100 font-mono">Stage 5</span>
             <h2 class="text-base font-extrabold text-slate-900 mt-2">Executive Board Sign-Off Request</h2>
-            <p class="text-xs text-slate-500">Verify the financial summaries and compliance scores before requesting PO authorization.</p>
+            <p class="text-xs text-slate-500">Verify financial summaries and compliance scores before requesting PO authorization.</p>
           </div>
 
           <div class="space-y-3">
@@ -534,21 +542,21 @@
               </h2>
               <p class="text-xs text-slate-500">Summary aggregates comparing Baseline vs Finalized acquisition rates.</p>
             </div>
-            <span class="text-[10px] font-extrabold uppercase bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Live Totals</span>
+            <span class="text-[10px] font-extrabold uppercase bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100 font-mono">Live Totals</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
             <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
               <span class="text-slate-400 block mb-1">TOTAL BASELINE REGISTRY</span>
-              <span id="report-total-baseline" class="text-base font-black text-slate-800">AED 0</span>
+              <span id="report-total-baseline" class="text-base font-black text-slate-800 font-mono">AED 0</span>
             </div>
             <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
-              <span class="text-indigo-700 block mb-1">FINAL AGREED AGREEMENTS</span>
-              <span id="report-total-agreed" class="text-base font-black text-indigo-900">AED 0</span>
+              <span class="text-indigo-700 block mb-1">FINAL AGREED CONTRACTS</span>
+              <span id="report-total-agreed" class="text-base font-black text-indigo-900 font-mono">AED 0</span>
             </div>
             <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
               <span class="text-emerald-700 block mb-1">TOTAL SAVINGS RATIO ACHIEVED</span>
-              <span id="report-total-savings" class="text-base font-black text-emerald-800">AED 0 (0%)</span>
+              <span id="report-total-savings" class="text-base font-black text-emerald-800 font-mono">AED 0 (0%)</span>
             </div>
           </div>
         </div>
@@ -560,7 +568,7 @@
                 <i data-lucide="history" class="text-indigo-600 h-4 w-4"></i>
                 2) System Audit Trail & Logging Verification
               </h2>
-              <p class="text-xs text-slate-500">Strict regulatory compliance ledger keeping record of all modifications and deletions.</p>
+              <p class="text-xs text-slate-500">Strict regulatory compliance ledger keeping track of all manual overrides.</p>
             </div>
             <button 
               onclick="downloadAuditLogsCsv()" 
@@ -590,35 +598,76 @@
 
       <!-- --- VIEW C: REGULATORY DOCUMENT NOTEBOOK PREVIEWS --- -->
       <section id="tab-view-preview" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between">
+        <div class="p-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div class="flex items-center gap-2">
-            <i data-lucide="file-check" class="text-primary h-4.5 w-4.5"></i>
+            <i data-lucide="file-check" class="text-indigo-600 h-4.5 w-4.5"></i>
             <div>
               <h2 class="text-xs font-extrabold text-slate-900 uppercase">Document Intelligence View</h2>
-              <p class="text-[10px] text-slate-400">View OCR segments and direct specifications extracted from files</p>
+              <p class="text-[10px] text-slate-400">View live PDF files, metadata structures, and OCR extractions side-by-side</p>
             </div>
           </div>
-          <span id="active-preview-filename" class="text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg px-2.5 py-1">
-            No File Active
-          </span>
+          <div class="flex items-center gap-2">
+            <span id="active-preview-filename" class="text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg px-2.5 py-1">
+              No File Active
+            </span>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200">
-          <!-- Text extract field -->
-          <div class="md:col-span-2 p-5 space-y-3">
-            <div class="flex justify-between items-center text-[10px] text-slate-400 font-extrabold uppercase">
-              <span>Text Segment Log</span>
-              <span class="text-indigo-600">Status: Verified</span>
+        <!-- Integrated View Sub-navigation Panel -->
+        <div class="bg-slate-50 border-b border-slate-200 px-5 py-2 flex gap-3 text-xs font-bold">
+          <button 
+            id="doc-view-tab-pdf" 
+            onclick="switchDocumentPreviewTab('pdf')" 
+            class="px-3 py-1 bg-white border border-slate-200 text-indigo-700 rounded-lg flex items-center gap-1.5 transition-all shadow-sm"
+          >
+            <i data-lucide="file-text" class="h-3.5 w-3.5"></i> 📄 Interactive PDF View
+          </button>
+          <button 
+            id="doc-view-tab-ocr" 
+            onclick="switchDocumentPreviewTab('ocr')" 
+            class="px-3 py-1 bg-transparent text-slate-500 hover:text-slate-800 rounded-lg flex items-center gap-1.5 transition-all"
+          >
+            <i data-lucide="text-cursor-input" class="h-3.5 w-3.5"></i> 📝 OCR Raw Text Stream
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+          
+          <!-- View panels viewport -->
+          <div class="lg:col-span-2 p-5 space-y-3">
+            
+            <!-- Tab A Panel: Custom PDF rendering frame -->
+            <div id="preview-panel-pdf" class="space-y-3">
+              <div class="flex justify-between items-center text-[10px] text-slate-400 font-extrabold uppercase">
+                <span>Integrated PDF Viewer</span>
+                <span class="text-emerald-600 flex items-center gap-1">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Active Frame Layout
+                </span>
+              </div>
+              
+              <div id="pdf-rendering-viewport" class="min-h-[500px] bg-slate-100 rounded-2xl border border-slate-200 flex items-center justify-center overflow-hidden relative">
+                <!-- Frame renders inside dynamically -->
+              </div>
             </div>
-            <div 
-              id="active-preview-ocr" 
-              class="p-4 bg-slate-50 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-600 leading-relaxed whitespace-pre-line min-h-64 max-h-[350px] overflow-y-auto"
-            >
-              Please upload or click a document from the left-hand vault.
+
+            <!-- Tab B Panel: Text OCR Segment Logs -->
+            <div id="preview-panel-ocr" class="hidden space-y-3">
+              <div class="flex justify-between items-center text-[10px] text-slate-400 font-extrabold uppercase">
+                <span>Text Segment Logs</span>
+                <span class="text-indigo-600">Status: Verified</span>
+              </div>
+              <div 
+                id="active-preview-ocr" 
+                class="p-4 bg-slate-50 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-600 leading-relaxed whitespace-pre-line min-h-64 max-h-[500px] overflow-y-auto"
+              >
+                Please upload or select a document from the active vault.
+              </div>
             </div>
+
           </div>
 
-          <!-- Technical parameters sidebar -->
+          <!-- Technical parameters scorecard -->
           <div class="p-5 space-y-4 bg-slate-50/20 text-xs">
             <h3 class="text-[10px] font-extrabold text-slate-500 uppercase flex items-center gap-1.5 border-b pb-2">
               <i data-lucide="sparkles" class="text-indigo-500 h-3.5 w-3.5"></i>
@@ -666,19 +715,19 @@
             <i data-lucide="cpu" class="h-5 w-5 text-indigo-600 animate-pulse"></i>
             <div>
               <h2 class="text-xs font-bold uppercase tracking-wider text-slate-600">Sourcing Intelligence Agent</h2>
-              <p class="text-[9px] text-slate-400">Ask any questions about the active documents</p>
+              <p class="text-[9px] text-slate-400 font-mono">Ask about prices, specs, or warranties</p>
             </div>
           </div>
         </div>
 
-        <!-- Chat history logs container scroll -->
+        <!-- Chat history container scroll -->
         <div id="chat-messages-container" class="flex-grow overflow-y-auto space-y-3.5 pr-1">
           <!-- Rendered dynamically -->
         </div>
 
-        <!-- Preset analytical templates quick buttons -->
+        <!-- Preset analytical template triggers -->
         <div class="space-y-1.5 pt-2 border-t border-slate-100">
-          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Copilot Direct Directives:</span>
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Copilot Guidelines:</span>
           <div class="grid grid-cols-2 gap-1.5 text-[10px]">
             <button onclick="simulateQuery('Compare technical warranties across these suppliers')" class="p-2 bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-left font-bold text-slate-700 rounded-lg truncate transition-all">
               🛡️ Warranty Auditing
@@ -689,14 +738,14 @@
           </div>
         </div>
 
-        <!-- Chat interactive input bar -->
+        <!-- Input control bar -->
         <div class="pt-1">
           <div class="bg-slate-50 border border-slate-200 rounded-xl p-1.5 flex gap-2">
             <input 
               type="text" 
               id="chat-input" 
               onkeydown="handleChatInputKeydown(event)"
-              placeholder="Ask about prices, specs, warranties..." 
+              placeholder="Query active documents..." 
               class="flex-1 bg-transparent px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none"
             >
             <button 
@@ -716,17 +765,16 @@
   <!-- --- FOOTER --- -->
   <footer class="border-t border-slate-200 bg-white px-6 py-4 flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-400 gap-2">
     <span>© 2026 ProcureMind AI. Authorized for Dubai Health Authority & MOHAP MD-Sourcing Standards.</span>
-    <div class="flex gap-4">
-      <span class="hover:text-slate-600 cursor-pointer">Security Protocol Logs</span>
-      <span class="hover:text-slate-600 cursor-pointer">SLA Compensation Guidelines</span>
+    <div class="flex gap-4 font-mono">
+      <span class="hover:text-slate-600 cursor-pointer">Security Logs</span>
+      <span class="hover:text-slate-600 cursor-pointer">SLA Guidelines</span>
     </div>
   </footer>
 
   <!-- ==========================================
-      CORE STATE ENGINE & PERSISTENCE SCRIPT (Pure HTML5)
+      CORE STATE ENGINE & PERSISTENCE SCRIPT
       ========================================== -->
   <script>
-    // Initial standard fallback dataset
     const SEED_HEALTHCARE_DOCS = [
       { 
         id: 'doc1', 
@@ -748,7 +796,8 @@
         scope: 'Delivery, full installation, clinical testing & training for 15 radiologists.',
         availability: 'Immediate dispatch from Munich hub.',
         extractedText: `QUOTATION DOCUMENT Ref: QT-2026-SIEMENS-MRI\nCustomer: Dubai Health Authority (DHA)\nEquipment Model: MAGNETOM MRI Altea 1.5T\nVendor Channel: Siemens Healthineers UAE\nInitial Baseline cost: AED 4,200,000\nMOHAP Registry No: MOHAP-MD-9923\nWarranty Provision: 3 Years Comprehensive coverage SLA\nLead transit timeline: 60 Days\nCold chain transport: Not required.\nTechnical Specifications:\n- Magnet Strength: 1.5 Tesla Active ShieldMagnet\n- Bore Dimensions: 60cm Width\n- Software Features: BioMatrix Technology Integration`,
-        checked: true 
+        checked: true,
+        blobUrl: ''
       },
       { 
         id: 'doc2', 
@@ -770,21 +819,21 @@
         scope: 'Installation, structural shielding assessment, 5 years cold-head protection.',
         availability: '30 Days lead time from Jebel Ali Free Zone warehouse.',
         extractedText: `PROPOSAL LOG Ref: GE-SIGNA-MRI-PROPOSAL-V2\nCustomer: DHA Central Purchasing\nModel Selection: GE Signa Prime 1.5T Magnetic Resonance\nAuthorized Channel: GE HealthCare Gulf\nBase price target: AED 3,950,000\nMOHAP Registry status: Approved (MOHAP-MD-8812)\nWarranty SLA coverage: 2 Years Comprehensive + 3 Years Cold-head protection\nTransit timeline: 45 Days\nLogistics depot: Jebel Ali Free Zone local warehouse storage`,
-        checked: true 
+        checked: true,
+        blobUrl: ''
       }
     ];
 
-    // Core Active State
     let docs = [];
     let auditLogs = [];
     let chatMessages = [];
     let activeTab = 'lifecycle';
-    let currentStep = 2; // Default wizard step is Comparison Matrix
+    let currentStep = 2; 
     let selectedDocId = 'doc1';
     let geminiApiKey = '';
+    let currentPreviewSubTab = 'pdf'; 
 
     window.onload = function() {
-      // Restore from Local Storage persistence if available
       try {
         const storedDocs = localStorage.getItem('pm_docs');
         const storedLogs = localStorage.getItem('pm_logs');
@@ -817,7 +866,6 @@
           document.getElementById('api-key-input').value = geminiApiKey;
         }
 
-        // Auto select first doc if active
         if (docs.length > 0) {
           selectedDocId = docs[0].id;
         }
@@ -827,7 +875,6 @@
         docs = [...SEED_HEALTHCARE_DOCS];
       }
 
-      // Initialize icons and render components
       lucide.createIcons();
       renderDocumentVaultList();
       renderShortlistDistributors();
@@ -840,16 +887,14 @@
       showToast("Workspace fully persistent & ready.");
     };
 
-    // Helper: Save to localStorage safely
     function saveToLocalStorage(key, value) {
       try {
         localStorage.setItem(key, JSON.stringify(value));
       } catch (e) {
-        console.error("Failed to commit state to Local Storage persistence", e);
+        console.error("Failed to commit state to Local Storage", e);
       }
     }
 
-    // Help: Append audit log entry
     function logAuditTrail(module, description) {
       const timestamp = new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString();
       auditLogs.unshift({
@@ -862,7 +907,6 @@
       updateSavingsPortfolioTotals();
     }
 
-    // Toast control triggers
     function showToast(msg) {
       const toast = document.getElementById('toast-notification');
       document.getElementById('toast-message').innerText = msg;
@@ -882,15 +926,13 @@
       toast.style.pointerEvents = 'none';
     }
 
-    // Save and register Api Key
     function saveApiKey(val) {
       geminiApiKey = val;
       localStorage.setItem('pm_api_key', val);
-      showToast("Gemini API access key updated & registered.");
+      showToast("Gemini API key stored successfully.");
       logAuditTrail("System Settings", "Updated/stored API credential configurations.");
     }
 
-    // Switch between Main Navigation Views
     function switchMainTab(tab) {
       activeTab = tab;
       
@@ -902,12 +944,10 @@
       const viewReports = document.getElementById('tab-view-reports');
       const viewPreview = document.getElementById('tab-view-preview');
 
-      // Reset menu button styles
       navLifecycle.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
       navReports.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
       navPreview.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
 
-      // Hide panels
       viewLifecycle.classList.add('hidden');
       viewReports.classList.add('hidden');
       viewPreview.classList.add('hidden');
@@ -928,12 +968,31 @@
       lucide.createIcons();
     }
 
-    // Switch between steps in Lifecycle tab
+    function switchDocumentPreviewTab(tab) {
+      currentPreviewSubTab = tab;
+      const pdfBtn = document.getElementById('doc-view-tab-pdf');
+      const ocrBtn = document.getElementById('doc-view-tab-ocr');
+      const pdfPanel = document.getElementById('preview-panel-pdf');
+      const ocrPanel = document.getElementById('preview-panel-ocr');
+
+      if (tab === 'pdf') {
+        pdfBtn.className = "px-3 py-1 bg-white border border-slate-200 text-indigo-700 rounded-lg flex items-center gap-1.5 transition-all shadow-sm";
+        ocrBtn.className = "px-3 py-1 bg-transparent text-slate-500 hover:text-slate-800 rounded-lg flex items-center gap-1.5 transition-all";
+        pdfPanel.classList.remove('hidden');
+        ocrPanel.classList.add('hidden');
+      } else {
+        ocrBtn.className = "px-3 py-1 bg-white border border-slate-200 text-indigo-700 rounded-lg flex items-center gap-1.5 transition-all shadow-sm";
+        pdfBtn.className = "px-3 py-1 bg-transparent text-slate-500 hover:text-slate-800 rounded-lg flex items-center gap-1.5 transition-all";
+        ocrPanel.classList.remove('hidden');
+        pdfPanel.classList.add('hidden');
+      }
+      lucide.createIcons();
+    }
+
     function switchWizardStep(step) {
       currentStep = step;
       document.getElementById('wizard-phase-indicator').innerText = `Step ${step} of 5`;
 
-      // Update button indicators styling
       for (let i = 1; i <= 5; i++) {
         const btn = document.getElementById(`wizard-btn-${i}`);
         const content = document.getElementById(`step-content-${i}`);
@@ -951,7 +1010,6 @@
       lucide.createIcons();
     }
 
-    // Render loaded documents list
     function renderDocumentVaultList() {
       const container = document.getElementById('document-vault-list');
       container.innerHTML = '';
@@ -959,7 +1017,7 @@
       document.getElementById('doc-count-badge').innerText = `${docs.length} files`;
 
       docs.forEach(d => {
-        const isActive = d.id === selectedDocId ? 'bg-indigo-50/40 border-indigo-200' : 'bg-white border-slate-200 hover:border-slate-300';
+        const isActive = d.id === selectedDocId ? 'bg-indigo-50/45 border-indigo-200' : 'bg-white border-slate-200 hover:border-slate-300';
         const isChecked = d.checked ? 'checked' : '';
         const typeStyle = getProductTypeClass(d.productType);
 
@@ -972,7 +1030,7 @@
               class="h-3.5 w-3.5 mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
             >
             <div class="flex-1 min-w-0 text-left cursor-pointer" onclick="selectActiveDocument('${d.id}')">
-              <div class="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+              <div class="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">
                 <span>${d.type}</span>
                 <span class="text-indigo-700">AED ${d.value >= 1000000 ? `${(d.value / 1000000).toFixed(1)}M` : d.value.toLocaleString()}</span>
               </div>
@@ -984,7 +1042,6 @@
                 <span class="text-[9px] text-slate-400 font-mono truncate max-w-[120px]">${d.fileName}</span>
               </div>
             </div>
-            <!-- Prevent garbage collection deletion button -->
             <button 
               onclick="deleteDocumentRecord('${d.id}')" 
               class="text-slate-300 hover:text-red-600 p-1 rounded-lg hover:bg-slate-100 transition-all"
@@ -1000,7 +1057,6 @@
       lucide.createIcons();
     }
 
-    // Toggle Checkbox matrix parameters selection
     function toggleMatrixTargetSelection(id) {
       docs = docs.map(d => d.id === id ? { ...d, checked: !d.checked } : d);
       saveToLocalStorage('pm_docs', docs);
@@ -1009,7 +1065,6 @@
       showToast("Updated comparison spreadsheet layout matrix.");
     }
 
-    // Delete Document Record to avoid unnecessary garbage
     function deleteDocumentRecord(id) {
       const doc = docs.find(d => d.id === id);
       if (!doc) return;
@@ -1020,7 +1075,6 @@
       logAuditTrail("Document Library", `Deleted document archive '${doc.title}' to minimize garbage records.`);
       showToast(`Deleted document '${doc.title}' successfully.`);
 
-      // Adjust selected focus fallback
       if (selectedDocId === id && docs.length > 0) {
         selectedDocId = docs[0].id;
       } else if (docs.length === 0) {
@@ -1032,7 +1086,6 @@
       updateNotebookPreviews();
     }
 
-    // Select Active Preview doc
     function selectActiveDocument(id) {
       selectedDocId = id;
       renderDocumentVaultList();
@@ -1040,7 +1093,6 @@
       syncFormPhases();
     }
 
-    // Checkbox master triggers
     function toggleAllComparisonTargets(state) {
       docs = docs.map(d => ({ ...d, checked: state }));
       saveToLocalStorage('pm_docs', docs);
@@ -1049,7 +1101,6 @@
       showToast(state ? "Loaded all documents into active matrix sheet." : "Unchecked all comparison columns.");
     }
 
-    // Dynamic Pastel Badges Styling helper
     function getProductTypeClass(type) {
       switch (type) {
         case 'Machine': return 'bg-amber-50 text-amber-700 border-amber-100';
@@ -1060,13 +1111,12 @@
       }
     }
 
-    // Ingest manual submissions
     function handleManualSubmission(e) {
       e.preventDefault();
       
       const name = document.getElementById('form-product-name').value.trim();
       const type = document.getElementById('form-product-type').value;
-      const basePrice = parseFloat(document.getElementById('form-product-price').value) || 150000;
+      const basePrice = parseFloat(document.getElementById('form-product-price').value) || 15000;
 
       if (!name) return;
 
@@ -1090,7 +1140,8 @@
         scope: 'On-site system installation, full testing and clinical training support.',
         availability: 'Ready in reserve warehouse Jebel Ali Free Zone depot.',
         extractedText: `MANUAL EXTRACTION RECORD\nEquipment: ${name}\nClassification: ${type}\nInitial pricing target: AED ${basePrice.toLocaleString()}`,
-        checked: true
+        checked: true,
+        blobUrl: ''
       };
 
       docs.unshift(newDoc);
@@ -1100,7 +1151,6 @@
       logAuditTrail("Manual Ingestion", `Manually logged data parameters for '${name}' into active ledger.`);
       showToast(`Successfully registered manual quote for ${name}.`);
 
-      // Reset form
       document.getElementById('form-product-name').value = '';
       document.getElementById('form-product-price').value = '';
 
@@ -1110,7 +1160,6 @@
       syncFormPhases();
     }
 
-    // --- COMPARISON ENGINE RENDERING & TRUE INLINE EDITING ---
     function renderComparisonMatrix() {
       const headerRow = document.getElementById('matrix-header-row');
       const body = document.getElementById('matrix-body');
@@ -1133,8 +1182,7 @@
         return;
       }
 
-      // 1. Build headers
-      let headerHtml = `<th class="p-4 w-48 text-slate-500 uppercase tracking-widest text-[9px]">Acquisition Metrics</th>`;
+      let headerHtml = `<th class="p-4 w-48 text-slate-500 uppercase tracking-widest text-[9px] font-mono">Acquisition Metrics</th>`;
       targets.forEach(d => {
         headerHtml += `
           <th class="p-4 border-l border-slate-200">
@@ -1145,7 +1193,6 @@
       });
       headerRow.innerHTML = headerHtml;
 
-      // Define row schemas to align and edit inline
       const rows = [
         { label: 'Product Name', key: 'productName', type: 'text' },
         { label: 'Vendor Channel', key: 'vendor', type: 'text' },
@@ -1160,7 +1207,6 @@
 
       let bodyHtml = '';
       rows.forEach(r => {
-        // Highlight critical price segments
         const isPrice = r.key === 'value' || r.key === 'negotiatedValue' || r.key === 'discountedValue';
         const rowBg = isPrice ? 'bg-indigo-50/10' : 'hover:bg-slate-50/50';
 
@@ -1195,9 +1241,7 @@
       lucide.createIcons();
     }
 
-    // Trigger Inline cell modifications
     function startInlineEditing(element, docId, fieldKey, fieldType) {
-      // Avoid starting another edit on the same cell
       if (element.querySelector('input')) return;
 
       const doc = docs.find(d => d.id === docId);
@@ -1206,7 +1250,6 @@
       const cellTextSpan = element.querySelector('.cell-text');
       const originalValue = doc[fieldKey];
 
-      // Replace span content with input focus
       const input = document.createElement('input');
       input.type = fieldType === 'number' ? 'number' : 'text';
       input.value = originalValue;
@@ -1216,11 +1259,9 @@
       element.appendChild(input);
       input.focus();
 
-      // Ensure Lucide edit icons hidden
       const icon = element.querySelector('span:last-child');
       if (icon) icon.style.opacity = '0';
 
-      // Capture Enter and Escape actions
       input.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
           saveInlineCellValue(input.value, docId, fieldKey, originalValue, cellTextSpan, input);
@@ -1229,13 +1270,11 @@
         }
       });
 
-      // Capture blur focal triggers
       input.addEventListener('blur', function() {
         saveInlineCellValue(input.value, docId, fieldKey, originalValue, cellTextSpan, input);
       });
     }
 
-    // Save modifications to persistent systems
     function saveInlineCellValue(newValue, docId, fieldKey, oldValue, textSpan, inputEl) {
       if (newValue.trim() === '') newValue = oldValue;
 
@@ -1243,13 +1282,11 @@
       const isNumber = !isNaN(numVal) && inputEl.type === 'number';
       const parsedValue = isNumber ? numVal : newValue;
 
-      // Update matching database state
       docs = docs.map(d => {
         if (d.id === docId) {
           const updatedDoc = { ...d };
           updatedDoc[fieldKey] = parsedValue;
           
-          // Auto generate negotiation metrics dynamically if base price changes
           if (fieldKey === 'value' && isNumber) {
             updatedDoc.negotiatedValue = Math.round(parsedValue * 0.92);
             updatedDoc.discountedValue = Math.round(parsedValue * 0.88);
@@ -1261,19 +1298,17 @@
 
       saveToLocalStorage('pm_docs', docs);
 
-      // Log changes to the audit trail
       if (oldValue !== parsedValue) {
         const docObj = docs.find(d => d.id === docId);
         const dispOld = isNumber ? `AED ${oldValue.toLocaleString()}` : oldValue;
         const dispNew = isNumber ? `AED ${parsedValue.toLocaleString()}` : parsedValue;
         logAuditTrail(
-          "Inline Spreadsheet Edit", 
+          "Spreadsheet Override", 
           `Manually adjusted parameter '${fieldKey}' on '${docObj.title}' from '${dispOld}' to '${dispNew}'.`
         );
         showToast(`Saved modifications on '${docObj.title}'.`);
       }
 
-      // Redraw interfaces
       renderDocumentVaultList();
       renderComparisonMatrix();
       updateNotebookPreviews();
@@ -1288,12 +1323,10 @@
       renderComparisonMatrix();
     }
 
-    // --- WIZARD FORM FIELDS SYNC & EMULATION ---
     function syncFormPhases() {
       const activeDoc = docs.find(d => d.id === selectedDocId) || docs[0];
       if (!activeDoc) return;
 
-      // Set options in review select
       const select = document.getElementById('department-preferred-select');
       if (select) {
         select.innerHTML = '';
@@ -1303,7 +1336,6 @@
         select.value = selectedDocId;
       }
 
-      // Sync Pricing inputs
       document.getElementById('nego-initial-input').value = activeDoc.value;
       document.getElementById('nego-target-input').value = activeDoc.negotiatedValue;
       document.getElementById('nego-final-input').value = activeDoc.discountedValue;
@@ -1353,7 +1385,6 @@
       logAuditTrail("Negotiations Module", `Committed verified pricing optimization values on '${activeDoc.title}' resulting in AED ${savings.toLocaleString()} savings.`);
       showToast(`Saved price optimizations on '${activeDoc.title}'.`);
 
-      // Prepare briefing templates
       document.getElementById('board-email-text').value = `To: board.director@dha.gov.ae\nSubject: Procurement Briefing: Infrastructure Investment Validation\n\nDear Director,\n\nWe have compiled our technical validations and side-by-side matrices regarding the acquisition parameters.\n\nFollowing comprehensive clinical audit, the "${activeDoc.productName}" has been declared optimal for infrastructure integration.\n\nOptimized Capital Layout:\n- Baseline Quotation pricing: AED ${initial.toLocaleString()}\n- Negotiated Agreement terms: AED ${target.toLocaleString()}\n- Finalized Sign-off contract rate: AED ${finalVal.toLocaleString()}\n- Net Portability Savings achieved: AED ${savings.toLocaleString()}\n\nAll components map strictly within MOHAP clearing codes: ${activeDoc.mohRegistration}.\n\nKindly authorize Purchase Order release protocols.\n\nBest Regards,\nCentral Acquisition & Logistics Division`;
 
       renderComparisonMatrix();
@@ -1361,7 +1392,6 @@
       switchWizardStep(5);
     }
 
-    // Direct RFP simulations
     function dispatchRfpMessage() {
       const target = document.getElementById('rfp-to-input').value;
       const subject = document.getElementById('rfp-subject-input').value;
@@ -1398,23 +1428,20 @@
       );
     }
 
-    // --- DIALOG MODAL TRIGGERS ---
     function openModal(title, desc, content, actionCallback) {
+      document.getElementById('custom-modal').classList.remove('hidden');
       document.getElementById('modal-title').innerText = title;
       document.getElementById('modal-description').innerText = desc;
       document.getElementById('modal-content-area').innerText = content;
       
       const btn = document.getElementById('modal-action-btn');
       btn.onclick = actionCallback;
-
-      document.getElementById('custom-modal').classList.remove('hidden');
     }
 
     function closeModal() {
       document.getElementById('custom-modal').classList.add('hidden');
     }
 
-    // --- SYSTEM REPORT COMPILATIONS & DOWNLOAD CHANNELS ---
     function updateSavingsPortfolioTotals() {
       const targets = docs;
       let totalBaseline = 0;
@@ -1431,15 +1458,6 @@
       document.getElementById('report-total-baseline').innerText = `AED ${totalBaseline.toLocaleString()}`;
       document.getElementById('report-total-agreed').innerText = `AED ${totalAgreed.toLocaleString()}`;
       document.getElementById('report-total-savings').innerText = `AED ${savings.toLocaleString()} (${ratio}%)`;
-
-      // Sync dashboard equivalents if displayed
-      const dashboardExposure = document.getElementById('eom-total-exposure-value');
-      const dashboardAgreed = document.getElementById('eom-final-outflow-value');
-      const dashboardSavings = document.getElementById('eom-savings-ratio-value');
-
-      if (dashboardExposure) dashboardExposure.innerText = `AED ${totalBaseline.toLocaleString()}`;
-      if (dashboardAgreed) dashboardAgreed.innerText = `AED ${totalAgreed.toLocaleString()}`;
-      if (dashboardSavings) dashboardSavings.innerText = `AED ${savings.toLocaleString()} (${ratio}%)`;
     }
 
     function renderAuditLogsTable() {
@@ -1447,7 +1465,7 @@
       container.innerHTML = '';
 
       if (auditLogs.length === 0) {
-        container.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Ledger empty. No edits recorded.</td></tr>`;
+        container.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Ledger empty. No overrides recorded.</td></tr>`;
         return;
       }
 
@@ -1467,7 +1485,6 @@
       });
     }
 
-    // Exporting Spreadsheet Data to CSV
     function downloadComparisonMatrixCsv() {
       const targets = docs.filter(d => d.checked);
       if (targets.length === 0) {
@@ -1503,7 +1520,6 @@
       logAuditTrail("Reports Export", "Compiled and downloaded active comparative spreadsheet metrics to CSV file.");
     }
 
-    // Export Audit logs
     function downloadAuditLogsCsv() {
       let csv = "Timestamp,Module,Description Context,Status\n";
       auditLogs.forEach(l => {
@@ -1514,7 +1530,6 @@
       logAuditTrail("Reports Export", "Compiled and downloaded current system Audit Trail records to CSV file.");
     }
 
-    // Workspace state backups
     function downloadBackup() {
       const state = {
         docs,
@@ -1549,7 +1564,6 @@
             saveToLocalStorage('pm_chat', chatMessages);
             if (geminiApiKey) localStorage.setItem('pm_api_key', geminiApiKey);
 
-            // Re-render
             renderDocumentVaultList();
             renderComparisonMatrix();
             renderAuditLogsTable();
@@ -1557,7 +1571,7 @@
             renderChatMessages();
             syncFormPhases();
 
-            showToast("Workspace backup restoration completed successfully.");
+            showToast("Workspace state restored successfully.");
             logAuditTrail("System", "Restored whole workspace configurations from backup archive file.");
           } else {
             showToast("Invalid backup parameters detected.");
@@ -1581,12 +1595,12 @@
       URL.revokeObjectURL(url);
     }
 
-    // --- DOCUMENT INTELLIGENCE PREVIEWS ---
     function updateNotebookPreviews() {
       const activeDoc = docs.find(d => d.id === selectedDocId) || docs[0];
       
       const fileSpan = document.getElementById('active-preview-filename');
       const ocrDiv = document.getElementById('active-preview-ocr');
+      const pdfViewport = document.getElementById('pdf-rendering-viewport');
       
       const scProd = document.getElementById('scorecard-product');
       const scType = document.getElementById('scorecard-type');
@@ -1597,6 +1611,7 @@
       if (!activeDoc) {
         fileSpan.innerText = "No File Active";
         ocrDiv.innerText = "Please upload or insert standard quote listings to begin viewing details.";
+        pdfViewport.innerHTML = `<span class="text-slate-400 font-bold text-xs text-center p-4">Select or drop a quotation from the vault to render PDF preview frame</span>`;
         scProd.innerText = "-";
         scType.innerText = "-";
         scType.className = "inline-block mt-1.5 px-2 py-0.5 rounded text-[8px] font-extrabold border bg-slate-100 text-slate-700";
@@ -1621,9 +1636,110 @@
         <span class="h-2 w-2 rounded-full ${mohApproved ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
         <span class="${mohApproved ? 'text-emerald-700' : 'text-rose-700'}">${activeDoc.mohRegistration}</span>
       `;
+
+      if (activeDoc.blobUrl) {
+        pdfViewport.innerHTML = `
+          <iframe 
+            src="${activeDoc.blobUrl}" 
+            class="w-full h-[520px] rounded-xl border-none shadow-inner" 
+            title="${activeDoc.title}"
+          ></iframe>
+        `;
+      } else {
+        const isApproved = activeDoc.mohRegistration.includes('Approved');
+        pdfViewport.innerHTML = `
+          <div class="w-full h-[520px] bg-white p-8 text-slate-800 text-left overflow-y-auto space-y-6 relative border-t-8 border-indigo-600">
+            <!-- Dubai Health Authority Official Simulated Stamp Overlay -->
+            <div class="absolute right-6 top-6 select-none pointer-events-none transform rotate-12 bg-emerald-50 text-emerald-700 border-2 border-dashed border-emerald-600 px-3 py-1.5 rounded text-[10px] font-extrabold flex items-center gap-1">
+              <i data-lucide="shield-check" class="h-4 w-4"></i>
+              <span>DHA VALIDATED REGISTER</span>
+            </div>
+
+            <!-- Header Section -->
+            <div class="flex justify-between items-start border-b border-slate-200 pb-4">
+              <div>
+                <h1 class="text-indigo-600 font-extrabold tracking-tight text-base">${activeDoc.vendor.toUpperCase()}</h1>
+                <p class="text-[9px] text-slate-400 font-medium">Middle East & Africa Medical Distribution HQ, Jebel Ali Free Zone</p>
+                <p class="text-[9px] text-slate-400 font-mono">Registry: UAE-MED-${activeDoc.id.substring(0,6).toUpperCase()}</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-black tracking-wider text-slate-600 uppercase">OFFICIAL QUOTATION</span>
+                <p class="text-[9px] text-slate-500">Date: June 21, 2026</p>
+                <p class="text-[9px] text-slate-500">Valid Until: Dec 31, 2026</p>
+              </div>
+            </div>
+
+            <!-- Metadata info boxes -->
+            <div class="grid grid-cols-2 gap-4 text-[10px] font-medium text-slate-600">
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <span class="text-slate-400 font-extrabold block text-[8px] uppercase font-mono">CUSTOMER REQUISITION</span>
+                <span class="font-extrabold text-slate-800 text-[11px]">Dubai Health Authority (DHA)</span>
+                <p class="text-[9px] text-slate-500 mt-1">Central Logistics & Sourcing Division, Dubai, UAE</p>
+              </div>
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <span class="text-slate-400 font-extrabold block text-[8px] uppercase font-mono">EQUIPMENT & CLASSIFICATION</span>
+                <span class="font-extrabold text-slate-800 text-[11px]">${activeDoc.productName}</span>
+                <p class="text-[9px] text-slate-500 mt-1">MOHAP Code: ${activeDoc.mohRegistration}</p>
+              </div>
+            </div>
+
+            <!-- Pricing & Specification Grid Table -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden text-[10px]">
+              <table class="w-full border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 text-left">
+                    <th class="p-2.5">Category Parameter</th>
+                    <th class="p-2.5 border-l border-slate-200">Technical Details / Warranty Limits</th>
+                    <th class="p-2.5 border-l border-slate-200 text-right">Acquisition Base Value</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-150 text-slate-700">
+                  <tr>
+                    <td class="p-2.5 font-bold">${activeDoc.productName} (${activeDoc.productType})</td>
+                    <td class="p-2.5 border-l border-slate-200">${activeDoc.techSpecs}</td>
+                    <td class="p-2.5 border-l border-slate-200 text-right font-bold text-slate-800">AED ${activeDoc.value.toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2.5 font-bold">Scope & Works</td>
+                    <td class="p-2.5 border-l border-slate-200">${activeDoc.scope}</td>
+                    <td class="p-2.5 border-l border-slate-200 text-right text-slate-400">- Included -</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2.5 font-bold">Transit Lead Term</td>
+                    <td class="p-2.5 border-l border-slate-200">Guaranteed within ${activeDoc.deliveryTime} (Hub: ${activeDoc.availability})</td>
+                    <td class="p-2.5 border-l border-slate-200 text-right text-slate-400">- Included -</td>
+                  </tr>
+                  <tr class="bg-indigo-50/10 font-bold">
+                    <td class="p-2.5 text-indigo-700">Service Coverage</td>
+                    <td class="p-2.5 border-l border-slate-200 text-indigo-700">${activeDoc.warranty} support packages</td>
+                    <td class="p-2.5 border-l border-slate-200 text-right text-indigo-700">- Included -</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Footer Compliance signature line -->
+            <div class="flex justify-between items-end pt-4 border-t border-slate-100 text-[9px] text-slate-400">
+              <div class="space-y-1">
+                <p class="font-bold text-slate-500">MOHAP REGULATORY CLEARANCE REFERENCES</p>
+                <p class="flex items-center gap-1">
+                  <span class="h-1.5 w-1.5 rounded-full ${isApproved ? 'bg-emerald-500':'bg-rose-500'}"></span>
+                  <span>License: ${activeDoc.mohRegistration}</span>
+                </p>
+              </div>
+              <div class="text-right space-y-2">
+                <div class="h-7 w-24 border-b border-indigo-600/30 ml-auto flex items-center justify-center italic text-indigo-600/70 text-[10px] select-none font-serif">
+                  UAE Clinical Sign
+                </div>
+                <p class="font-bold text-slate-500">AUTHORIZED EXECUTIVE STAMP</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      lucide.createIcons();
     }
 
-    // Shortlist filters and shortlisting
     function filterDistributors() {
       renderShortlistDistributors();
     }
@@ -1658,7 +1774,7 @@
                 value="${p.email}" 
                 ${p.checked ? 'checked' : ''} 
                 onchange="syncRfpEmailTargets()"
-                class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 partner-checkbox"
+                class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 partner-checkbox pointer-events-auto cursor-pointer"
               >
             </div>
           `);
@@ -1682,7 +1798,6 @@
       document.getElementById('rfp-to-input').value = emails.join(', ');
     }
 
-    // --- SIMULATED AND DYNAMIC COGNITIVE COPILOT ---
     async function callGeminiLiveApi(promptText, systemInstructions = "") {
       if (!geminiApiKey) {
         throw new Error("No live API key provided.");
@@ -1720,8 +1835,7 @@
       return outputText;
     }
 
-    // Ingest files dynamically locally & optionally with Gemini
-    async function processUploadedDocuments(fileName, fileContent) {
+    async function processUploadedDocuments(fileName, fileContent, blobUrl = '') {
       document.getElementById('upload-idle').classList.add('hidden');
       document.getElementById('upload-loading').classList.remove('hidden');
 
@@ -1742,7 +1856,7 @@
             "productName": "Actual medical device/product name",
             "productType": "Strictly one of: 'Machine', 'Product', 'Medical Consumables', or 'Service'",
             "vendor": "UAE medical distributor or manufacturer",
-            "value": 150000, // Clean number. Convert USD to AED if needed (1 USD = 3.67 AED)
+            "value": 150000,
             "mohRegistration": "MOHAP registration code, e.g. 'Approved (MOHAP-MD-9923)'",
             "warranty": "Warranty description SLA terms",
             "deliveryTime": "Lead time in days (number or text)",
@@ -1764,9 +1878,9 @@
             type: parsed.productType === 'Service' ? 'Agreement' : 'Quotation',
             fileName: fileName,
             vendor: parsed.vendor || 'Regional UAE Medical Distributor',
-            value: parsed.value || 250000,
-            negotiatedValue: Math.round((parsed.value || 250000) * 0.92),
-            discountedValue: Math.round((parsed.value || 250000) * 0.88),
+            value: parsed.value || 25000,
+            negotiatedValue: Math.round((parsed.value || 25000) * 0.92),
+            discountedValue: Math.round((parsed.value || 25000) * 0.88),
             currency: 'AED',
             mohRegistration: parsed.mohRegistration || 'Approved (MOHAP-MD-CLEARED)',
             warranty: parsed.warranty || '2 Years Standard Comprehensive Coverage SLA',
@@ -1776,7 +1890,8 @@
             scope: parsed.scope || 'Standard system delivery, calibration and deployment support.',
             availability: parsed.availability || 'In reserve storage local Freezone depots.',
             extractedText: fileContent,
-            checked: true
+            checked: true,
+            blobUrl: blobUrl
           };
 
           docs.unshift(newDoc);
@@ -1786,19 +1901,26 @@
           logAuditTrail("AI Document Extraction", `AI successfully extracted specifications for '${parsed.productName}' using live Gemini Flash API.`);
           showToast(`Ingested '${parsed.productName}' using Gemini OCR.`);
 
+          document.getElementById('upload-idle').classList.remove('hidden');
+          document.getElementById('upload-loading').classList.add('hidden');
+
+          renderDocumentVaultList();
+          renderComparisonMatrix();
+          updateNotebookPreviews();
+          syncFormPhases();
+
         } catch (err) {
           console.error("Gemini direct parse failed, falling back to instant parsing", err);
-          fallbackLocalParsing(fileName, fileContent, cleanTitle);
+          fallbackLocalParsing(fileName, fileContent, cleanTitle, blobUrl);
         }
       } else {
-        // Instant local extraction
         setTimeout(() => {
-          fallbackLocalParsing(fileName, fileContent, cleanTitle);
+          fallbackLocalParsing(fileName, fileContent, cleanTitle, blobUrl);
         }, 1200);
       }
     }
 
-    function fallbackLocalParsing(fileName, fileContent, cleanTitle) {
+    function fallbackLocalParsing(fileName, fileContent, cleanTitle, blobUrl = '') {
       let inferredType = 'Product';
       if (fileName.toLowerCase().includes('mri') || fileName.toLowerCase().includes('scanner') || fileName.toLowerCase().includes('machine')) {
         inferredType = 'Machine';
@@ -1830,7 +1952,8 @@
         scope: 'On-site installation support, structural clearance check, and full clinical commissioning.',
         availability: 'In-stock local Freezone reserve.',
         extractedText: fileContent || `QUOTATION EXTRACTED DIRECTLY\nFile: ${fileName}\nInferred Type: ${inferredType}\nQuoted Baseline Value: AED ${randomVal.toLocaleString()}`,
-        checked: true
+        checked: true,
+        blobUrl: blobUrl
       };
 
       docs.unshift(newDoc);
@@ -1849,7 +1972,6 @@
       syncFormPhases();
     }
 
-    // Dispatching Copilot chats
     async function dispatchCopilotMessage() {
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
@@ -1857,11 +1979,9 @@
 
       input.value = '';
 
-      // Append user prompt
       chatMessages.push({ sender: 'user', text });
       renderChatMessages();
 
-      // Setup dynamic structural context based on currently checked items
       const selectedDocs = docs.filter(d => d.checked);
       let context = "The user has shortlisted and checked the following procurement documents in their comparison sheet:\n\n";
       selectedDocs.forEach((d, i) => {
@@ -1911,7 +2031,6 @@
       renderChatMessages();
     }
 
-    // Local semantic query answer resolver for general queries
     function localSemanticAnswerResolver(query) {
       const q = query.toLowerCase();
       const targets = docs.filter(d => d.checked);
@@ -1920,13 +2039,12 @@
         return "I don't see any active documents selected. Please check the checkboxes next to files in the left-hand vault so I can analyze details for you!";
       }
 
-      // Check keywords for dynamic comparisons
       if (q.includes('warranty') || q.includes('guarantee') || q.includes('maintenance')) {
         let text = "Here is an audit of technical warranties for active shortlisted vendors:\n\n";
         targets.forEach(d => {
           text += `* **${d.productName}** (${d.vendor}): Offers **${d.warranty}**.\n`;
         });
-        text += "\nRecommendation: Review if service coverage extends to comprehensive on-site calibiration routines.";
+        text += "\nRecommendation: Review if service coverage extends to comprehensive on-site calibration routines.";
         return text;
       }
 
@@ -1948,7 +2066,6 @@
         return text;
       }
 
-      // Default fallback context synthesis
       let text = `I've analyzed your question against the shortlisted workspace files (${targets.length} active documents).\n\nKey Parameters parsed:\n`;
       targets.forEach(d => {
         text += `* **${d.productName}** has technical specs matching: "${d.techSpecs}". Sourced via ${d.vendor} at a finalized agreement price of AED ${d.discountedValue.toLocaleString()}.\n`;
@@ -1996,7 +2113,6 @@
       }
     }
 
-    // --- FILE PICKING DRAG-AND-DROP PROCESSORS ---
     function triggerFilePicker() {
       document.getElementById('file-picker').click();
     }
@@ -2018,9 +2134,10 @@
       }
     }
 
-    function handleFileSelection(e) {
-      if (e.target.files) {
-        readIncomingFiles(e.target.files);
+    function handleFileSelection(event) {
+      if (event.target.files) {
+        readIncomingFiles(event.target.files);
+        event.target.value = ''; 
       }
     }
 
@@ -2030,17 +2147,23 @@
       for (let i = 0; i < list.length; i++) {
         const file = list[i];
         const reader = new FileReader();
+        const blobUrl = URL.createObjectURL(file);
 
         reader.onload = function(event) {
           let text = event.target.result;
           
-          // Generate realistic default mock text fallback if file contains invalid characters
           if (!text || text.trim().length < 5 || /[\x00-\x08\x0E-\x1F]/.test(text)) {
             const cleanTitle = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
             text = `DUBAI CENTRAL HEALTHCARE ACQUISITION DIRECTIVE\nItem: ${cleanTitle}\nSourcing Code: DHA-MED-2026-X99\nMunicipal Regulatory Registry: Approved (MOHAP-MD-MD921)\nLead logistics duration: 14 Days\nWarranty support parameters: 3 Years Comprehensive coverage SLA including parts and clinical testing.`;
           }
 
-          processUploadedDocuments(file.name, text);
+          processUploadedDocuments(file.name, text, blobUrl);
+        };
+
+        reader.onerror = function() {
+          document.getElementById('upload-idle').classList.remove('hidden');
+          document.getElementById('upload-loading').classList.add('hidden');
+          showToast("Failed to parse this document file.");
         };
 
         reader.readAsText(file);
