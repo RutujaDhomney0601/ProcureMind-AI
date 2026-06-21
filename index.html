@@ -87,9 +87,9 @@
     }
 
     .sidebar-left {
-      width: 330px;
+      width: 340px;
       background: #ffffff;
-      border-right: 1px border var(--pm-border);
+      border-right: 1px solid var(--pm-border);
       display: flex;
       flex-direction: column;
       overflow-y: auto;
@@ -121,7 +121,7 @@
       border: 1px solid var(--pm-border);
       border-radius: 1rem;
       box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
-      transition: all 0.2s ease-index;
+      transition: all 0.2s ease;
     }
 
     /* Pastel Badges */
@@ -203,6 +203,22 @@
       border-color: var(--pm-primary);
       box-shadow: 0 1px 3px rgba(79, 70, 229, 0.1);
     }
+
+    .nav-pills .nav-link {
+      color: var(--pm-text-muted);
+      background-color: transparent;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--pm-primary);
+      color: #ffffff;
+    }
+
+    .sidebar-section {
+      border-radius: 0.75rem;
+    }
   </style>
 </head>
 <body class="bg-light">
@@ -217,6 +233,33 @@
           <span id="toast-message" class="text-dark small fw-medium">Workspace Active</span>
         </div>
         <button type="button" class="btn-close ms-2" onclick="dismissToast()" style="font-size: 0.75rem;"></button>
+      </div>
+    </div>
+
+    <!-- --- EMAIL CONFIRMATION MODAL --- -->
+    <div class="modal fade" id="emailConfirmModal" tabindex="-1" aria-labelledby="emailConfirmModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+          <div class="modal-header bg-light border-bottom-0 py-3 rounded-top-4">
+            <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="emailConfirmModalLabel">
+              <i data-lucide="alert-circle" class="text-primary"></i> Confirm Email Dispatch
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body py-4">
+            <p class="text-slate-600 text-xs">Please verify the following recipient details and email log metrics before broadcasting this communication:</p>
+            <div class="bg-light p-3 rounded-3 border d-flex flex-column gap-2 text-xs mb-3">
+              <div><strong>To:</strong> <span id="modal-email-to" class="text-primary">-</span></div>
+              <div id="modal-email-cc-container"><strong>Cc:</strong> <span id="modal-email-cc" class="text-secondary">-</span></div>
+              <div><strong>Subject:</strong> <span id="modal-email-subject" class="fw-semibold text-dark">-</span></div>
+            </div>
+            <p class="text-muted mb-0" style="font-size: 0.7rem;">Once approved, this message will be officially recorded in the global workspace Sourcing Log ledger.</p>
+          </div>
+          <div class="modal-footer border-top-0 pt-0">
+            <button type="button" class="btn btn-sm btn-light border fw-bold text-secondary px-3 py-2" data-bs-dismiss="modal">Cancel & Edit</button>
+            <button type="button" id="modal-confirm-send-btn" class="btn btn-sm btn-primary fw-bold px-4 py-2" onclick="executeEmailDispatch()">Authorize & Send</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -236,8 +279,8 @@
       </div>
 
       <!-- Main Navigation Tabs -->
-      <div class="d-flex gap-2">
-        <button id="tab-btn-lifecycle" class="btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border" onclick="switchMainTab('lifecycle')">
+      <div class="d-flex gap-2 align-items-center">
+        <button id="tab-btn-lifecycle" class="btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white" style="background-color: var(--pm-primary);" onclick="switchMainTab('lifecycle')">
           📋 Sourcing Lifecycle
         </button>
         <button id="tab-btn-eom" class="btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary" onclick="switchMainTab('end_of_month')">
@@ -248,11 +291,11 @@
         </button>
       </div>
 
-      <!-- Quick UAE Metas -->
-      <div class="d-none d-xl-flex align-items-center gap-3" style="font-size: 0.75rem;">
-        <div class="d-flex align-items-center gap-1.5 bg-light px-3 py-2 rounded-3 border">
-          <i data-lucide="building" class="text-primary" style="width: 16px;"></i>
-          <span>MOHAP Hub: <strong class="text-dark">Linked (AD/DHA)</strong></span>
+      <!-- Gemini API Integration Box -->
+      <div class="d-flex align-items-center gap-2">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text bg-light text-muted border-end-0" style="font-size: 0.7rem;"><i data-lucide="key" style="width: 12px; height: 12px;"></i></span>
+          <input type="password" id="gemini-api-key" class="form-control border-start-0 bg-light" placeholder="Gemini API Key..." style="width: 150px; font-size: 0.7rem; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;" onchange="saveApiKey(this.value)">
         </div>
       </div>
     </header>
@@ -263,79 +306,108 @@
       <!-- ==========================================
           LEFT PANEL: DOCUMENTS AND INGESTION
           ========================================== -->
-      <aside class="sidebar-left p-4 d-flex flex-column gap-4 justify-content-between border-end">
-        <div class="space-y-4">
-          <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
-            <span class="text-uppercase tracking-wider fw-bold text-secondary" style="font-size: 0.75rem;">
-              <i data-lucide="folder-open" class="me-1" style="width: 14px;"></i> Loaded Documents
-            </span>
-            <span class="badge bg-light text-dark border rounded-pill" id="doc-counter">0 files</span>
-          </div>
-
-          <!-- Drag and Drop Dropzone -->
-          <div id="dropzone" class="dropzone p-4 text-center d-flex flex-column gap-2" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event)" onclick="triggerFilePicker()">
-            <input type="file" id="file-picker" multiple class="d-none" onchange="fileSelectionHandler(event)">
-            <i data-lucide="upload-cloud" class="text-primary mx-auto" style="width: 32px; height: 32px;"></i>
-            <p class="mb-0 fw-bold text-slate-700" style="font-size: 0.75rem;">Upload or Drag Quotes</p>
-            <p class="text-muted mb-0" style="font-size: 0.65rem;">PDF, Excel, Word or Text formats</p>
-            <button class="btn btn-sm btn-white border mt-1 shadow-sm font-bold text-primary" style="font-size: 0.65rem;">Choose Local Files</button>
-          </div>
-
-          <!-- Select Toggles -->
-          <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-3 border" style="font-size: 0.7rem;">
-            <span class="text-muted font-bold">Compare Targets:</span>
-            <div class="d-flex gap-1.5">
-              <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(true)">All</button>
-              <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(false)">None</button>
-            </div>
-          </div>
-
-          <!-- Document List Box -->
-          <div class="d-flex flex-column gap-2" id="document-list-container" style="max-height: 220px; overflow-y: auto;">
-            <!-- Rendered Dynamically via JS -->
-          </div>
-
-          <!-- Manual Ingestion Form -->
-          <form id="manual-ingestion-form" onsubmit="handleManualIngestSubmit(event)" class="bg-light p-3 border rounded-4 d-flex flex-column gap-2.5">
-            <div class="fw-bold text-secondary border-bottom pb-1" style="font-size: 0.7rem; text-transform: uppercase;">
-              <i data-lucide="plus" class="me-1 text-primary" style="width: 14px; height: 14px;"></i> Register Ingestion Manually
-            </div>
-            
-            <div class="form-group">
-              <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.65rem;">Product / Service Name</label>
-              <input type="text" id="form-product-name" required placeholder="e.g., Alaris Syringe Pump" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
+      <aside class="sidebar-left p-3 d-flex flex-column gap-3 justify-content-between border-end">
+        <div class="d-flex flex-column gap-3">
+          
+          <!-- SECTION 1: ACTIVE NOTEBOOK VAULT -->
+          <div class="sidebar-section bg-white p-2 border">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
+              <span class="text-uppercase tracking-wider fw-bold text-secondary d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                <i data-lucide="folder-open" class="text-primary" style="width: 16px;"></i> Active Notebook Vault
+              </span>
+              <span class="badge bg-primary text-white border rounded-pill" id="doc-counter" style="font-size: 0.65rem;">0 files</span>
             </div>
 
-            <div class="row g-2">
-              <div class="col-6">
-                <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.65rem;">Product Type</label>
-                <select id="form-product-type" class="form-select form-select-sm bg-white" style="font-size: 0.75rem;">
-                  <option value="Machine">Machine</option>
-                  <option value="Product">Product</option>
-                  <option value="Medical Consumables">Medical Consumables</option>
-                  <option value="Service">Service</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.65rem;">Base Cost (AED)</label>
-                <input type="number" id="form-product-price" required placeholder="Cost" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
+            <!-- Compare Targets Toggles -->
+            <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-3 border mb-2" style="font-size: 0.7rem;">
+              <span class="text-muted fw-bold">Grid Matrix Targets:</span>
+              <div class="d-flex gap-1.5">
+                <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(true)">All</button>
+                <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(false)">None</button>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-sm w-full py-1.5 mt-1 font-bold" style="font-size: 0.75rem;">Add Ingested File</button>
-          </form>
+            <!-- Scrollable Document List container -->
+            <div class="d-flex flex-column gap-2" id="document-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 2px;">
+              <!-- Rendered Dynamically via JS -->
+            </div>
+          </div>
+
+          <!-- SECTION 2: FILE INGESTION HUB -->
+          <div class="sidebar-section bg-white p-2 border">
+            <div class="d-flex align-items-center gap-2 border-bottom pb-2 mb-2">
+              <i data-lucide="import" class="text-primary" style="width: 16px;"></i>
+              <span class="text-uppercase tracking-wider fw-bold text-secondary" style="font-size: 0.75rem;">Ingestion Hub</span>
+            </div>
+
+            <!-- Mini pill-tabs to segregate upload vs manual form -->
+            <ul class="nav nav-pills nav-justified bg-light p-1 rounded-3 mb-2" id="ingest-tabs" role="tablist" style="font-size: 0.7rem;">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active py-1.5 fw-bold" id="ingest-upload-tab" data-bs-toggle="pill" data-bs-target="#ingest-upload" type="button" role="tab" aria-controls="ingest-upload" aria-selected="true">
+                  <i data-lucide="upload-cloud" class="me-1" style="width: 12px; height: 12px;"></i> Upload Spec
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link py-1.5 fw-bold" id="ingest-manual-tab" data-bs-toggle="pill" data-bs-target="#ingest-manual" onclick="lucide.createIcons()" type="button" role="tab" aria-controls="ingest-manual" aria-selected="false">
+                  <i data-lucide="plus-circle" class="me-1" style="width: 12px; height: 12px;"></i> Manual Input
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="ingest-tabs-content">
+              <!-- Upload tabpane -->
+              <div class="tab-pane fade show active" id="ingest-upload" role="tabpanel" aria-labelledby="ingest-upload-tab">
+                <div id="dropzone" class="dropzone p-3 text-center d-flex flex-column gap-2 border-2" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event)" onclick="triggerFilePicker()">
+                  <input type="file" id="file-picker" multiple class="d-none" onchange="fileSelectionHandler(event)">
+                  <i data-lucide="upload-cloud" class="text-primary mx-auto" style="width: 28px; height: 28px;"></i>
+                  <p class="mb-0 fw-bold text-slate-700" style="font-size: 0.72rem;">Drag & drop quotes here</p>
+                  <p class="text-muted mb-0" style="font-size: 0.62rem;">PDF, Excel, Word or Text formats</p>
+                  <button class="btn btn-xs btn-white border mt-1 shadow-sm font-bold text-primary" style="font-size: 0.65rem;">Choose System Files</button>
+                </div>
+              </div>
+
+              <!-- Manual form tabpane -->
+              <div class="tab-pane fade" id="ingest-manual" role="tabpanel" aria-labelledby="ingest-manual-tab">
+                <form id="manual-ingestion-form" onsubmit="handleManualIngestSubmit(event)" class="bg-light p-2.5 border rounded-3 d-flex flex-column gap-2">
+                  <div class="form-group">
+                    <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.3px;">Product / Service Name</label>
+                    <input type="text" id="form-product-name" required placeholder="e.g., Alaris Syringe Pump" class="form-control form-control-sm bg-white" style="font-size: 0.75rem; border-radius: 0.375rem;">
+                  </div>
+
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.3px;">Type</label>
+                      <select id="form-product-type" class="form-select form-select-sm bg-white" style="font-size: 0.75rem; border-radius: 0.375rem;">
+                        <option value="Machine">Machine</option>
+                        <option value="Product">Product</option>
+                        <option value="Medical Consumables">Consumables</option>
+                        <option value="Service">Service</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.3px;">Cost (AED)</label>
+                      <input type="number" id="form-product-price" required placeholder="Cost" class="form-control form-control-sm bg-white" style="font-size: 0.75rem; border-radius: 0.375rem;">
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-sm w-full py-1.5 font-bold" style="font-size: 0.7rem; border-radius: 0.375rem;">Ingest Manual Quote</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div class="border-top pt-3 d-none d-lg-block" style="font-size: 0.65rem; color: var(--pm-text-muted);">
-          <strong class="text-secondary d-flex align-items-center gap-1"><i data-lucide="info" style="width: 12px;"></i> UAE DHA Standard</strong>
-          Our system maps medical items against official guidelines and global cold-chain regulatory schedules.
+          <strong class="text-secondary d-flex align-items-center gap-1 mb-1"><i data-lucide="info" style="width: 12px;"></i> Sourcing Guidelines</strong>
+          ProcureMind parses raw quotes into explicit clinical values based on DHA/MOHAP import registries.
         </div>
       </aside>
 
       <!-- ==========================================
           MIDDLE PANEL: ACTIVE WORKSPACE FLOW & MATRIX
           ========================================== -->
-      <main class="middle-panel p-4 flex-1">
+      <main class="middle-panel p-4 flex-grow-1">
         
         <!-- --- HEALTHCARE LIFECYCLE WIZARD TAB --- -->
         <section id="tab-view-lifecycle" class="lifecycle-workspace d-flex flex-column gap-4">
@@ -343,19 +415,19 @@
           <!-- Lifecycle Step Buttons -->
           <div class="custom-card bg-white p-3 d-flex flex-wrap align-items-center justify-content-between gap-3 border">
             <div class="d-flex flex-wrap gap-2">
-              <button class="step-btn active" id="btn-step-1" onclick="switchWizardStep(1)">1. Resourcing & RFP</button>
-              <button class="step-btn" id="btn-step-2" onclick="switchWizardStep(2)">2. Specs Comparison</button>
+              <button class="step-btn" id="btn-step-1" onclick="switchWizardStep(1)">1. Resourcing & RFP</button>
+              <button class="step-btn active" id="btn-step-2" onclick="switchWizardStep(2)">2. Specs Comparison</button>
               <button class="step-btn" id="btn-step-3" onclick="switchWizardStep(3)">3. Dept Selection</button>
               <button class="step-btn" id="btn-step-4" onclick="switchWizardStep(4)">4. Re-negotiation</button>
               <button class="step-btn" id="btn-step-5" onclick="switchWizardStep(5)">5. Manager Approval</button>
             </div>
             <div class="text-uppercase fw-bold text-muted" style="font-size: 0.65rem;">
-              Phase State: <span class="text-primary font-bold" id="wizard-active-indicator">Step 1 of 5</span>
+              Phase State: <span class="text-primary font-bold" id="wizard-active-indicator">Step 2 of 5</span>
             </div>
           </div>
 
           <!-- STEP 1 VIEW -->
-          <div id="step-view-1" class="lifecycle-step-card d-flex flex-column gap-3">
+          <div id="step-view-1" class="lifecycle-step-card d-none d-flex flex-column gap-3">
             <div class="custom-card bg-white p-4 border space-y-4">
               <div class="mb-3">
                 <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 1</span>
@@ -380,8 +452,37 @@
 
                 <div class="col-md-6 d-flex flex-column gap-2">
                   <span class="fw-bold text-secondary text-uppercase" style="font-size: 0.7rem;"><i data-lucide="mail" class="me-1 text-primary" style="width: 14px;"></i> Editable RFP Mail Template</span>
-                  <textarea id="rfp-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 230px;"></textarea>
-                  <button class="btn btn-primary w-full py-2.5 font-bold text-xs mt-1 d-flex align-items-center justify-center gap-1.5 shadow" onclick="dispatchRFPEmail()">
+                  
+                  <!-- Email Header Inputs for RFP -->
+                  <div class="bg-light p-3 rounded-3 border d-flex flex-column gap-2 text-xs mb-2">
+                    <div class="row g-2 align-items-center">
+                      <div class="col-2 text-muted fw-bold">To:</div>
+                      <div class="col-10">
+                        <input type="text" id="rfp-email-to" class="form-control form-control-sm bg-white" placeholder="Recipient emails (comma-separated)...">
+                      </div>
+                    </div>
+                    <div class="row g-2 align-items-center">
+                      <div class="col-2 text-muted fw-bold">Cc:</div>
+                      <div class="col-10">
+                        <input type="text" id="rfp-email-cc" class="form-control form-control-sm bg-white" placeholder="cc@dha.gov.ae">
+                      </div>
+                    </div>
+                    <div class="row g-2 align-items-center">
+                      <div class="col-2 text-muted fw-bold">Bcc:</div>
+                      <div class="col-10">
+                        <input type="text" id="rfp-email-bcc" class="form-control form-control-sm bg-white" placeholder="bcc@dha.gov.ae">
+                      </div>
+                    </div>
+                    <div class="row g-2 align-items-center">
+                      <div class="col-2 text-muted fw-bold">Subject:</div>
+                      <div class="col-10">
+                        <input type="text" id="rfp-email-subject" class="form-control form-control-sm bg-white fw-semibold" value="RFP Request: Medical Central Sourcing Bid Requisition">
+                      </div>
+                    </div>
+                  </div>
+
+                  <textarea id="rfp-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 180px;"></textarea>
+                  <button class="btn btn-primary w-full py-2.5 font-bold text-xs mt-1 d-flex align-items-center justify-center gap-1.5 shadow" onclick="triggerEmailConfirmModal('rfp')">
                     <i data-lucide="send" style="width: 14px;"></i> Dispatch RFP to Selected Distributors
                   </button>
                 </div>
@@ -390,7 +491,7 @@
           </div>
 
           <!-- STEP 2 VIEW -->
-          <div id="step-view-2" class="lifecycle-step-card d-none d-flex flex-column gap-3">
+          <div id="step-view-2" class="lifecycle-step-card d-flex flex-column gap-3">
             <div class="custom-card bg-white p-4 border space-y-4">
               <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                 <div>
@@ -511,13 +612,70 @@
                   <span>Direct Financial Email Dispatcher</span>
                   <span class="text-success flex align-items-center gap-1"><i data-lucide="check-circle-2" style="width: 14px;"></i> Finalized and verified</span>
                 </div>
-                <textarea id="manager-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 230px;"></textarea>
+
+                <!-- Email Header Inputs for Manager Approval -->
+                <div class="bg-light p-3 rounded-3 border d-flex flex-column gap-2 text-xs mb-2 text-start">
+                  <div class="row g-2 align-items-center">
+                    <div class="col-2 text-muted fw-bold">To:</div>
+                    <div class="col-10">
+                      <input type="text" id="manager-email-to" class="form-control form-control-sm bg-white" value="financial.director@dha.gov.ae">
+                    </div>
+                  </div>
+                  <div class="row g-2 align-items-center">
+                    <div class="col-2 text-muted fw-bold">Cc:</div>
+                    <div class="col-10">
+                      <input type="text" id="manager-email-cc" class="form-control form-control-sm bg-white" placeholder="cc@dha.gov.ae">
+                    </div>
+                  </div>
+                  <div class="row g-2 align-items-center">
+                    <div class="col-2 text-muted fw-bold">Bcc:</div>
+                    <div class="col-10">
+                      <input type="text" id="manager-email-bcc" class="form-control form-control-sm bg-white" placeholder="bcc@dha.gov.ae">
+                    </div>
+                  </div>
+                  <div class="row g-2 align-items-center">
+                    <div class="col-2 text-muted fw-bold">Subject:</div>
+                    <div class="col-10">
+                      <input type="text" id="manager-email-subject" class="form-control form-control-sm bg-white fw-semibold" value="Sourcing Approval Request: Central Equipment Acquisition Recommendation">
+                    </div>
+                  </div>
+                </div>
+
+                <textarea id="manager-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 180px;"></textarea>
                 <div class="d-flex justify-content-end mt-2">
-                  <button class="btn btn-primary font-bold text-xs d-flex align-items-center gap-1.5 shadow" onclick="sendApprovalToManager()">
-                    <i data-lucide="send" style="width: 14px;"></i> Send Approval Request to Manager
+                  <button class="btn btn-primary font-bold text-xs d-flex align-items-center gap-1.5 shadow" onclick="triggerEmailConfirmModal('manager')">
+                    <i data-lucide="send" style="width: 14px;"></i> Send Email to Finance Manager
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- --- EMAIL LOGS & DISPATCH HISTORY --- -->
+          <div class="custom-card bg-white p-4 border mt-4">
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+              <span class="text-uppercase tracking-wider fw-bold text-secondary d-flex align-items-center gap-2" style="font-size: 0.75rem;">
+                <i data-lucide="mail-check" class="text-primary" style="width: 16px;"></i> Sourcing Communications & Dispatch Log
+              </span>
+              <span class="badge bg-light text-secondary border rounded-pill" id="log-counter" style="font-size: 0.65rem;">0 Sent</span>
+            </div>
+            
+            <div class="table-responsive rounded-3 border">
+              <table class="table table-sm table-hover mb-0 text-start align-middle" style="font-size: 0.72rem;">
+                <thead>
+                  <tr class="bg-light text-muted">
+                    <th class="p-2">Timestamp</th>
+                    <th class="p-2">Recipient (To)</th>
+                    <th class="p-2">Subject</th>
+                    <th class="p-2 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="email-log-body">
+                  <tr>
+                    <td colspan="4" class="p-3 text-center text-muted">No emails have been dispatched during this session.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -590,7 +748,7 @@
                       <th class="py-2 border-bottom">Vendor</th>
                       <th class="border-bottom">License Details</th>
                       <th class="border-bottom">Expiry Date</th>
-                      <th class="border-bottom text-end">License Registry State</th>
+                      <th class="border-bottom text-end">License Status</th>
                     </tr>
                   </thead>
                   <tbody id="licenses-table-body" class="divide-y">
@@ -632,13 +790,13 @@
                 <i data-lucide="file-check" class="text-primary" style="width: 18px;"></i>
                 3) Standard Vendor Onboarding Registration SOP
               </h2>
-              <p class="text-muted small mb-0">Required operational protocols for registering and credentialing global healthcare suppliers.</p>
+              <p class="text-muted small mb-0">Official step-by-step handbook document on registering medical equipment suppliers inside the UAE.</p>
             </div>
 
             <div class="d-flex flex-column gap-3 text-muted" style="font-size: 0.75rem; line-height: 1.6;">
               <div class="border-start border-4 border-indigo-600 ps-3">
-                <strong class="text-indigo-900 d-block mb-1">Phase I: Commercial & Legal Credentialing</strong>
-                Submit certified trade licenses, active tax IDs, bank IBAN records, and valid company registration certificates mapping through regional financial networks.
+                <strong class="text-indigo-900 block mb-0.5">Phase I: Commercial & Legal Credentialing</strong>
+                To establish active supplier status with DHA/MOHAP, vendor must provide: valid UAE DED commercial registration, verified active bank IBAN mapped through Abu Dhabi Commercial Bank (ADCB) or Emirates NBD, and certified active trade name.
               </div>
               <div class="border-start border-4 border-indigo-600 ps-3">
                 <strong class="text-indigo-900 d-block mb-1">Phase II: MOHAP Medical Device Registration</strong>
@@ -789,31 +947,41 @@
     <footer class="border-top py-3 px-4 bg-white d-flex flex-column flex-sm-row justify-content-between align-items-center text-muted gap-2" style="font-size: 0.7rem;">
       <span>© 2026 ProcureMind AI. Dubai Health Authority (DHA) Sourcing Portal Guidelines compliant.</span>
       <div class="d-flex gap-3">
-        <span class="hover-text-dark cursor-pointer">MOHAP Drug Register</span>
+        <span class="hover-text-dark cursor-pointer">MOHAP Drug Registry</span>
         <span class="hover-text-dark cursor-pointer">SLA Expiry Policies</span>
       </div>
     </footer>
 
   </div>
 
-  <!-- --- JAVASCRIPT STATE ENGINE --- -->
+  <!-- --- JAVASCRIPT STATE ENGINE & BOOTSTRAP BUNDLE --- -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // System Mock Data
     let docs = [...INITIAL_HEALTHCARE_DOCS_MOCK()];
     let licenses = [...INITIAL_TRADE_LICENSES_MOCK()];
+    let emailLogs = [];
     
     // Core App State
     let activeMainTab = 'lifecycle';
     let currentWizardStep = 2; // Set default step to 2 Comparison
     let selectedDocId = 'doc1';
+    let globalApiKey = "";
+    let activeEmailTypeToDispatch = null; // 'rfp' or 'manager'
 
     // Initalizer
     window.onload = function() {
       // Initialize Lucide icon library
       lucide.createIcons();
       
+      // Load API Key from local storage if exists
+      if (localStorage.getItem("procuremind_gemini_key")) {
+        globalApiKey = localStorage.getItem("procuremind_gemini_key");
+        document.getElementById("gemini-api-key").value = globalApiKey;
+      }
+
       // Seed default email templates
-      document.getElementById('rfp-email-textarea').value = `Subject: RFP Request: Medical Sourcing Equipment Proposal\n\nDear Partner,\n\nDubai Health Authority (DHA) central procurement is requesting official pricing proposals and comprehensive service scopes for equipment requirements.\n\nPlease provide technical specification details, cold-head logistics parameters, comprehensive warranty options, and pricing breakdowns.\n\nBest Regards,\nCentral Procurement Office | Dubai Health Authority`;
+      document.getElementById('rfp-email-textarea').value = `Dear Partner,\n\nDubai Health Authority (DHA) central procurement is requesting official pricing proposals and comprehensive service scopes for equipment requirements.\n\nPlease provide technical specification details, cold-head logistics parameters, comprehensive warranty options, and pricing breakdowns.\n\nBest Regards,\nCentral Procurement Office | Dubai Health Authority`;
       
       // Render components
       renderDocumentList();
@@ -822,8 +990,74 @@
       renderLicensesTable();
       updatePreviewPanel();
       syncFormFields();
+      renderEmailLogs();
       
       showToast("ProcureMind UAE Healthcare Platform initialized.");
+    }
+
+    // Save and store API Key locally
+    function saveApiKey(val) {
+      globalApiKey = val;
+      localStorage.setItem("procuremind_gemini_key", val);
+      showToast("Gemini API Key saved and registered.");
+    }
+
+    // Dynamic Live Gemini API Fetch Method with Exponential Backoff
+    async function callGeminiAPI(promptText, systemInstructionText = "", jsonMode = false) {
+      const keyToUse = globalApiKey || "";
+      if (!keyToUse) {
+        showToast("Using local deterministic simulated engine. Provide Gemini API Key in the header for real-time live AI!");
+        throw new Error("No API key provided.");
+      }
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${keyToUse}`;
+
+      const payload = {
+        contents: [{
+          parts: [{ text: promptText }]
+        }]
+      };
+
+      if (systemInstructionText) {
+        payload.systemInstruction = {
+          parts: [{ text: systemInstructionText }]
+        };
+      }
+
+      if (jsonMode) {
+        payload.generationConfig = {
+          responseMimeType: "application/json"
+        };
+      }
+
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      };
+
+      // Exponential backoff runner (retries up to 5 times)
+      const fetchWithBackoff = async (retries = 5, delay = 1000) => {
+        try {
+          const response = await fetch(url, options);
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP error! status: ${response.status}`);
+          }
+          const result = await response.json();
+          const extractedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!extractedText) throw new Error("Could not extract generation text from response.");
+          return extractedText;
+        } catch (error) {
+          if (retries === 0) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return fetchWithBackoff(retries - 1, delay * 2);
+        }
+      };
+
+      return await fetchWithBackoff();
     }
 
     // Tab Switching Controller
@@ -1122,10 +1356,218 @@
       showToast("Spreadsheet grid values copied! Paste directly into Microsoft Excel.");
     }
 
-    // Step Transition Handlers
-    function dispatchRFPEmail() {
-      showToast("RFP Proposals successfully broadcast to regional dealers.");
-      switchWizardStep(2);
+    // Live AI Document parsing with Gemini Flash API
+    async function parseDocumentWithGemini(fileName, fileContent) {
+      showToast("AI is reading and extracting clinical product specifications...");
+      
+      const systemPrompt = "You are a professional UAE Medical Sourcing AI. Read the text of an uploaded document and extract accurate structured clinical parameters. Respond ONLY with pure, unformatted JSON matching the target keys. Do not include markdown tags like ```json or similar wrapper text.";
+      
+      const prompt = `
+        Read the following filename and unstructured text extracted from a medical quote, price SLA, or proposal:
+        File Name: ${fileName}
+        Extracted Document Text Content:
+        ${fileContent.substring(0, 4500)}
+
+        Perform OCR and semantic analysis to extract the following exact fields into a raw JSON object:
+        {
+          "productName": "Extract the actual commercial medical product model/name. Do NOT just use the file name.",
+          "productType": "Must classify strictly as one of these: 'Machine', 'Product', 'Medical Consumables', or 'Service'.",
+          "vendor": "Identify the regional UAE medical dealer or global manufacturer.",
+          "value": 150000, // Clean number. If in foreign currencies, convert to AED (1 USD = 3.67 AED).
+          "mohRegistration": "MOHAP registration code or status, e.g., 'Approved (MOHAP-MD-9923)' or 'Under Review'.",
+          "warranty": "SLA warranty coverage, e.g., '3 Years Comprehensive Warranty'.",
+          "deliveryTime": "Lead time in days, e.g., '14 Days'.",
+          "techSpecs": "Technical clinical specifications (e.g. Bore size, processing capacities).",
+          "scope": "Clear installation scope of work and radiologist/clinician training schedules.",
+          "availability": "Local warehouse status (e.g. 'Jebel Ali Reserve stock')."
+        }
+      `;
+
+      try {
+        const responseText = await callGeminiAPI(prompt, systemPrompt, true);
+        const parsed = JSON.parse(responseText);
+
+        const newDoc = {
+          id: 'doc_up_' + Date.now(),
+          title: parsed.productName + ' Spec',
+          productName: parsed.productName || fileName.replace(/\.[^/.]+$/, ""),
+          productType: parsed.productType || 'Product',
+          type: parsed.productType === 'Service' ? 'Agreement' : 'Quotation',
+          fileName: fileName,
+          vendor: parsed.vendor || 'Authorized UAE Sourcing Distributor',
+          value: parsed.value || 150000,
+          negotiatedValue: Math.round((parsed.value || 150000) * 0.92),
+          discountedValue: Math.round((parsed.value || 150000) * 0.88),
+          currency: 'AED',
+          mohRegistration: parsed.mohRegistration || 'Approved (MOHAP-MD-CLEARED)',
+          warranty: parsed.warranty || '2 Year DHA Care Standard Included',
+          deliveryTime: parsed.deliveryTime || '15 Days',
+          coldChainRequired: fileName.toLowerCase().includes('cold') || fileName.toLowerCase().includes('pharma') || parsed.productName.toLowerCase().includes('vaccine'),
+          techSpecs: parsed.techSpecs || 'Specs parsed from legal attachment.',
+          scope: parsed.scope || 'Standard installation and commissioning.',
+          availability: parsed.availability || 'In-stock local GCC depot.',
+          extractedText: fileContent || `MANUAL UPLOAD PARSING\nFile: ${fileName}\nProduct: ${parsed.productName}`,
+          checked: true
+        };
+
+        docs.unshift(newDoc);
+        selectedDocId = newDoc.id;
+
+        renderDocumentList();
+        renderComparisonMatrix();
+        updatePreviewPanel();
+        syncFormFields();
+        showToast(`AI successfully parsed: ${parsed.productName}`);
+      } catch (err) {
+        console.error("Gemini OCR parsing failed, falling back to local heuristic extraction:", err);
+        fallbackParseFile(fileName, fileContent);
+      }
+    }
+
+    // Offline / No-Key Fallback Ingestion Method
+    function fallbackParseFile(fileName, fileContent) {
+      const cleanFileName = fileName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+      
+      let inferredType = 'Product';
+      if (fileName.toLowerCase().includes('mri') || fileName.toLowerCase().includes('scanner') || fileName.toLowerCase().includes('machine')) {
+        inferredType = 'Machine';
+      } else if (fileName.toLowerCase().includes('sla') || fileName.toLowerCase().includes('service') || fileName.toLowerCase().includes('maintenance')) {
+        inferredType = 'Service';
+      } else if (fileName.toLowerCase().includes('consum') || fileName.toLowerCase().includes('suture') || fileName.toLowerCase().includes('implant') || fileName.toLowerCase().includes('glove')) {
+        inferredType = 'Medical Consumables';
+      }
+
+      const numberMatches = fileName.match(/\d+/g);
+      const parsedValue = numberMatches ? Math.min(Math.max(parseInt(numberMatches.join('')), 1000), 10000000) : null;
+      const baseValue = parsedValue || Math.floor(Math.random() * (1200000 - 150000 + 1)) + 150000;
+
+      const newDoc = {
+        id: 'doc_uploaded_' + Date.now(),
+        title: cleanFileName.charAt(0).toUpperCase() + cleanFileName.slice(1) + ' Ingestion',
+        productName: cleanFileName.charAt(0).toUpperCase() + cleanFileName.slice(1),
+        productType: inferredType,
+        type: inferredType === 'Service' ? 'Agreement' : 'Quotation',
+        fileName: fileName,
+        vendor: 'Local Authorized UAE Medical Distributor',
+        value: baseValue,
+        negotiatedValue: Math.round(baseValue * 0.92),
+        discountedValue: Math.round(baseValue * 0.88),
+        currency: 'AED',
+        mohRegistration: 'Approved (MOHAP-MD-CLEARED)',
+        warranty: '2 Year DHA Care Standard Included',
+        deliveryTime: '15 Days',
+        coldChainRequired: fileName.toLowerCase().includes('cold') || fileName.toLowerCase().includes('pharma'),
+        techSpecs: `Standard specs parsed locally from file name.`,
+        scope: 'On-site installation support and operational commissioning.',
+        availability: 'In-stock local Freezone reserve.',
+        extractedText: fileContent || `Filename: ${fileName}\nParsed with fallback rules.`,
+        checked: true
+      };
+
+      docs.unshift(newDoc);
+      selectedDocId = newDoc.id;
+
+      renderDocumentList();
+      renderComparisonMatrix();
+      updatePreviewPanel();
+      syncFormFields();
+      showToast(`Loaded with local mock parser: ${newDoc.productName}`);
+    }
+
+    // Trigger Email Confirm Modal prior to dispatching
+    function triggerEmailConfirmModal(emailType) {
+      activeEmailTypeToDispatch = emailType;
+      
+      let toVal = "";
+      let ccVal = "";
+      let subjectVal = "";
+
+      if (emailType === 'rfp') {
+        toVal = document.getElementById('rfp-email-to').value || "[No recipients entered]";
+        ccVal = document.getElementById('rfp-email-cc').value || "[None]";
+        subjectVal = document.getElementById('rfp-email-subject').value;
+      } else {
+        toVal = document.getElementById('manager-email-to').value || "[No manager email]";
+        ccVal = document.getElementById('manager-email-cc').value || "[None]";
+        subjectVal = document.getElementById('manager-email-subject').value;
+      }
+
+      document.getElementById('modal-email-to').innerText = toVal;
+      document.getElementById('modal-email-cc').innerText = ccVal;
+      document.getElementById('modal-email-subject').innerText = subjectVal;
+
+      const myModal = new bootstrap.Modal(document.getElementById('emailConfirmModal'));
+      myModal.show();
+    }
+
+    // Execute the dispatch and log email inside visual logs
+    function executeEmailDispatch() {
+      // Hide modal
+      const modalEl = document.getElementById('emailConfirmModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+
+      const timestamp = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString();
+      let toField = "";
+      let subjectField = "";
+      let bodyField = "";
+
+      if (activeEmailTypeToDispatch === 'rfp') {
+        toField = document.getElementById('rfp-email-to').value || "Undisclosed Sourcing Distributors";
+        subjectField = document.getElementById('rfp-email-subject').value;
+        bodyField = document.getElementById('rfp-email-textarea').value;
+        
+        showToast("RFP Proposals successfully broadcast to regional dealers.");
+        switchWizardStep(2);
+      } else {
+        toField = document.getElementById('manager-email-to').value || "financial.director@dha.gov.ae";
+        subjectField = document.getElementById('manager-email-subject').value;
+        bodyField = document.getElementById('manager-email-textarea').value;
+        
+        showToast("Dispatched Finalized Sourcing Approval request to Financial Director.");
+        switchMainTab('end_of_month');
+      }
+
+      // Append Log Entry
+      const newLog = {
+        timestamp: timestamp,
+        to: toField,
+        subject: subjectField,
+        body: bodyField
+      };
+      emailLogs.unshift(newLog);
+      renderEmailLogs();
+    }
+
+    // Render dispatched email logs
+    function renderEmailLogs() {
+      const container = document.getElementById('email-log-body');
+      document.getElementById('log-counter').innerText = `${emailLogs.length} Sent`;
+
+      if (emailLogs.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="4" class="p-3 text-center text-muted">No emails have been dispatched during this session.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      emailLogs.forEach((log, idx) => {
+        container.insertAdjacentHTML('beforeend', `
+          <tr class="hover:bg-slate-50/50">
+            <td class="p-2 text-secondary font-mono">${log.timestamp}</td>
+            <td class="p-2 font-bold text-slate-800">${log.to}</td>
+            <td class="p-2 italic text-secondary">${log.subject}</td>
+            <td class="p-2 text-center">
+              <span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5">Dispatched</span>
+            </td>
+          </tr>
+        `);
+      });
     }
 
     function shareWithDepartmentHead() {
@@ -1152,15 +1594,10 @@
       renderDocumentList();
 
       const savings = base - discount;
-      document.getElementById('manager-email-textarea').value = `To: financial.director@dha.gov.ae\nSubject: Sourcing Approval Request: Central Equipment Sourcing\n\nDear Director,\n\nWe have completed our technical and pricing evaluation matrix for our hospital sifting cycle.\n\nFollowing clinical technical selection, the "${selectedTitle}" has been chosen.\n\nFinancial Overview:\n- Original Base Cost: AED ${base.toLocaleString()}\n- Re-negotiated Value: AED ${reneg.toLocaleString()}\n- Final Discounted Price: AED ${discount.toLocaleString()}\n- Net Cost Savings Target: AED ${savings.toLocaleString()}\n\nMOHAP Registration: Active and Verified.\n\nKindly authorize immediate PO draft generation.\n\nBest Regards,\nCentral Sourcing Unit`;
+      document.getElementById('manager-email-textarea').value = `Dear Director,\n\nWe have completed our technical and pricing evaluation matrix for our hospital sifting cycle.\n\nFollowing clinical technical selection, the "${selectedTitle}" has been chosen.\n\nFinancial Overview:\n- Original Base Cost: AED ${base.toLocaleString()}\n- Re-negotiated Value: AED ${reneg.toLocaleString()}\n- Final Discounted Price: AED ${discount.toLocaleString()}\n- Net Cost Savings Target: AED ${savings.toLocaleString()}\n\nMOHAP Registration: Active and Verified.\n\nKindly authorize immediate PO draft generation.\n\nBest Regards,\nCentral Sourcing Unit`;
 
       showToast("Re-negotiated costs recorded. Created Finance Director approval draft.");
       switchWizardStep(5);
-    }
-
-    function sendApprovalToManager() {
-      showToast("Dispatched Finalized Sourcing Approval request to Financial Director.");
-      switchMainTab('end_of_month');
     }
 
     // End Of Month License Log Add In Form
@@ -1217,31 +1654,54 @@
       renderResourcingVendors();
     }
 
+    // Render registered medical dealer directories
     function renderResourcingVendors() {
       const query = document.getElementById('resourcing-query').value.toLowerCase();
       const container = document.getElementById('resourced-vendors-container');
       container.innerHTML = '';
 
       const partners = [
-        { name: 'Siemens Healthineers UAE', rate: 'Premium Machine tier, DHA Approved', checked: true },
-        { name: 'GE HealthCare Gulf', rate: 'Machine & Support tier, MOHAP Verified', checked: true },
-        { name: 'Medtronic Gulf LLC', rate: 'Consumables, License update pending', checked: false },
-        { name: 'Aster Pharmacy Logistics', rate: 'Service & Biologics, Cold-chain compliance', checked: false }
+        { name: 'Siemens Healthineers UAE', rate: 'Premium Machine tier, DHA Approved', checked: true, email: 'info.siemens@gurg.ae' },
+        { name: 'GE HealthCare Gulf', rate: 'Machine & Support tier, MOHAP Verified', checked: true, email: 'sourcing.ge@genpharm.ae' },
+        { name: 'Medtronic Gulf LLC', rate: 'Consumables, License update pending', checked: false, email: 'medtronic.gulf@imic.ae' },
+        { name: 'Aster Pharmacy Logistics', rate: 'Service & Biologics, Cold-chain compliance', checked: false, email: 'aster.logistics@aster.ae' }
       ];
+
+      const rfpToInput = document.getElementById('rfp-email-to');
+      let activeEmails = [];
 
       partners.forEach(p => {
         if (p.name.toLowerCase().includes(query) || p.rate.toLowerCase().includes(query)) {
+          const checkId = `partner-check-${p.name.replace(/\s+/g, '-')}`;
           container.insertAdjacentHTML('beforeend', `
             <div class="d-flex align-items-center justify-content-between p-2.5 bg-light border rounded-3 text-xs">
               <div class="text-start">
                 <p class="font-bold text-dark mb-0.5" style="font-size: 0.72rem; line-height: 1.2;">${p.name}</p>
                 <p class="text-muted mb-0" style="font-size: 0.65rem;">${p.rate}</p>
               </div>
-              <input type="checkbox" class="form-check-input mt-0 shadow-sm" ${p.checked ? 'checked' : ''}>
+              <input type="checkbox" id="${checkId}" class="form-check-input mt-0 shadow-sm partner-checkbox" value="${p.email}" ${p.checked ? 'checked' : ''} onchange="updateRfpRecipients()">
             </div>
           `);
+          if (p.checked) {
+            activeEmails.push(p.email);
+          }
         }
       });
+
+      if (rfpToInput) {
+        rfpToInput.value = activeEmails.join(', ');
+      }
+    }
+
+    function updateRfpRecipients() {
+      const checkboxes = document.querySelectorAll('.partner-checkbox');
+      let selectedEmails = [];
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          selectedEmails.push(cb.value);
+        }
+      });
+      document.getElementById('rfp-email-to').value = selectedEmails.join(', ');
     }
 
     // File Ingestion Manual Form Submit
@@ -1319,58 +1779,35 @@
       }
     }
 
+    // Read real dropped or selected document text parameters
     function processUploadedFiles(fileList) {
       if (!fileList || fileList.length === 0) return;
 
-      const newLoaded = [];
       for (let i = 0; i < fileList.length; i++) {
         const file = fileList[i];
-        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
-        const randomCost = Math.floor(Math.random() * (1500000 - 80000 + 1)) + 80000;
+        const reader = new FileReader();
 
-        let inferredType = 'Product';
-        if (file.name.toLowerCase().includes('mri') || file.name.toLowerCase().includes('scanner') || file.name.toLowerCase().includes('machine')) {
-          inferredType = 'Machine';
-        } else if (file.name.toLowerCase().includes('sla') || file.name.toLowerCase().includes('service') || file.name.toLowerCase().includes('maintenance')) {
-          inferredType = 'Service';
-        } else if (file.name.toLowerCase().includes('consum') || file.name.toLowerCase().includes('suture') || file.name.toLowerCase().includes('implant')) {
-          inferredType = 'Medical Consumables';
-        }
+        reader.onload = async function(event) {
+          let textContent = event.target.result;
+          
+          // Fallback context creation if upload is binary or unreadable PDF
+          if (!textContent || textContent.trim().length < 5 || /[\x00-\x08\x0E-\x1F]/.test(textContent)) {
+            const cleanTitle = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+            textContent = `CLINICAL ACQUISITION SPECIFICATION REQUISITION
+            Sourced Item: ${cleanTitle}
+            Submitter: Dubai Central Medical Sourcing Unit
+            Ref: DHA-MED-2026-X99
+            
+            We request quotation metrics and technical parameters for the equipment: ${cleanTitle}. 
+            Required compliance: full MOHAP registry clearance. Comprehensive 2-year warranty SLA including temperature logs.
+            Est. target price margin: AED 450,000. Delivery required to Dubai Academic Health clinics.`;
+          }
 
-        const newDoc = {
-          id: 'doc_up_' + Date.now() + '_' + i,
-          title: cleanName.charAt(0).toUpperCase() + cleanName.slice(1) + ' Ingested Spec',
-          productName: cleanName.charAt(0).toUpperCase() + cleanName.slice(1),
-          productType: inferredType,
-          type: inferredType === 'Service' ? 'Agreement' : 'Quotation',
-          fileName: file.name,
-          vendor: 'Authorized UAE Sourcing Distributor',
-          value: randomCost,
-          negotiatedValue: Math.round(randomCost * 0.92),
-          discountedValue: Math.round(randomCost * 0.88),
-          currency: 'AED',
-          mohRegistration: 'Approved (MOHAP-MD-CLEARED)',
-          warranty: '2 Year DHA Care Standard Included',
-          deliveryTime: '15 Days',
-          coldChainRequired: file.name.toLowerCase().includes('cold') || file.name.toLowerCase().includes('pharma'),
-          techSpecs: `Standard specifications extracted directly from regional OCR metadata scan.`,
-          scope: 'Standard installation, operational training and validation testing.',
-          availability: 'In-stock local GCC depot.',
-          extractedText: `AUTOMATIC FILE PARSER OUTPUT\nFilename: ${file.name}\nSize: ${(file.size / 1024).toFixed(1)} KB\nType: ${inferredType}\n\nSuccessfully scanned parameters with integrated local OCR system.\nCalculated Asset Valuation: AED ${randomCost.toLocaleString()}`,
-          checked: true
+          await parseDocumentWithGemini(file.name, textContent);
         };
-        newLoaded.push(newDoc);
+
+        reader.readAsText(file);
       }
-
-      docs = [...newLoaded, ...docs];
-      selectedDocId = newLoaded[0].id;
-
-      renderDocumentList();
-      renderComparisonMatrix();
-      updatePreviewPanel();
-      syncFormFields();
-
-      showToast(`Parsed and loaded ${newLoaded.length} custom file(s) into Active Grid.`);
     }
 
     // Copilot Interactive Chat Simulation
@@ -1380,7 +1817,8 @@
       }
     }
 
-    function sendCopilotChatMessage() {
+    // Live AI Copilot answering dynamically from actual checked document metadata
+    async function sendCopilotChatMessage() {
       const input = document.getElementById('copilot-input-field');
       const text = input.value.trim();
       if (!text) return;
@@ -1388,25 +1826,60 @@
       input.value = '';
       appendCopilotChatMessage('user', text);
 
-      // Trigger simulated AI response
-      setTimeout(() => {
-        let aiReply = '';
-        const q = text.toLowerCase();
+      // Construct live dynamic workspace context
+      const selectedDocs = docs.filter(d => d.checked);
+      let contextString = "The user has selected the following active healthcare documents in their workspace:\n\n";
+      selectedDocs.forEach((d, idx) => {
+        contextString += `Doc ${idx + 1}:\n`;
+        contextString += `- Product Name: ${d.productName}\n`;
+        contextString += `- Product Type: ${d.productType}\n`;
+        contextString += `- Vendor: ${d.vendor}\n`;
+        contextString += `- Quoted Base Price: AED ${d.value.toLocaleString()}\n`;
+        contextString += `- Negotiated Target: AED ${d.negotiatedValue.toLocaleString()}\n`;
+        contextString += `- Final Discounted Price: AED ${d.discountedValue.toLocaleString()}\n`;
+        contextString += `- MOHAP Status: ${d.mohRegistration}\n`;
+        contextString += `- Warranty SLA: ${d.warranty}\n`;
+        contextString += `- Delivery Time: ${d.deliveryTime}\n`;
+        contextString += `- Technical Specifications: ${d.techSpecs}\n`;
+        contextString += `- Project Scope: ${d.scope}\n`;
+        contextString += `- Logistics Availability: ${d.availability}\n\n`;
+      });
 
-        if (q.includes('compare') || q.includes('table') || q.includes('excel')) {
-          aiReply = `I have updated the Excel-Buster comparison matrix comparing Siemens and GE on Pricing, Tech Specs, Scope, and Availability:\n\n- Siemens MAGNETOM (Machine) leads with a 3-Year Warranty.\n- GE Signa Prime (Machine) leads on base price by AED 250,000.\n- Both are MOHAP approved.\n\nI recommend utilizing Siemens' warranty value to negotiate GE down further, or asking Siemens to match GE's base price of AED 3.95M.`;
-        } else if (q.includes('saving') || q.includes('report')) {
-          aiReply = `Monthly Cost Saving Summary:\n\n- Scanned Assets: AED 9,640,000\n- Total Negotiated Savings: AED 630,000 (average discount 7.2% achieved)\n- Selected Best ROI: Siemens MAGNETOM at AED 3,800,000 final negotiated rate.`;
-        } else if (q.includes('onboard') || q.includes('onboarding') || q.includes('register')) {
-          aiReply = `To onboard a new healthcare supplier in DHA:\n1. Verify active Trade License (DED/Freezone).\n2. Request active MOHAP Medical Device Registration.\n3. Supply ISO-13485 sterilization standard certifications.\n4. Complete the DHA Supplier Onboarding Portal Form.`;
-        } else if (q.includes('cold') || q.includes('temperature') || q.includes('pharma')) {
-          aiReply = `Cold-Chain Logistics Alert:\n\nYour selected document **'Pharma Cold-Chain Supply SLA' (Aster)** requires continuous refrigerated transit (+2°C to +8°C).\n\n• **DHA Rule Check:** Aster Pharmacy Logistics has assumed full financial liability for any temperature excursion exceeding 40 minutes. This is highly aligned with standard hospital drug storage mandates.`;
-        } else {
-          aiReply = `I am processing your query against our UAE Healthcare memory base. I can help compile comparison matrices, write professional counter-proposals, or cross-verify cold-chain transit liabilities.`;
-        }
+      const systemPrompt = `You are ProcureMind AI, the premier virtual purchase supervisor and sourcing assistant for the Dubai Health Authority (DHA) and UAE Ministry of Health and Prevention (MOHAP).
+      Maintain a professional, highly analytical, and reassuring tone. Emphasize Middle East compliance references (AED currency, JAFZA Freezone, MOHAP MD clearance).
+      Base all of your advice, comparisons, savings parameters, and answers directly on the following selected workspace context. If no files are selected, politely notify the user to toggle checkboxes in their loaded files panel.
+      Generate clean Markdown tables for pricing/warranty comparisons when asked to.
+      
+      Active Sourcing Context:\n${contextString}`;
 
-        appendCopilotChatMessage('system', aiReply);
-      }, 700);
+      // Show processing notification and append placeholder
+      const tempId = appendCopilotChatMessage('system', "Analyzing active specifications and registry data...");
+
+      try {
+        const aiResponse = await callGeminiAPI(text, systemPrompt);
+        updateCopilotChatMessage(tempId, aiResponse);
+      } catch (err) {
+        console.error("Gemini Copilot chat execution failed, falling back to local chat routing:", err);
+        fallbackCopilotChat(text, tempId);
+      }
+    }
+
+    // Clean Local Fallback Chat Logic if API Key is not configured
+    function fallbackCopilotChat(text, tempId) {
+      let reply = "";
+      const q = text.toLowerCase();
+
+      if (q.includes('compare') || q.includes('table') || q.includes('excel')) {
+        reply = `Comparison of active quotes (Local Simulation):\n\n- Siemens MAGNETOM (Machine) leads with 3 Years Warranty.\n- GE Signa Prime (Machine) leads on base price by AED 250,000.\n- Both are MOHAP approved.\n\nRecommend matching Siemens comprehensive SLA against GE's lower valuation bracket.`;
+      } else if (q.includes('saving') || q.includes('report')) {
+        reply = `June 2026 Cost Savings Summary:\n- Active Exposure: AED 9,640,000\n- Final Outflow: AED 9,010,000\n- Savings achieved: AED 630,000 (6.5%)`;
+      } else if (q.includes('onboard') || q.includes('onboarding') || q.includes('register')) {
+        reply = `DHA Onboarding Procedure:\n1. Verify active commercial DED license.\n2. Verify valid MOHAP medical registration code.\n3. Request cold-chain logistics SLA agreement schedules.`;
+      } else {
+        reply = `I am processing your query against our local UAE Healthcare index database. Please specify if you want to analyze cost targets, audit MOHAP compliance registrations, or structure cold-chain SLAs.`;
+      }
+
+      updateCopilotChatMessage(tempId, reply);
     }
 
     function triggerCopilotPreset(presetType) {
@@ -1428,9 +1901,10 @@
 
     function appendCopilotChatMessage(sender, text) {
       const container = document.getElementById('copilot-chat-container');
+      const msgId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
       
       const userMessageHTML = `
-        <div class="d-flex gap-2.5 text-xs align-items-start justify-content-end">
+        <div class="d-flex gap-2.5 text-xs align-items-start justify-content-end animate-fade-in" id="${msgId}">
           <div class="p-3 bg-primary text-white rounded-4 rounded-end-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
             <p class="mb-0 leading-relaxed">${text}</p>
           </div>
@@ -1438,13 +1912,13 @@
       `;
 
       const systemMessageHTML = `
-        <div class="d-flex gap-2.5 text-xs align-items-start">
+        <div class="d-flex gap-2.5 text-xs align-items-start animate-fade-in" id="${msgId}">
           <div class="p-1.5 bg-indigo-light border rounded-3 text-primary d-flex align-items-center justify-center" style="width: 28px; height: 28px; background-color: var(--pm-primary-light);">
             <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
           </div>
           <div class="p-3 bg-light border text-secondary font-medium rounded-4 rounded-start-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
             <span class="badge text-primary text-uppercase mb-1" style="font-size: 0.6rem; background-color: var(--pm-primary-light);">Neural System OK</span>
-            <p class="mb-0 leading-relaxed whitespace-pre-line">${text}</p>
+            <p class="mb-0 leading-relaxed whitespace-pre-line chat-text-content">${text}</p>
           </div>
         </div>
       `;
@@ -1452,6 +1926,19 @@
       container.insertAdjacentHTML('beforeend', sender === 'user' ? userMessageHTML : systemMessageHTML);
       container.scrollTop = container.scrollHeight;
       lucide.createIcons();
+      return msgId;
+    }
+
+    function updateCopilotChatMessage(msgId, newText) {
+      const msgEl = document.getElementById(msgId);
+      if (msgEl) {
+        const textContainer = msgEl.querySelector('.chat-text-content');
+        if (textContainer) {
+          textContainer.innerText = newText;
+        }
+      }
+      const container = document.getElementById('copilot-chat-container');
+      container.scrollTop = container.scrollHeight;
     }
 
     // Toast triggers
@@ -1461,6 +1948,7 @@
       toast.style.display = 'block';
     }
 
+    // Close system alerts
     function dismissToast() {
       document.getElementById('toast-notification').style.display = 'none';
     }
