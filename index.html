@@ -3,51 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ProcureMind AI - UAE Healthcare Edition</title>
+  <title>ProcureMind AI - UAE Healthcare Sourcing Workspace</title>
   
-  <!-- Bootstrap 5.3 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Tailwind CSS for modern responsive aesthetics -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts (Inter) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Lucide Icons (CDN) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    :root {
-      --pm-primary: #4f46e5;
-      --pm-primary-light: #e0e7ff;
-      --pm-bg: #f8fafc;
-      --pm-card-bg: #ffffff;
-      --pm-text-dark: #0f172a;
-      --pm-text-muted: #64748b;
-      --pm-border: #e2e8f0;
-      
-      /* Premium Pastel Palette */
-      --badge-machine-bg: #fef3c7;
-      --badge-machine-text: #d97706;
-      --badge-machine-border: #fde68a;
-
-      --badge-product-bg: #dbeafe;
-      --badge-product-text: #2563eb;
-      --badge-product-border: #bfdbfe;
-
-      --badge-consumable-bg: #ffe4e6;
-      --badge-consumable-text: #e11d48;
-      --badge-consumable-border: #fecdd3;
-
-      --badge-service-bg: #ccfbf1;
-      --badge-service-text: #0d9488;
-      --badge-service-border: #99f6e4;
-    }
-
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--pm-bg);
-      color: var(--pm-text-dark);
-      overflow-x: hidden;
     }
-
-    /* Custom Scrollbar */
+    /* Simple smooth transition definitions */
+    .transition-all {
+      transition: all 0.2s ease-in-out;
+    }
+    /* Custom scrollbar matching system standards */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -59,1589 +32,1434 @@
       background: #cbd5e1;
       border-radius: 3px;
     }
-
-    /* Layout Configurations */
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    .main-workspace {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    @media (max-width: 991.98px) {
-      .main-workspace {
-        flex-direction: column;
-        overflow: auto;
-        height: auto;
-      }
-      .sidebar-left, .sidebar-right {
-        width: 100% !important;
-        height: auto !important;
-        border: none !important;
-      }
-    }
-
-    .sidebar-left {
-      width: 340px;
-      background: #ffffff;
-      border-right: 1px solid var(--pm-border);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    .middle-panel {
-      flex: 1;
-      overflow-y: auto;
-      background-color: #fafbfc;
-    }
-
-    .sidebar-right {
-      width: 360px;
-      background: #ffffff;
-      border-left: 1px solid var(--pm-border);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-
-    /* UI Elements styling */
-    .premium-header {
-      background-color: #ffffff;
-      border-bottom: 1px solid var(--pm-border);
-    }
-
-    .custom-card {
-      background: #ffffff;
-      border: 1px solid var(--pm-border);
-      border-radius: 1rem;
-      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
-      transition: all 0.2s ease;
-    }
-
-    /* Pastel Badges */
-    .badge-machine {
-      background-color: var(--badge-machine-bg);
-      color: var(--badge-machine-text);
-      border: 1px solid var(--badge-machine-border);
-    }
-    .badge-product {
-      background-color: var(--badge-product-bg);
-      color: var(--badge-product-text);
-      border: 1px solid var(--badge-product-border);
-    }
-    .badge-consumable {
-      background-color: var(--badge-consumable-bg);
-      color: var(--badge-consumable-text);
-      border: 1px solid var(--badge-consumable-border);
-    }
-    .badge-service {
-      background-color: var(--badge-service-bg);
-      color: var(--badge-service-text);
-      border: 1px solid var(--badge-service-border);
-    }
-
-    /* Active Step Navigation */
-    .step-btn {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--pm-text-muted);
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      transition: all 0.2s;
-    }
-    .step-btn.active {
-      color: var(--pm-primary);
-      background: var(--pm-primary-light);
-      border-color: #c7d2fe;
-    }
-
-    /* Drag & Drop */
-    .dropzone {
-      border: 2px dashed #cbd5e1;
-      background-color: #f8fafc;
-      transition: all 0.2s ease-in-out;
-      border-radius: 1rem;
-      cursor: pointer;
-    }
-    .dropzone.dragging {
-      border-color: var(--pm-primary);
-      background-color: var(--pm-primary-light);
-    }
-
-    /* Toast Container */
-    #toast-notification {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 1060;
-      display: none;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Active Doc Item List styling */
-    .doc-item {
-      cursor: pointer;
-      border: 1px solid var(--pm-border);
-      border-radius: 0.75rem;
-      transition: all 0.15s;
-    }
-    .doc-item.active {
-      background-color: #e0e7ff33;
-      border-color: var(--pm-primary);
-      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.1);
-    }
-
-    .nav-pills .nav-link {
-      color: var(--pm-text-muted);
-      background-color: transparent;
-      border-radius: 0.5rem;
-      transition: all 0.2s;
-    }
-
-    .nav-pills .nav-link.active {
-      background-color: var(--pm-primary);
-      color: #ffffff;
-    }
-
-    .sidebar-section {
-      border-radius: 0.75rem;
-    }
   </style>
 </head>
-<body class="bg-light">
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen selection:bg-indigo-100 selection:text-indigo-900">
 
-  <div class="app-container">
-    
-    <!-- --- SYSTEM TOAST NOTIFIER --- -->
-    <div id="toast-notification" class="shadow-lg">
-      <div class="alert alert-primary border-0 rounded-4 d-flex align-items-center justify-content-between py-2.5 px-4 mb-0 gap-3" role="alert">
-        <div class="d-flex align-items-center gap-2">
-          <i data-lucide="sparkles" class="text-primary" style="width: 18px; height: 18px;"></i>
-          <span id="toast-message" class="text-dark small fw-medium">Workspace Active</span>
+  <!-- --- TOAST NOTIFICATION BANNER --- -->
+  <div id="toast-notification" class="fixed top-4 right-4 z-50 transform translate-y-[-20px] opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 border border-slate-850">
+      <i data-lucide="sparkles" class="text-indigo-400 h-4.5 w-4.5 animate-pulse"></i>
+      <span id="toast-message" class="font-semibold text-[11px]">Notification Init</span>
+      <button onclick="dismissToast()" class="text-slate-400 hover:text-white font-bold ml-2">✕</button>
+    </div>
+  </div>
+
+  <!-- --- DIALOG MODALS FOR DISPATCHES & BACKUPS --- -->
+  <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xl max-w-md w-full space-y-4">
+      <div class="flex items-center gap-2 text-indigo-600 border-b pb-3 border-slate-100">
+        <i data-lucide="alert-circle" class="h-5 w-5"></i>
+        <h3 id="modal-title" class="font-extrabold text-sm text-slate-900">Confirm Action</h3>
+      </div>
+      <p id="modal-description" class="text-xs text-slate-500 leading-relaxed">Detailed verification request context.</p>
+      <div id="modal-content-area" class="bg-slate-50 p-3 rounded-xl text-[11px] font-mono text-slate-700 border border-slate-200">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-lg">Cancel</button>
+        <button id="modal-action-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- HEADER MAIN NAVIGATION PANEL --- -->
+  <header class="border-b border-slate-200 bg-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-40 shadow-sm">
+    <div class="flex items-center space-x-3">
+      <div class="p-2.5 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md">
+        <i data-lucide="brain" class="h-5.5 w-5.5"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <h1 class="text-base font-extrabold tracking-tight text-slate-900">ProcureMind AI</h1>
+          <span class="bg-indigo-50 text-indigo-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full border border-indigo-100">
+            UAE Sourcing Workspace
+          </span>
         </div>
-        <button type="button" class="btn-close ms-2" onclick="dismissToast()" style="font-size: 0.75rem;"></button>
+        <p class="text-[10px] text-slate-500 font-medium">
+          Virtual Purchase Supervisor & File Persistence Engine
+        </p>
       </div>
     </div>
 
-    <!-- --- EMAIL CONFIRMATION MODAL --- -->
-    <div class="modal fade" id="emailConfirmModal" tabindex="-1" aria-labelledby="emailConfirmModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow-lg">
-          <div class="modal-header bg-light border-bottom-0 py-3 rounded-top-4">
-            <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="emailConfirmModalLabel">
-              <i data-lucide="alert-circle" class="text-primary"></i> Confirm Email Dispatch
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body py-4">
-            <p class="text-slate-600 text-xs">Please verify the following recipient details and email log metrics before broadcasting this communication:</p>
-            <div class="bg-light p-3 rounded-3 border d-flex flex-column gap-2 text-xs mb-3">
-              <div><strong>To:</strong> <span id="modal-email-to" class="text-primary">-</span></div>
-              <div id="modal-email-cc-container"><strong>Cc:</strong> <span id="modal-email-cc" class="text-secondary">-</span></div>
-              <div><strong>Subject:</strong> <span id="modal-email-subject" class="fw-semibold text-dark">-</span></div>
-            </div>
-            <p class="text-muted mb-0" style="font-size: 0.7rem;">Once approved, this message will be officially recorded in the global workspace Sourcing Log ledger.</p>
-          </div>
-          <div class="modal-footer border-top-0 pt-0">
-            <button type="button" class="btn btn-sm btn-light border fw-bold text-secondary px-3 py-2" data-bs-dismiss="modal">Cancel & Edit</button>
-            <button type="button" id="modal-confirm-send-btn" class="btn btn-sm btn-primary fw-bold px-4 py-2" onclick="executeEmailDispatch()">Authorize & Send</button>
-          </div>
-        </div>
-      </div>
+    <!-- Main Dynamic Navigation Modules -->
+    <div class="flex flex-wrap gap-2">
+      <button 
+        id="nav-btn-lifecycle" 
+        onclick="switchMainTab('lifecycle')"
+        class="px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-100"
+      >
+        📋 Sourcing Workspace
+      </button>
+      <button 
+        id="nav-btn-reports" 
+        onclick="switchMainTab('reports')"
+        class="px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+      >
+        📊 Audit Logs & Reports
+      </button>
+      <button 
+        id="nav-btn-preview" 
+        onclick="switchMainTab('preview')"
+        class="px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+      >
+        📁 Document Notebook
+      </button>
     </div>
 
-    <!-- --- MAIN APPLICATION HEADER --- -->
-    <header class="premium-header py-3 px-4 shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3">
-      <div class="d-flex align-items-center gap-3">
-        <div class="p-2.5 bg-primary text-white rounded-3 shadow d-flex align-items-center justify-content-center">
-          <i data-lucide="brain" style="width: 22px; height: 22px;"></i>
+    <!-- Live Gemini API Key Input -->
+    <div class="flex items-center gap-2">
+      <div class="relative">
+        <i data-lucide="key" class="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400"></i>
+        <input 
+          type="password" 
+          id="api-key-input" 
+          onchange="saveApiKey(this.value)"
+          placeholder="Gemini API Key..." 
+          class="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs w-48 focus:outline-none focus:bg-white text-slate-700"
+        >
+      </div>
+      <div class="hidden sm:flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-[10px] font-extrabold text-emerald-700 font-mono">DHA SYNCED</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- --- MAIN THREE-PANEL CORE CONTAINER --- -->
+  <div class="flex-grow flex flex-col lg:flex-row overflow-hidden">
+
+    <!-- ==========================================
+        LEFT SIDE PANEL: PERSISTENT NOTEBOOK VAULT
+        ========================================== -->
+    <aside class="w-full lg:w-80 bg-white border-r border-slate-200 shrink-0 p-5 flex flex-col justify-between overflow-y-auto gap-6">
+      <div class="space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <i data-lucide="folder-open" class="h-4 w-4 text-slate-400"></i> Active Notebook Vault
+          </span>
+          <span id="doc-count-badge" class="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-100">
+            0 files
+          </span>
         </div>
-        <div>
-          <div class="d-flex align-items-center gap-2 flex-wrap">
-            <h1 class="h5 fw-bold mb-0 text-slate-900 tracking-tight">ProcureMind AI</h1>
-            <span class="badge text-primary bg-indigo-light border border-indigo-200" style="font-size: 0.7rem; background-color: var(--pm-primary-light);">Healthcare UAE</span>
+
+        <!-- Simulated Instant Drag & Drop File Upload -->
+        <div 
+          id="dropzone"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave()"
+          ondrop="handleDrop(event)"
+          onclick="triggerFilePicker()"
+          class="border-2 border-dashed border-slate-300 hover:border-indigo-400 bg-slate-50 hover:bg-slate-100/50 rounded-2xl p-5 text-center transition-all cursor-pointer relative"
+        >
+          <input 
+            type="file" 
+            id="file-picker" 
+            multiple 
+            onchange="handleFileSelection(event)"
+            class="hidden" 
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
+          >
+          <div id="upload-idle" class="space-y-1.5">
+            <i data-lucide="upload-cloud" class="h-7 w-7 text-indigo-500 mx-auto animate-bounce"></i>
+            <p class="text-[11px] font-bold text-slate-700">Upload Vendor Docs</p>
+            <p class="text-[9px] text-slate-400">Instant parsing of quotation text</p>
           </div>
-          <p class="text-muted small mb-0" style="font-size: 0.75rem;">Virtual Purchase Supervisor & Document Workspace</p>
+          <div id="upload-loading" class="hidden space-y-2 py-2">
+            <i data-lucide="loader-2" class="h-7 w-7 text-indigo-600 mx-auto animate-spin"></i>
+            <p class="text-[10px] font-extrabold text-indigo-700">Analyzing Document Specs...</p>
+          </div>
         </div>
-      </div>
 
-      <!-- Main Navigation Tabs -->
-      <div class="d-flex gap-2 align-items-center">
-        <button id="tab-btn-lifecycle" class="btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white" style="background-color: var(--pm-primary);" onclick="switchMainTab('lifecycle')">
-          📋 Sourcing Lifecycle
-        </button>
-        <button id="tab-btn-eom" class="btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary" onclick="switchMainTab('end_of_month')">
-          📊 End of Month & SOPs
-        </button>
-        <button id="tab-btn-docs" class="btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary" onclick="switchMainTab('all_docs')">
-          📁 Notebook Documents
-        </button>
-      </div>
-
-      <!-- Gemini API Integration Box -->
-      <div class="d-flex align-items-center gap-2">
-        <div class="input-group input-group-sm">
-          <span class="input-group-text bg-light text-muted border-end-0" style="font-size: 0.7rem;"><i data-lucide="key" style="width: 12px; height: 12px;"></i></span>
-          <input type="password" id="gemini-api-key" class="form-control border-start-0 bg-light" placeholder="Gemini API Key..." style="width: 150px; font-size: 0.7rem; border-top-right-radius: 0.5rem; border-bottom-right-radius: 0.5rem;" onchange="saveApiKey(this.value)">
+        <!-- Grid target selection modifier toggles -->
+        <div class="flex justify-between items-center text-[10px] bg-slate-100 p-2 rounded-lg border border-slate-200 font-medium">
+          <span class="text-slate-500 font-bold">Grid Matrix Targets:</span>
+          <div class="flex gap-1.5">
+            <button onclick="toggleAllComparisonTargets(true)" class="px-2 py-0.5 bg-white text-indigo-600 font-bold rounded border border-slate-200">All</button>
+            <button onclick="toggleAllComparisonTargets(false)" class="px-2 py-0.5 bg-white text-slate-500 font-bold rounded border border-slate-200">None</button>
+          </div>
         </div>
-      </div>
-    </header>
 
-    <!-- --- MAIN THREE PANEL WORKSPACE --- -->
-    <div class="main-workspace">
-      
-      <!-- ==========================================
-          LEFT PANEL: DOCUMENTS AND INGESTION
-          ========================================== -->
-      <aside class="sidebar-left p-3 d-flex flex-column gap-3 justify-content-between border-end">
-        <div class="d-flex flex-column gap-3">
-          
-          <!-- SECTION 1: ACTIVE NOTEBOOK VAULT -->
-          <div class="sidebar-section bg-white p-2 border">
-            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-2">
-              <span class="text-uppercase tracking-wider fw-bold text-secondary d-flex align-items-center gap-2" style="font-size: 0.75rem;">
-                <i data-lucide="folder-open" class="text-primary" style="width: 16px;"></i> Active Notebook Vault
-              </span>
-              <span class="badge bg-primary text-white border rounded-pill" id="doc-counter" style="font-size: 0.65rem;">0 files</span>
-            </div>
+        <!-- Scrollable list of loaded documents -->
+        <div id="document-vault-list" class="space-y-2 max-h-[300px] lg:max-h-none overflow-y-auto pr-1">
+          <!-- Rendered dynamically -->
+        </div>
 
-            <!-- Compare Targets Toggles -->
-            <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-3 border mb-2" style="font-size: 0.7rem;">
-              <span class="text-muted fw-bold">Grid Matrix Targets:</span>
-              <div class="d-flex gap-1.5">
-                <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(true)">All</button>
-                <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(false)">None</button>
-              </div>
-            </div>
-
-            <!-- Scrollable Document List container -->
-            <div class="d-flex flex-column gap-2" id="document-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 2px;">
-              <!-- Rendered Dynamically via JS -->
-            </div>
+        <!-- Explicit manual entry form -->
+        <form id="manual-ingestion-form" onsubmit="handleManualSubmission(event)" class="bg-slate-50 p-4 rounded-xl border border-slate-250 space-y-3">
+          <div class="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1 border-b border-slate-200 pb-2">
+            <i data-lucide="plus" class="h-3.5 w-3.5 text-indigo-600"></i> Ingest Manual Quote
           </div>
 
-          <!-- SECTION 2: FILE INGESTION HUB -->
-          <div class="sidebar-section bg-white p-2 border">
-            <div class="d-flex align-items-center gap-2 border-bottom pb-2 mb-2">
-              <i data-lucide="import" class="text-primary" style="width: 16px;"></i>
-              <span class="text-uppercase tracking-wider fw-bold text-secondary" style="font-size: 0.75rem;">Ingestion Hub</span>
+          <div class="space-y-1">
+            <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Product Description</label>
+            <input 
+              type="text" 
+              id="form-product-name" 
+              required 
+              placeholder="e.g., Alaris Syringe Pump" 
+              class="w-full bg-white text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 focus:outline-indigo-500"
+            >
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="space-y-1">
+              <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Product Type</label>
+              <select 
+                id="form-product-type" 
+                class="w-full bg-white text-[11px] px-1.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-medium"
+              >
+                <option value="Machine">Machine</option>
+                <option value="Product">Product</option>
+                <option value="Medical Consumables">Consumables</option>
+                <option value="Service">Service</option>
+              </select>
             </div>
-
-            <!-- Mini pill-tabs to segregate upload vs manual form -->
-            <ul class="nav nav-pills nav-justified bg-light p-1 rounded-3 mb-2" id="ingest-tabs" role="tablist" style="font-size: 0.7rem;">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active py-1.5 fw-bold" id="ingest-upload-tab" data-bs-toggle="pill" data-bs-target="#ingest-upload" type="button" role="tab" aria-controls="ingest-upload" aria-selected="true">
-                  <i data-lucide="upload-cloud" class="me-1" style="width: 12px; height: 12px;"></i> Upload Spec
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link py-1.5 fw-bold" id="ingest-manual-tab" data-bs-toggle="pill" data-bs-target="#ingest-manual" onclick="lucide.createIcons()" type="button" role="tab" aria-controls="ingest-manual" aria-selected="false">
-                  <i data-lucide="plus-circle" class="me-1" style="width: 12px; height: 12px;"></i> Manual Input
-                </button>
-              </li>
-            </ul>
-
-            <div class="tab-content" id="ingest-tabs-content">
-              <!-- Upload tabpane -->
-              <div class="tab-pane fade show active" id="ingest-upload" role="tabpanel" aria-labelledby="ingest-upload-tab">
-                <div id="dropzone" class="dropzone p-3 text-center d-flex flex-column gap-2 border-2" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event)" onclick="triggerFilePicker()">
-                  <input type="file" id="file-picker" multiple class="d-none" onchange="fileSelectionHandler(event)">
-                  <i data-lucide="upload-cloud" class="text-primary mx-auto" style="width: 28px; height: 28px;"></i>
-                  <p class="mb-0 fw-bold text-slate-700" style="font-size: 0.72rem;">Drag & drop quotes here</p>
-                  <p class="text-muted mb-0" style="font-size: 0.62rem;">PDF, Excel, Word or Text formats</p>
-                  <button class="btn btn-xs btn-white border mt-1 shadow-sm font-bold text-primary" style="font-size: 0.65rem;">Choose System Files</button>
-                </div>
-              </div>
-
-              <!-- Manual form tabpane -->
-              <div class="tab-pane fade" id="ingest-manual" role="tabpanel" aria-labelledby="ingest-manual-tab">
-                <form id="manual-ingestion-form" onsubmit="handleManualIngestSubmit(event)" class="bg-light p-2.5 border rounded-3 d-flex flex-column gap-2">
-                  <div class="form-group">
-                    <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.3px;">Product / Service Name</label>
-                    <input type="text" id="form-product-name" required placeholder="e.g., Alaris Syringe Pump" class="form-control form-control-sm bg-white" style="font-size: 0.75rem; border-radius: 0.375rem;">
-                  </div>
-
-                  <div class="row g-2">
-                    <div class="col-6">
-                      <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.3px;">Type</label>
-                      <select id="form-product-type" class="form-select form-select-sm bg-white" style="font-size: 0.75rem; border-radius: 0.375rem;">
-                        <option value="Machine">Machine</option>
-                        <option value="Product">Product</option>
-                        <option value="Medical Consumables">Consumables</option>
-                        <option value="Service">Service</option>
-                      </select>
-                    </div>
-                    <div class="col-6">
-                      <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.6rem; letter-spacing: 0.3px;">Cost (AED)</label>
-                      <input type="number" id="form-product-price" required placeholder="Cost" class="form-control form-control-sm bg-white" style="font-size: 0.75rem; border-radius: 0.375rem;">
-                    </div>
-                  </div>
-
-                  <button type="submit" class="btn btn-primary btn-sm w-full py-1.5 font-bold" style="font-size: 0.7rem; border-radius: 0.375rem;">Ingest Manual Quote</button>
-                </form>
-              </div>
+            <div class="space-y-1">
+              <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-wider">Base Price (AED)</label>
+              <input 
+                type="number" 
+                id="form-product-price" 
+                required 
+                placeholder="250000" 
+                class="w-full bg-white text-xs px-2 py-1.5 rounded-lg border border-slate-200 font-semibold"
+              >
             </div>
           </div>
 
-        </div>
+          <button 
+            type="submit" 
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs py-2 rounded-lg transition-all shadow-sm"
+          >
+            Insert Manual Record
+          </button>
+        </form>
+      </div>
 
-        <div class="border-top pt-3 d-none d-lg-block" style="font-size: 0.65rem; color: var(--pm-text-muted);">
-          <strong class="text-secondary d-flex align-items-center gap-1 mb-1"><i data-lucide="info" style="width: 12px;"></i> Sourcing Guidelines</strong>
-          ProcureMind parses raw quotes into explicit clinical values based on DHA/MOHAP import registries.
+      <!-- Quick persistent storage control module -->
+      <div class="border-t border-slate-100 pt-4 hidden lg:block space-y-2">
+        <p class="font-bold text-slate-600 text-[10px] flex items-center gap-1">
+          <i data-lucide="database" class="h-3 w-3 text-indigo-500"></i> Local Storage Synced
+        </p>
+        <div class="flex gap-1.5">
+          <button onclick="downloadBackup()" class="w-1/2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[9px] rounded-md flex items-center justify-center gap-1">
+            <i data-lucide="download" class="h-2.5 w-2.5"></i> Backup State
+          </button>
+          <button onclick="triggerRestoreBackup()" class="w-1/2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[9px] rounded-md flex items-center justify-center gap-1">
+            <i data-lucide="upload" class="h-2.5 w-2.5"></i> Restore Backup
+          </button>
+          <input type="file" id="backup-picker" onchange="restoreBackup(event)" class="hidden" accept=".json">
         </div>
-      </aside>
+      </div>
+    </aside>
 
-      <!-- ==========================================
-          MIDDLE PANEL: ACTIVE WORKSPACE FLOW & MATRIX
-          ========================================== -->
-      <main class="middle-panel p-4 flex-grow-1">
+    <!-- ==========================================
+        CENTER INTERFACE PANEL: ACTIVE WORKSPACES
+        ========================================== -->
+    <main class="flex-1 bg-slate-50/50 p-6 overflow-y-auto space-y-6">
+
+      <!-- --- VIEW A: SOURCING LIFECYCLE WIZARD & EXCEL GRID --- -->
+      <section id="tab-view-lifecycle" class="space-y-6">
         
-        <!-- --- HEALTHCARE LIFECYCLE WIZARD TAB --- -->
-        <section id="tab-view-lifecycle" class="lifecycle-workspace d-flex flex-column gap-4">
-          
-          <!-- Lifecycle Step Buttons -->
-          <div class="custom-card bg-white p-3 d-flex flex-wrap align-items-center justify-content-between gap-3 border">
-            <div class="d-flex flex-wrap gap-2">
-              <button class="step-btn" id="btn-step-1" onclick="switchWizardStep(1)">1. Resourcing & RFP</button>
-              <button class="step-btn active" id="btn-step-2" onclick="switchWizardStep(2)">2. Specs Comparison</button>
-              <button class="step-btn" id="btn-step-3" onclick="switchWizardStep(3)">3. Dept Selection</button>
-              <button class="step-btn" id="btn-step-4" onclick="switchWizardStep(4)">4. Re-negotiation</button>
-              <button class="step-btn" id="btn-step-5" onclick="switchWizardStep(5)">5. Manager Approval</button>
-            </div>
-            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.65rem;">
-              Phase State: <span class="text-primary font-bold" id="wizard-active-indicator">Step 2 of 5</span>
-            </div>
+        <!-- Step Wizard Switch Bar -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="switchWizardStep(1)" id="wizard-btn-1" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700">1. Resourcing & RFP</button>
+            <button onclick="switchWizardStep(2)" id="wizard-btn-2" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all bg-indigo-50 text-indigo-700 border-indigo-200">2. Comparison Matrix</button>
+            <button onclick="switchWizardStep(3)" id="wizard-btn-3" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700">3. Technical Review</button>
+            <button onclick="switchWizardStep(4)" id="wizard-btn-4" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700">4. Final Negotiations</button>
+            <button onclick="switchWizardStep(5)" id="wizard-btn-5" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700">5. Board Sign-Off</button>
+          </div>
+          <div class="text-[10px] font-extrabold text-slate-500 uppercase">
+            ACTIVE PHASING: <span id="wizard-phase-indicator" class="text-indigo-600 font-extrabold">Step 2 of 5</span>
+          </div>
+        </div>
+
+        <!-- STEP 1 VIEW CONTENT -->
+        <div id="step-content-1" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 1</span>
+            <h2 class="text-base font-extrabold text-slate-900 mt-2">DHA Supplier Directories & Requisition Queries</h2>
+            <p class="text-xs text-slate-500">Scan regional directories to shortlist potential healthcare candidates, then customize the RFP document below.</p>
           </div>
 
-          <!-- STEP 1 VIEW -->
-          <div id="step-view-1" class="lifecycle-step-card d-none d-flex flex-column gap-3">
-            <div class="custom-card bg-white p-4 border space-y-4">
-              <div class="mb-3">
-                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 1</span>
-                <h2 class="h6 fw-bold text-dark mt-2 mb-1">Vendor Resourcing & RFP Generator</h2>
-                <p class="text-muted small mb-0">Search active Middle East pharmaceutical and medical device registries and broadcast customizable RFPs via email.</p>
-              </div>
-
-              <div class="row g-4">
-                <div class="col-md-6 d-flex flex-column gap-3">
-                  <div class="form-group">
-                    <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.7rem;">Select/Search Product Category</label>
-                    <input type="text" id="resourcing-query" value="MRI Scanner 1.5T" class="form-control bg-light" style="font-size: 0.8rem;" onkeyup="filterResourcingVendors()">
-                  </div>
-
-                  <div class="space-y-2">
-                    <span class="fw-bold text-secondary text-uppercase block mb-1" style="font-size: 0.7rem;">DHA / MOHAP Certified Registered Distributors:</span>
-                    <div id="resourced-vendors-container" class="d-flex flex-column gap-2">
-                      <!-- Rendered dynamically -->
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6 d-flex flex-column gap-2">
-                  <span class="fw-bold text-secondary text-uppercase" style="font-size: 0.7rem;"><i data-lucide="mail" class="me-1 text-primary" style="width: 14px;"></i> Editable RFP Mail Template</span>
-                  
-                  <!-- Email Header Inputs for RFP -->
-                  <div class="bg-light p-3 rounded-3 border d-flex flex-column gap-2 text-xs mb-2">
-                    <div class="row g-2 align-items-center">
-                      <div class="col-2 text-muted fw-bold">To:</div>
-                      <div class="col-10">
-                        <input type="text" id="rfp-email-to" class="form-control form-control-sm bg-white" placeholder="Recipient emails (comma-separated)...">
-                      </div>
-                    </div>
-                    <div class="row g-2 align-items-center">
-                      <div class="col-2 text-muted fw-bold">Cc:</div>
-                      <div class="col-10">
-                        <input type="text" id="rfp-email-cc" class="form-control form-control-sm bg-white" placeholder="cc@dha.gov.ae">
-                      </div>
-                    </div>
-                    <div class="row g-2 align-items-center">
-                      <div class="col-2 text-muted fw-bold">Bcc:</div>
-                      <div class="col-10">
-                        <input type="text" id="rfp-email-bcc" class="form-control form-control-sm bg-white" placeholder="bcc@dha.gov.ae">
-                      </div>
-                    </div>
-                    <div class="row g-2 align-items-center">
-                      <div class="col-2 text-muted fw-bold">Subject:</div>
-                      <div class="col-10">
-                        <input type="text" id="rfp-email-subject" class="form-control form-control-sm bg-white fw-semibold" value="RFP Request: Medical Central Sourcing Bid Requisition">
-                      </div>
-                    </div>
-                  </div>
-
-                  <textarea id="rfp-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 180px;"></textarea>
-                  <button class="btn btn-primary w-full py-2.5 font-bold text-xs mt-1 d-flex align-items-center justify-center gap-1.5 shadow" onclick="triggerEmailConfirmModal('rfp')">
-                    <i data-lucide="send" style="width: 14px;"></i> Dispatch RFP to Selected Distributors
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 2 VIEW -->
-          <div id="step-view-2" class="lifecycle-step-card d-flex flex-column gap-3">
-            <div class="custom-card bg-white p-4 border space-y-4">
-              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                <div>
-                  <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 2</span>
-                  <h2 class="h6 fw-bold text-dark mt-2 mb-1">Cost & Specification Comparison Spreadsheet</h2>
-                  <p class="text-muted small mb-0">Unified comparison comparing parameters on Specs, Scope, Availability, and Multi-tier Pricing.</p>
-                </div>
-                <button class="btn btn-sm btn-indigo-light border font-bold text-primary px-3" onclick="copyExcelGridToClipboard()">
-                  <i data-lucide="clipboard-copy" class="me-1" style="width: 14px; height: 14px;"></i> Copy Structured Excel Grid
-                </button>
-              </div>
-
-              <!-- Comparative Grid Matrix Table -->
-              <div class="table-responsive border rounded-3" id="comparison-matrix-table-container">
-                <!-- Loaded Dynamically via Javascript matrix renderer -->
-              </div>
-
-              <div class="d-flex justify-content-end mt-2">
-                <button class="btn btn-primary font-bold text-xs d-flex align-items-center gap-1.5 shadow" onclick="shareWithDepartmentHead()">
-                  <i data-lucide="user-check" style="width: 14px;"></i> Share Specifications for Department Approval
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 3 VIEW -->
-          <div id="step-view-3" class="lifecycle-step-card d-none d-flex flex-column gap-3">
-            <div class="custom-card bg-white p-4 border space-y-4">
-              <div class="mb-3">
-                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 3</span>
-                <h2 class="h6 fw-bold text-dark mt-2 mb-1">Department Technical Selection</h2>
-                <p class="text-muted small mb-0">Review the clinical verification decision forwarded by department experts.</p>
-              </div>
-
-              <div class="row g-4">
-                <div class="col-md-6 d-flex flex-column gap-3">
-                  <div class="form-group">
-                    <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.7rem;">Vendor Selection Preferred by Clinic</label>
-                    <select id="department-selection-dropdown" class="form-select bg-light" style="font-size: 0.8rem;" onchange="onDepartmentSelectChange()"></select>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.7rem;">Technical Notes</label>
-                    <textarea id="department-specs-notes" class="form-control bg-light" style="font-size: 0.75rem; height: 100px;">Selected comprehensive warranty and maintenance SLA package.</textarea>
-                  </div>
-                </div>
-
-                <div class="col-md-6 bg-light p-4 rounded-4 border d-flex flex-column justify-content-between">
-                  <div class="space-y-2">
-                    <span class="fw-bold text-indigo-700 text-uppercase block flex align-items-center gap-1" style="font-size: 0.75rem;">
-                      <i data-lucide="brain" style="width: 16px;"></i> Copilot Clearance Strategy
-                    </span>
-                    <p class="text-muted leading-relaxed font-medium mb-0" style="font-size: 0.72rem;">
-                      Technical department heads have verified clinical alignment. We now initiate our financial optimization cycle. Click below to load re-negotiated price sliders and target net savings ratios.
-                    </p>
-                  </div>
-                  <button class="btn btn-primary w-full py-2 fw-bold text-xs mt-3 shadow" onclick="switchWizardStep(4)">
-                    Unlock Stage 4 Re-negotiation Calculator
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 4 VIEW -->
-          <div id="step-view-4" class="lifecycle-step-card d-none d-flex flex-column gap-3">
-            <div class="custom-card bg-white p-4 border space-y-4">
-              <div class="mb-3">
-                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 4</span>
-                <h2 class="h6 fw-bold text-dark mt-2 mb-1">Active Re-negotiation Pricing Ledger</h2>
-                <p class="text-muted small mb-0">Record and verify pricing discounts obtained across consecutive rounds of correspondence.</p>
-              </div>
-
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <label class="fw-bold text-secondary mb-1 block uppercase" style="font-size: 0.65rem;">Original Quoted Cost (AED)</label>
-                  <input type="number" id="nego-base-input" class="form-control bg-light" oninput="calculateNegoSavings()">
-                </div>
-                <div class="col-md-4">
-                  <label class="fw-bold text-secondary mb-1 block uppercase text-primary" style="font-size: 0.65rem;">Re-negotiated Cost Target (AED)</label>
-                  <input type="number" id="nego-reneg-input" class="form-control bg-light text-primary fw-bold" oninput="calculateNegoSavings()">
-                </div>
-                <div class="col-md-4">
-                  <label class="fw-bold text-secondary mb-1 block uppercase text-success" style="font-size: 0.65rem;">Final Discounted Value (AED)</label>
-                  <input type="number" id="nego-discount-input" class="form-control bg-light text-success fw-bold" oninput="calculateNegoSavings()">
-                </div>
-              </div>
-
-              <div class="bg-light p-4 rounded-4 border d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <div>
-                  <h3 class="fw-bold text-dark mb-0 h6">Verified Cost Savings Saved</h3>
-                  <p class="text-muted mb-0" style="font-size: 0.65rem;">Base Cost minus Final Discounted Target Price</p>
-                </div>
-                <div class="h5 fw-black text-primary mb-0" id="nego-savings-output">
-                  AED 0 Savings Target
-                </div>
-              </div>
-
-              <div class="d-flex justify-content-end">
-                <button class="btn btn-primary font-bold text-xs shadow" onclick="saveNegotiatedPriceAndDraft()">
-                  Lock Negotiated Values & Draft Approval Email
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 5 VIEW -->
-          <div id="step-view-5" class="lifecycle-step-card d-none d-flex flex-column gap-3">
-            <div class="custom-card bg-white p-4 border space-y-4">
-              <div class="mb-3">
-                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 5</span>
-                <h2 class="h6 fw-bold text-dark mt-2 mb-1">DHA Finance Director Approval Dispatch</h2>
-                <p class="text-muted small mb-0">Dispatch formal finalized recommendations and technical comparisons for sign-off.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div class="space-y-1">
+                <label class="text-[10px] font-extrabold text-slate-600 uppercase">Product Category Index</label>
+                <input 
+                  type="text" 
+                  id="category-search" 
+                  oninput="filterDistributors()"
+                  placeholder="e.g., MRI Scan, Consumable Syringes..." 
+                  class="w-full bg-slate-50 border border-slate-200 text-xs rounded-lg px-3 py-2 text-slate-700 font-semibold"
+                >
               </div>
 
               <div class="space-y-2">
-                <div class="d-flex align-items-center justify-content-between text-secondary fw-bold" style="font-size: 0.7rem;">
-                  <span>Direct Financial Email Dispatcher</span>
-                  <span class="text-success flex align-items-center gap-1"><i data-lucide="check-circle-2" style="width: 14px;"></i> Finalized and verified</span>
-                </div>
-
-                <!-- Email Header Inputs for Manager Approval -->
-                <div class="bg-light p-3 rounded-3 border d-flex flex-column gap-2 text-xs mb-2 text-start">
-                  <div class="row g-2 align-items-center">
-                    <div class="col-2 text-muted fw-bold">To:</div>
-                    <div class="col-10">
-                      <input type="text" id="manager-email-to" class="form-control form-control-sm bg-white" value="financial.director@dha.gov.ae">
-                    </div>
-                  </div>
-                  <div class="row g-2 align-items-center">
-                    <div class="col-2 text-muted fw-bold">Cc:</div>
-                    <div class="col-10">
-                      <input type="text" id="manager-email-cc" class="form-control form-control-sm bg-white" placeholder="cc@dha.gov.ae">
-                    </div>
-                  </div>
-                  <div class="row g-2 align-items-center">
-                    <div class="col-2 text-muted fw-bold">Bcc:</div>
-                    <div class="col-10">
-                      <input type="text" id="manager-email-bcc" class="form-control form-control-sm bg-white" placeholder="bcc@dha.gov.ae">
-                    </div>
-                  </div>
-                  <div class="row g-2 align-items-center">
-                    <div class="col-2 text-muted fw-bold">Subject:</div>
-                    <div class="col-10">
-                      <input type="text" id="manager-email-subject" class="form-control form-control-sm bg-white fw-semibold" value="Sourcing Approval Request: Central Equipment Acquisition Recommendation">
-                    </div>
-                  </div>
-                </div>
-
-                <textarea id="manager-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 180px;"></textarea>
-                <div class="d-flex justify-content-end mt-2">
-                  <button class="btn btn-primary font-bold text-xs d-flex align-items-center gap-1.5 shadow" onclick="triggerEmailConfirmModal('manager')">
-                    <i data-lucide="send" style="width: 14px;"></i> Send Email to Finance Manager
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- --- EMAIL LOGS & DISPATCH HISTORY --- -->
-          <div class="custom-card bg-white p-4 border mt-4">
-            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
-              <span class="text-uppercase tracking-wider fw-bold text-secondary d-flex align-items-center gap-2" style="font-size: 0.75rem;">
-                <i data-lucide="mail-check" class="text-primary" style="width: 16px;"></i> Sourcing Communications & Dispatch Log
-              </span>
-              <span class="badge bg-light text-secondary border rounded-pill" id="log-counter" style="font-size: 0.65rem;">0 Sent</span>
-            </div>
-            
-            <div class="table-responsive rounded-3 border">
-              <table class="table table-sm table-hover mb-0 text-start align-middle" style="font-size: 0.72rem;">
-                <thead>
-                  <tr class="bg-light text-muted">
-                    <th class="p-2">Timestamp</th>
-                    <th class="p-2">Recipient (To)</th>
-                    <th class="p-2">Subject</th>
-                    <th class="p-2 text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody id="email-log-body">
-                  <tr>
-                    <td colspan="4" class="p-3 text-center text-muted">No emails have been dispatched during this session.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- --- END OF THE MONTH COMPLIANCE TAB --- -->
-        <section id="tab-view-eom" class="eom-workspace d-none d-flex flex-column gap-4">
-          
-          <!-- Cost Saving Report (EOM #1) -->
-          <div class="custom-card bg-white p-4 border space-y-4 shadow-sm">
-            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 flex-wrap gap-2">
-              <div>
-                <h2 class="h6 fw-bold text-dark d-flex align-items-center gap-2 mb-1">
-                  <i data-lucide="trending-up" class="text-primary" style="width: 18px;"></i>
-                  1) Monthly Cost Saving Analysis & Performance Report
-                </h2>
-                <p class="text-muted small mb-0">Total cost variance breakdown comparing initial vs. finalized pricing margins.</p>
-              </div>
-              <span class="font-mono text-primary fw-bold text-uppercase" style="font-size: 0.7rem;">June 2026 Archive</span>
-            </div>
-
-            <div class="row g-3">
-              <div class="col-md-4">
-                <div class="bg-light p-3.5 border rounded-4">
-                  <span class="text-muted font-bold uppercase block mb-1" style="font-size: 0.65rem;">TOTAL BUDGET EXPOSURE</span>
-                  <span class="h6 fw-black text-dark" id="eom-total-exposure-value">AED 9,640,000</span>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="bg-indigo-light p-3.5 border border-indigo-100 rounded-4" style="background-color: var(--pm-primary-light);">
-                  <span class="text-primary font-bold uppercase block mb-1" style="font-size: 0.65rem;">DISCOUNTED CAPITAL OUTFLOW</span>
-                  <span class="h6 fw-black text-primary" id="eom-final-outflow-value">AED 9,010,000</span>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="bg-emerald-light p-3.5 border border-emerald-200 rounded-4" style="background-color: #d1fae5; color: #065f46;">
-                  <span class="font-bold uppercase block mb-1" style="font-size: 0.65rem;">TOTAL SAVINGS ARCHIVED</span>
-                  <span class="h6 fw-black" id="eom-savings-ratio-value">AED 630,000 (6.5%)</span>
+                <span class="text-[10px] font-extrabold text-slate-600 block uppercase">Matched Direct Distributors:</span>
+                <div id="distributor-results-container" class="space-y-2">
+                  <!-- Rendered dynamically -->
                 </div>
               </div>
             </div>
 
-            <div class="progress rounded-pill bg-light border mt-3" style="height: 10px;">
-              <div class="progress-bar bg-primary" role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
-              <div class="progress-bar bg-success" role="progressbar" style="width: 11.5%" aria-valuenow="11.5" aria-valuemin="0" aria-valuemax="100"></div>
-              <div class="progress-bar bg-warning" role="progressbar" style="width: 6.5%" aria-valuenow="6.5" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div class="d-flex justify-content-between text-muted" style="font-size: 0.65rem;">
-              <span>Outflow allocation (82.3%)</span>
-              <span>Allocated buffers (11.5%)</span>
-              <span>Verified Savings Ratio (6.5%)</span>
-            </div>
-          </div>
-
-          <!-- Trade License Expiry Log (EOM #2) -->
-          <div class="custom-card bg-white p-4 border space-y-4 shadow-sm">
-            <div class="border-bottom pb-3">
-              <h2 class="h6 fw-bold text-dark d-flex align-items-center gap-2 mb-1">
-                <i data-lucide="building" class="text-primary" style="width: 18px;"></i>
-                2) Vendor Trade License Expiry Log & Watchlist
-              </h2>
-              <p class="text-muted small mb-0">Monitor DED commercial validity and medical clearance registry status.</p>
-            </div>
-
-            <div class="row g-4">
-              <div class="col-md-8 table-responsive">
-                <table class="table table-sm table-hover text-left align-middle" style="font-size: 0.75rem;">
-                  <thead>
-                    <tr class="text-secondary font-bold">
-                      <th class="py-2 border-bottom">Vendor</th>
-                      <th class="border-bottom">License Details</th>
-                      <th class="border-bottom">Expiry Date</th>
-                      <th class="border-bottom text-end">License Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="licenses-table-body" class="divide-y">
-                    <!-- Loaded dynamically -->
-                  </tbody>
-                </table>
+            <!-- RFP template modification panel -->
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-slate-600 flex items-center gap-1">
+                  <i data-lucide="mail" class="h-4 w-4 text-indigo-500"></i> Direct RFP Email Template
+                </span>
+                <span class="text-[9px] font-mono text-slate-400">Standard Dubai Health Authority Format</span>
               </div>
-
-              <!-- Quick Registration Expiry Form -->
-              <div class="col-md-4">
-                <form id="license-form" onsubmit="handleLicenseSubmit(event)" class="bg-light p-3 rounded-4 border d-flex flex-column gap-2.5">
-                  <span class="text-uppercase font-bold text-secondary tracking-wider" style="font-size: 0.65rem;">Log Registry Entry</span>
-                  
-                  <div class="form-group">
-                    <label class="text-muted font-bold text-uppercase mb-1" style="font-size: 0.6rem;">Vendor Partner</label>
-                    <input type="text" id="lic-vendor" required placeholder="e.g., Philips Health Care" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
-                  </div>
-
-                  <div class="form-group">
-                    <label class="text-muted font-bold text-uppercase mb-1" style="font-size: 0.6rem;">License Registry No</label>
-                    <input type="text" id="lic-no" required placeholder="e.g., DED-99201A" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
-                  </div>
-
-                  <div class="form-group">
-                    <label class="text-muted font-bold text-uppercase mb-1" style="font-size: 0.6rem;">Expiry Date</label>
-                    <input type="date" id="lic-date" required class="form-control form-control-sm bg-white text-secondary" style="font-size: 0.75rem;">
-                  </div>
-
-                  <button type="submit" class="btn btn-primary btn-sm w-full py-1.5 font-bold" style="font-size: 0.75rem;">Record Expiry Log</button>
-                </form>
+              <div class="bg-slate-50 p-3 rounded-xl text-xs space-y-2 border border-slate-200">
+                <div class="flex gap-1.5"><span class="font-bold text-slate-500 w-12">To:</span> <input type="text" id="rfp-to-input" class="bg-transparent flex-1 border-none outline-none font-bold text-slate-700" value="distributors@dha.gov.ae"></div>
+                <div class="flex gap-1.5 border-t border-slate-200/50 pt-1.5"><span class="font-bold text-slate-500 w-12">Subject:</span> <input type="text" id="rfp-subject-input" class="bg-transparent flex-1 border-none outline-none font-bold text-slate-700" value="MOHAP Procurement Quote Requisition Request"></div>
               </div>
+              <textarea 
+                id="rfp-email-text" 
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[11px] font-mono text-slate-700 h-48 focus:outline-indigo-500 focus:bg-white transition-all"
+              >Subject: Sourcing Quote Request: Medical Equipment Infrastructure\n\nDear Partner,\n\nDubai Health Authority (DHA) central procurement is requesting official pricing proposals and comprehensive service scopes for a 1.5T MRI Scanner. \n\nPlease provide technical specification details, cold-head logistics parameters, comprehensive warranty options, and pricing breakdowns.\n\nBest Regards,\nCentral Sourcing Division | Dubai Health Authority</textarea>
+              <button 
+                onclick="dispatchRfpMessage()" 
+                class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
+              >
+                <i data-lucide="send" class="h-4 w-4"></i> Dispatch Custom RFP to Shortlisted Targets
+              </button>
             </div>
           </div>
-
-          <!-- Onboarding SOP Document (EOM #3) -->
-          <div class="custom-card bg-white p-4 border space-y-4 shadow-sm">
-            <div class="border-bottom pb-3">
-              <h2 class="h6 fw-bold text-dark d-flex align-items-center gap-2 mb-1">
-                <i data-lucide="file-check" class="text-primary" style="width: 18px;"></i>
-                3) Standard Vendor Onboarding Registration SOP
-              </h2>
-              <p class="text-muted small mb-0">Official step-by-step handbook document on registering medical equipment suppliers inside the UAE.</p>
-            </div>
-
-            <div class="d-flex flex-column gap-3 text-muted" style="font-size: 0.75rem; line-height: 1.6;">
-              <div class="border-start border-4 border-indigo-600 ps-3">
-                <strong class="text-indigo-900 block mb-0.5">Phase I: Commercial & Legal Credentialing</strong>
-                To establish active supplier status with DHA/MOHAP, vendor must provide: valid UAE DED commercial registration, verified active bank IBAN mapped through Abu Dhabi Commercial Bank (ADCB) or Emirates NBD, and certified active trade name.
-              </div>
-              <div class="border-start border-4 border-indigo-600 ps-3">
-                <strong class="text-indigo-900 d-block mb-1">Phase II: MOHAP Medical Device Registration</strong>
-                All machinery, surgical tools, and biologics must undergo rigorous testing and possess active MOHAP-MD medical device registrations prior to contract issuance.
-              </div>
-              <div class="border-start border-4 border-indigo-600 ps-3">
-                <strong class="text-indigo-900 d-block mb-1">Phase III: Cold-Chain SLA Guarantees</strong>
-                Biological pharmaceutical supplies must guarantee end-to-end refrigerated cold storage transit timelines, with absolute liability assumed by local vendor channels.
-              </div>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- --- NOTEBOOK ACTIVE DOCS PREVIEW TAB --- -->
-        <section id="tab-view-all-docs" class="all-docs-workspace d-none d-flex flex-column gap-4">
-          <div class="custom-card bg-white border shadow-sm overflow-hidden">
-            <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
-              <div class="d-flex align-items-center gap-2">
-                <i data-lucide="file-check" class="text-primary" style="width: 18px;"></i>
-                <div>
-                  <h2 class="h6 fw-bold text-dark mb-1">Active Ingested Document Preview</h2>
-                  <p class="text-muted mb-0" style="font-size: 0.7rem;">Neural extraction and cognitive structural stream log previews</p>
-                </div>
-              </div>
-              <span class="badge text-primary border rounded font-mono" id="active-filename-preview" style="font-size: 0.7rem; background-color: var(--pm-primary-light);">no_file_active</span>
-            </div>
-
-            <div class="row g-0">
-              <div class="col-md-8 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 0.7rem; font-weight: 700; color: var(--pm-text-muted);">
-                  <span>OCR Parsed Segment Text Stream</span>
-                  <span class="text-primary">Status: Verified</span>
-                </div>
-                <div id="ocr-preview-container" class="p-4 bg-light rounded-4 font-mono text-secondary leading-relaxed whitespace-pre-line" style="font-size: 0.72rem; min-height: 250px; max-height: 320px; overflow-y: auto; border: 1px solid var(--pm-border);">
-                  <!-- Loaded dynamically -->
-                </div>
-              </div>
-
-              <!-- Right Scorecard Inside Preview -->
-              <div class="col-md-4 p-4 bg-light border-start d-flex flex-column gap-4">
-                <h3 class="fw-bold text-secondary text-uppercase flex align-items-center gap-1.5" style="font-size: 0.7rem;">
-                  <i data-lucide="sparkles" class="text-primary" style="width: 14px;"></i>
-                  MOHAP Compliance Assessment
-                </h3>
-
-                <div class="d-flex flex-column gap-3">
-                  <div class="bg-white p-3 rounded-4 border">
-                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Product Classification</span>
-                    <strong class="text-dark d-block truncate" id="preview-meta-productname" style="font-size: 0.75rem;">-</strong>
-                    <span id="preview-meta-producttype" class="badge mt-1.5 font-extrabold text-uppercase"></span>
-                  </div>
-
-                  <div class="bg-white p-3 rounded-4 border">
-                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Local Dealer Jurisdiction</span>
-                    <strong class="text-dark d-block truncate" id="preview-meta-vendor" style="font-size: 0.75rem;">-</strong>
-                  </div>
-
-                  <div class="bg-white p-3 rounded-4 border">
-                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Quoted Capital Valuation</span>
-                    <strong class="text-primary d-block font-black" id="preview-meta-value" style="font-size: 0.85rem;">AED 0</strong>
-                  </div>
-
-                  <div class="bg-white p-3 rounded-4 border">
-                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Clearnace / Registry Status</span>
-                    <span id="preview-meta-moh" class="font-bold d-block mt-0.5" style="font-size: 0.75rem;">-</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </main>
-
-      <!-- ==========================================
-          RIGHT PANEL: GENERAL WORKSPACE COGNITIVE COPILOT
-          ========================================== -->
-      <aside class="sidebar-right p-4 d-flex flex-column justify-content-between border-start">
-        <div class="d-flex flex-column h-100 gap-3 justify-content-between">
-          
-          <!-- Copilot Header -->
-          <div class="border-bottom pb-2">
-            <div class="d-flex align-items-center gap-2">
-              <i data-lucide="brain" class="text-primary animate-pulse" style="width: 20px; height: 20px;"></i>
-              <div>
-                <h2 class="fw-bold uppercase tracking-wider text-slate-600 mb-0" style="font-size: 0.75rem;">AI Procurement Copilot</h2>
-                <p class="text-muted mb-0" style="font-size: 0.65rem;">Continuous context tracking over loaded folder assets</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Conversational Dialogue Stream Box -->
-          <div id="copilot-chat-container" class="flex-grow-1 overflow-y-auto d-flex flex-column gap-3 my-2" style="max-height: 400px;">
-            <!-- Seed system message -->
-            <div class="d-flex gap-2.5 text-xs align-items-start">
-              <div class="p-1.5 bg-indigo-light border rounded-3 text-primary d-flex align-items-center justify-center" style="width: 28px; height: 28px; background-color: var(--pm-primary-light);">
-                <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
-              </div>
-              <div class="p-3 bg-light border text-secondary font-medium rounded-4 rounded-start-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
-                <span class="badge text-primary text-uppercase mb-1" style="font-size: 0.6rem; background-color: var(--pm-primary-light);">Neural System OK</span>
-                <p class="mb-0 leading-relaxed">Marhaban! I'm your dedicated UAE Procurement Copilot. I have matched your active quotes, DED registries, and MOHAP codes. Ask me to compare specs or draft email counters!</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick Templates trigger buttons -->
-          <div class="space-y-1.5 border-top pt-3">
-            <span class="text-uppercase fw-bold text-muted block mb-1" style="font-size: 0.65rem;">Copilot Presets:</span>
-            <div class="row g-2">
-              <div class="col-6">
-                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('compare')">
-                  📊 Compile Comparison Grid
-                </button>
-              </div>
-              <div class="col-6">
-                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('onboard')">
-                  📋 DHA Supplier SOPs
-                </button>
-              </div>
-              <div class="col-6">
-                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('license')">
-                  ⚖️ Audit License Expiry
-                </button>
-              </div>
-              <div class="col-6">
-                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('cold')">
-                  ❄️ Cold-chain SLA Rules
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Chat Input Bar -->
-          <div class="pt-2">
-            <div class="bg-light border rounded-4 p-1.5 d-flex gap-2 align-items-center">
-              <input type="text" id="copilot-input-field" class="form-control form-control-sm border-0 bg-transparent flex-grow-1" placeholder="Query medical specifications..." style="font-size: 0.75rem;" onkeydown="handleCopilotInputKeydown(event)">
-              <button class="btn btn-primary btn-sm rounded-3 px-3 py-1.5 font-bold" onclick="sendCopilotChatMessage()">Ask</button>
-            </div>
-          </div>
-
         </div>
-      </aside>
 
-    </div>
+        <!-- STEP 2 VIEW CONTENT (Active comparison spreadsheet with inline edits) -->
+        <div id="step-content-2" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div class="flex flex-wrap justify-between items-center gap-3">
+            <div>
+              <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 2</span>
+              <h2 class="text-base font-extrabold text-slate-900 mt-2">Interactive Comparison Matrix & Sheet Engine</h2>
+              <p class="text-xs text-slate-500 flex items-center gap-1">
+                <i data-lucide="info" class="h-3.5 w-3.5 text-indigo-500"></i>
+                <span>Double-click any cell to edit details inline. Press <kbd class="px-1 bg-slate-100 border rounded font-mono">Enter</kbd> to save. Changes automatically commit to persistent storage & logs.</span>
+              </p>
+            </div>
+            <div class="flex gap-2">
+              <button 
+                onclick="downloadComparisonMatrixCsv()" 
+                class="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg flex items-center gap-1.5 border border-indigo-100 transition-all shadow-sm"
+              >
+                <i data-lucide="download" class="h-3.5 w-3.5"></i> Export Comparison Sheet (.CSV)
+              </button>
+            </div>
+          </div>
 
-    <!-- --- FOOTER --- -->
-    <footer class="border-top py-3 px-4 bg-white d-flex flex-column flex-sm-row justify-content-between align-items-center text-muted gap-2" style="font-size: 0.7rem;">
-      <span>© 2026 ProcureMind AI. Dubai Health Authority (DHA) Sourcing Portal Guidelines compliant.</span>
-      <div class="d-flex gap-3">
-        <span class="hover-text-dark cursor-pointer">MOHAP Drug Registry</span>
-        <span class="hover-text-dark cursor-pointer">SLA Expiry Policies</span>
+          <!-- Comparative Grid Matrix Table -->
+          <div class="overflow-x-auto border border-slate-200 rounded-xl bg-slate-50/50">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr id="matrix-header-row" class="bg-slate-100 border-b border-slate-200 text-slate-600 font-extrabold">
+                  <!-- Rendered dynamically -->
+                </tr>
+              </thead>
+              <tbody id="matrix-body" class="divide-y divide-slate-150 text-slate-700 font-medium">
+                <!-- Rendered dynamically with editable logic -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Bottom trigger forward flow -->
+          <div class="flex justify-end pt-2 border-t border-slate-100">
+            <button 
+              onclick="switchWizardStep(3)" 
+              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl flex items-center gap-2 transition-all shadow-sm"
+            >
+              <i data-lucide="user-check" class="h-4 w-4"></i> Submit Specification Comparisons to Clinical Review
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3 VIEW CONTENT -->
+        <div id="step-content-3" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 3</span>
+            <h2 class="text-base font-extrabold text-slate-900 mt-2">Technical Department Evaluation</h2>
+            <p class="text-xs text-slate-500">Record clinical recommendations and technical checklists from radiology/laboratory review boards.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div class="space-y-1.5">
+                <label class="text-[10px] font-extrabold text-slate-600 uppercase">Vendor Shortlist Pick</label>
+                <select 
+                  id="department-preferred-select" 
+                  onchange="syncDepartmentSourcingValues()"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-800 font-extrabold"
+                >
+                  <!-- Options generated dynamically -->
+                </select>
+              </div>
+
+              <div class="space-y-1.5">
+                <label class="text-[10px] font-extrabold text-slate-600 uppercase">Clinical Review Board Justifications</label>
+                <textarea 
+                  id="department-justification-notes" 
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-700 font-medium h-24"
+                >Siemens BioMatrix technology matches spatial imaging parameters required for pediatric cardiac protocols.</textarea>
+              </div>
+            </div>
+
+            <div class="bg-indigo-50/40 p-5 rounded-xl border border-indigo-100 flex flex-col justify-between text-xs space-y-4">
+              <div class="space-y-2">
+                <span class="font-bold text-indigo-900 flex items-center gap-1.5">
+                  <i data-lucide="shield" class="h-4 w-4 text-indigo-600"></i> Sourcing Board Directives
+                </span>
+                <p class="text-slate-600 leading-relaxed font-medium">
+                  The clinical evaluation board has declared alignment parameters. The procurement board is instructed to negotiate multi-tier rates using competitive distributor baseline data.
+                </p>
+              </div>
+              <button 
+                onclick="switchWizardStep(4)" 
+                class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-lg shadow-sm transition-all text-xs"
+              >
+                Launch Negotiation Calculators
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 VIEW CONTENT -->
+        <div id="step-content-4" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 4</span>
+            <h2 class="text-base font-extrabold text-slate-900 mt-2">Active Negotiation Variance Ledger</h2>
+            <p class="text-xs text-slate-500">Record successive pricing models to verify net procurement budget optimization margins.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-extrabold text-slate-500 uppercase">Initial Quoted Baseline (AED)</label>
+              <input 
+                type="number" 
+                id="nego-initial-input" 
+                oninput="calculateNegoVariance()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-bold"
+              >
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-extrabold text-slate-500 uppercase text-indigo-700">Negotiated Target Rate (AED)</label>
+              <input 
+                type="number" 
+                id="nego-target-input" 
+                oninput="calculateNegoVariance()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-bold text-indigo-600"
+              >
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-[10px] font-extrabold text-slate-500 uppercase text-emerald-700">Final Discounted Agreement (AED)</label>
+              <input 
+                type="number" 
+                id="nego-final-input" 
+                oninput="calculateNegoVariance()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-bold text-emerald-600"
+              >
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-3 text-xs">
+            <div>
+              <p class="font-bold text-slate-800">Recorded Budget Savings Target</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">Calculated: Initial Baseline minus Final Discounted Price</p>
+            </div>
+            <div id="nego-savings-output" class="text-base font-black text-indigo-600">
+              AED 0 Sourcing Improvements
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 border-t border-slate-100 pt-3">
+            <button 
+              onclick="commitNegotiatedPricing()" 
+              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl flex items-center gap-2 transition-all shadow-sm"
+            >
+              Verify Sourcing Target & Prepare Executive Board Briefing
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 5 VIEW CONTENT -->
+        <div id="step-content-5" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div>
+            <span class="text-[9px] font-extrabold uppercase tracking-widest bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Stage 5</span>
+            <h2 class="text-base font-extrabold text-slate-900 mt-2">Executive Board Sign-Off Request</h2>
+            <p class="text-xs text-slate-500">Verify the financial summaries and compliance scores before requesting PO authorization.</p>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex justify-between items-center text-xs text-slate-500 font-bold">
+              <span>Approval Briefing Preview</span>
+              <span class="text-emerald-600 flex items-center gap-1">
+                <i data-lucide="check-circle" class="h-4 w-4"></i> Structurally Validated
+              </span>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl space-y-3 text-xs border border-slate-200">
+              <div class="flex gap-2"><span class="font-bold text-slate-500 w-16">To:</span> <input type="text" id="board-to-input" class="bg-transparent flex-1 border-none outline-none font-bold text-slate-700" value="board.director@dha.gov.ae"></div>
+              <div class="flex gap-2 border-t border-slate-200/50 pt-2"><span class="font-bold text-slate-500 w-16">Subject:</span> <input type="text" id="board-subject-input" class="bg-transparent flex-1 border-none outline-none font-bold text-slate-700" value="Sourcing Board Approval Directive: Central Infrastructure Acquisition"></div>
+            </div>
+
+            <textarea 
+              id="board-email-text" 
+              class="w-full bg-slate-50 border border-slate-200 p-4 text-[11px] font-mono text-slate-700 h-64 focus:outline-indigo-500 rounded-xl"
+            ></textarea>
+
+            <div class="flex justify-end border-t border-slate-100 pt-3">
+              <button 
+                onclick="dispatchBoardSourcingApproval()" 
+                class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
+              >
+                <i data-lucide="send" class="h-4 w-4"></i> Broadcast Authorized Briefing Directive
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- --- VIEW B: SYSTEM AUDIT LOGS & REPORTS --- -->
+      <section id="tab-view-reports" class="hidden space-y-6">
+        
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3 flex-wrap gap-2">
+            <div>
+              <h2 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                <i data-lucide="trending-up" class="text-indigo-600 h-4 w-4"></i>
+                1) Sourcing Efficiency & Savings Portfolio
+              </h2>
+              <p class="text-xs text-slate-500">Summary aggregates comparing Baseline vs Finalized acquisition rates.</p>
+            </div>
+            <span class="text-[10px] font-extrabold uppercase bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100">Live Totals</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-slate-400 block mb-1">TOTAL BASELINE REGISTRY</span>
+              <span id="report-total-baseline" class="text-base font-black text-slate-800">AED 0</span>
+            </div>
+            <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
+              <span class="text-indigo-700 block mb-1">FINAL AGREED AGREEMENTS</span>
+              <span id="report-total-agreed" class="text-base font-black text-indigo-900">AED 0</span>
+            </div>
+            <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+              <span class="text-emerald-700 block mb-1">TOTAL SAVINGS RATIO ACHIEVED</span>
+              <span id="report-total-savings" class="text-base font-black text-emerald-800">AED 0 (0%)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                <i data-lucide="history" class="text-indigo-600 h-4 w-4"></i>
+                2) System Audit Trail & Logging Verification
+              </h2>
+              <p class="text-xs text-slate-500">Strict regulatory compliance ledger keeping record of all modifications and deletions.</p>
+            </div>
+            <button 
+              onclick="downloadAuditLogsCsv()" 
+              class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg flex items-center gap-1 border border-slate-200 transition-all shadow-sm"
+            >
+              <i data-lucide="download" class="h-3 w-3"></i> Export Audit Trail (.CSV)
+            </button>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold font-mono text-[10px]">
+                  <th class="p-3">Timestamp</th>
+                  <th class="p-3">Action Module</th>
+                  <th class="p-3">Description Context</th>
+                  <th class="p-3 text-right">Filing Verification</th>
+                </tr>
+              </thead>
+              <tbody id="audit-logs-table-body" class="divide-y divide-slate-150 text-slate-700 font-mono text-[11px]">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- --- VIEW C: REGULATORY DOCUMENT NOTEBOOK PREVIEWS --- -->
+      <section id="tab-view-preview" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="file-check" class="text-primary h-4.5 w-4.5"></i>
+            <div>
+              <h2 class="text-xs font-extrabold text-slate-900 uppercase">Document Intelligence View</h2>
+              <p class="text-[10px] text-slate-400">View OCR segments and direct specifications extracted from files</p>
+            </div>
+          </div>
+          <span id="active-preview-filename" class="text-[10px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg px-2.5 py-1">
+            No File Active
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+          <!-- Text extract field -->
+          <div class="md:col-span-2 p-5 space-y-3">
+            <div class="flex justify-between items-center text-[10px] text-slate-400 font-extrabold uppercase">
+              <span>Text Segment Log</span>
+              <span class="text-indigo-600">Status: Verified</span>
+            </div>
+            <div 
+              id="active-preview-ocr" 
+              class="p-4 bg-slate-50 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-600 leading-relaxed whitespace-pre-line min-h-64 max-h-[350px] overflow-y-auto"
+            >
+              Please upload or click a document from the left-hand vault.
+            </div>
+          </div>
+
+          <!-- Technical parameters sidebar -->
+          <div class="p-5 space-y-4 bg-slate-50/20 text-xs">
+            <h3 class="text-[10px] font-extrabold text-slate-500 uppercase flex items-center gap-1.5 border-b pb-2">
+              <i data-lucide="sparkles" class="text-indigo-500 h-3.5 w-3.5"></i>
+              MOHAP Registry Scorecard
+            </h3>
+
+            <div class="space-y-3 font-semibold text-slate-700">
+              <div class="bg-white p-3 rounded-xl border border-slate-250">
+                <span class="text-slate-400 block text-[9px] uppercase">PRODUCT CLASSIFICATION</span>
+                <span id="scorecard-product" class="font-extrabold text-slate-800 text-xs block mt-0.5">-</span>
+                <span id="scorecard-type" class="inline-block mt-1.5 px-2 py-0.5 rounded text-[8px] font-extrabold border bg-slate-50 text-slate-600 border-slate-200">Product</span>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-slate-250">
+                <span class="text-slate-400 block text-[9px] uppercase">LOCAL DEALER JURISDICTION</span>
+                <span id="scorecard-vendor" class="font-bold text-slate-800 text-xs">-</span>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-slate-250">
+                <span class="text-slate-400 block text-[9px] uppercase font-mono">REGISTRY DIRECT VALUATION</span>
+                <span id="scorecard-price" class="font-extrabold text-indigo-700 block text-xs mt-0.5">AED 0</span>
+              </div>
+
+              <div class="bg-white p-3 rounded-xl border border-slate-250">
+                <span class="text-slate-400 block text-[9px] uppercase">COMPLIANCE CODE STATUS</span>
+                <p id="scorecard-moh" class="font-semibold text-slate-700 flex items-center gap-1 mt-0.5">
+                  -
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ==========================================
+        RIGHT PANEL: GENERAL WORKSPACE AI COPILOT
+        ========================================== -->
+    <aside class="w-full lg:w-96 bg-white border-t lg:border-t-0 lg:border-l border-slate-200 shrink-0 p-5 flex flex-col justify-between h-[600px] lg:h-auto overflow-hidden">
+      
+      <div class="flex flex-col h-full space-y-4">
+        <div class="border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="cpu" class="h-5 w-5 text-indigo-600 animate-pulse"></i>
+            <div>
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-600">Sourcing Intelligence Agent</h2>
+              <p class="text-[9px] text-slate-400">Ask any questions about the active documents</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat history logs container scroll -->
+        <div id="chat-messages-container" class="flex-grow overflow-y-auto space-y-3.5 pr-1">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Preset analytical templates quick buttons -->
+        <div class="space-y-1.5 pt-2 border-t border-slate-100">
+          <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Copilot Direct Directives:</span>
+          <div class="grid grid-cols-2 gap-1.5 text-[10px]">
+            <button onclick="simulateQuery('Compare technical warranties across these suppliers')" class="p-2 bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-left font-bold text-slate-700 rounded-lg truncate transition-all">
+              🛡️ Warranty Auditing
+            </button>
+            <button onclick="simulateQuery('What is the lead time for Jebel Ali warehouses?')" class="p-2 bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-left font-bold text-slate-700 rounded-lg truncate transition-all">
+              ✈️ Transit Log Audits
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat interactive input bar -->
+        <div class="pt-1">
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-1.5 flex gap-2">
+            <input 
+              type="text" 
+              id="chat-input" 
+              onkeydown="handleChatInputKeydown(event)"
+              placeholder="Ask about prices, specs, warranties..." 
+              class="flex-1 bg-transparent px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none"
+            >
+            <button 
+              onclick="dispatchCopilotMessage()" 
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-3.5 rounded-lg transition-all"
+            >
+              Ask
+            </button>
+          </div>
+        </div>
       </div>
-    </footer>
+
+    </aside>
 
   </div>
 
-  <!-- --- JAVASCRIPT STATE ENGINE & BOOTSTRAP BUNDLE --- -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- --- FOOTER --- -->
+  <footer class="border-t border-slate-200 bg-white px-6 py-4 flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-400 gap-2">
+    <span>© 2026 ProcureMind AI. Authorized for Dubai Health Authority & MOHAP MD-Sourcing Standards.</span>
+    <div class="flex gap-4">
+      <span class="hover:text-slate-600 cursor-pointer">Security Protocol Logs</span>
+      <span class="hover:text-slate-600 cursor-pointer">SLA Compensation Guidelines</span>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+      CORE STATE ENGINE & PERSISTENCE SCRIPT (Pure HTML5)
+      ========================================== -->
   <script>
-    // System Mock Data
-    let docs = [...INITIAL_HEALTHCARE_DOCS_MOCK()];
-    let licenses = [...INITIAL_TRADE_LICENSES_MOCK()];
-    let emailLogs = [];
-    
-    // Core App State
-    let activeMainTab = 'lifecycle';
-    let currentWizardStep = 2; // Set default step to 2 Comparison
+    // Initial standard fallback dataset
+    const SEED_HEALTHCARE_DOCS = [
+      { 
+        id: 'doc1', 
+        title: 'Siemens MAGNETOM MRI Altea Quote', 
+        type: 'Quotation',
+        productName: 'MAGNETOM MRI Altea 1.5T',
+        productType: 'Machine',
+        fileName: 'QT-2026-SIEMENS-MRI.pdf',
+        vendor: 'Siemens Healthineers UAE',
+        value: 4200000, 
+        negotiatedValue: 3900000,
+        discountedValue: 3800000,
+        currency: 'AED',
+        mohRegistration: 'Approved (MOHAP-MD-9923)',
+        warranty: '3 Years Comprehensive',
+        deliveryTime: '60 Days',
+        coldChainRequired: false,
+        techSpecs: '1.5T Active Shield Magnet, BioMatrix Technology, 60cm Bore width.',
+        scope: 'Delivery, full installation, clinical testing & training for 15 radiologists.',
+        availability: 'Immediate dispatch from Munich hub.',
+        extractedText: `QUOTATION DOCUMENT Ref: QT-2026-SIEMENS-MRI\nCustomer: Dubai Health Authority (DHA)\nEquipment Model: MAGNETOM MRI Altea 1.5T\nVendor Channel: Siemens Healthineers UAE\nInitial Baseline cost: AED 4,200,000\nMOHAP Registry No: MOHAP-MD-9923\nWarranty Provision: 3 Years Comprehensive coverage SLA\nLead transit timeline: 60 Days\nCold chain transport: Not required.\nTechnical Specifications:\n- Magnet Strength: 1.5 Tesla Active ShieldMagnet\n- Bore Dimensions: 60cm Width\n- Software Features: BioMatrix Technology Integration`,
+        checked: true 
+      },
+      { 
+        id: 'doc2', 
+        title: 'GE Signa Prime 1.5T MRI Proposal', 
+        type: 'Quotation',
+        productName: 'Signa Prime 1.5T Magnetic Resonance',
+        productType: 'Machine',
+        fileName: 'GE-SIGNA-MRI-PROPOSAL-V2.pdf',
+        vendor: 'GE HealthCare Gulf',
+        value: 3950000, 
+        negotiatedValue: 3850000,
+        discountedValue: 3750000,
+        currency: 'AED',
+        mohRegistration: 'Approved (MOHAP-MD-8812)',
+        warranty: '2 Years Comprehensive + 3 Years Cold-head',
+        deliveryTime: '45 Days',
+        coldChainRequired: false,
+        techSpecs: '1.5T Eco-Friendly Magnet, Signa Works software suite, 70cm Bore width.',
+        scope: 'Installation, structural shielding assessment, 5 years cold-head protection.',
+        availability: '30 Days lead time from Jebel Ali Free Zone warehouse.',
+        extractedText: `PROPOSAL LOG Ref: GE-SIGNA-MRI-PROPOSAL-V2\nCustomer: DHA Central Purchasing\nModel Selection: GE Signa Prime 1.5T Magnetic Resonance\nAuthorized Channel: GE HealthCare Gulf\nBase price target: AED 3,950,000\nMOHAP Registry status: Approved (MOHAP-MD-8812)\nWarranty SLA coverage: 2 Years Comprehensive + 3 Years Cold-head protection\nTransit timeline: 45 Days\nLogistics depot: Jebel Ali Free Zone local warehouse storage`,
+        checked: true 
+      }
+    ];
+
+    // Core Active State
+    let docs = [];
+    let auditLogs = [];
+    let chatMessages = [];
+    let activeTab = 'lifecycle';
+    let currentStep = 2; // Default wizard step is Comparison Matrix
     let selectedDocId = 'doc1';
-    let globalApiKey = "";
-    let activeEmailTypeToDispatch = null; // 'rfp' or 'manager'
+    let geminiApiKey = '';
 
-    // Initalizer
     window.onload = function() {
-      // Initialize Lucide icon library
-      lucide.createIcons();
-      
-      // Load API Key from local storage if exists
-      if (localStorage.getItem("procuremind_gemini_key")) {
-        globalApiKey = localStorage.getItem("procuremind_gemini_key");
-        document.getElementById("gemini-api-key").value = globalApiKey;
-      }
+      // Restore from Local Storage persistence if available
+      try {
+        const storedDocs = localStorage.getItem('pm_docs');
+        const storedLogs = localStorage.getItem('pm_logs');
+        const storedMessages = localStorage.getItem('pm_chat');
+        const storedApiKey = localStorage.getItem('pm_api_key');
 
-      // Seed default email templates
-      document.getElementById('rfp-email-textarea').value = `Dear Partner,\n\nDubai Health Authority (DHA) central procurement is requesting official pricing proposals and comprehensive service scopes for equipment requirements.\n\nPlease provide technical specification details, cold-head logistics parameters, comprehensive warranty options, and pricing breakdowns.\n\nBest Regards,\nCentral Procurement Office | Dubai Health Authority`;
-      
-      // Render components
-      renderDocumentList();
-      renderResourcingVendors();
-      renderComparisonMatrix();
-      renderLicensesTable();
-      updatePreviewPanel();
-      syncFormFields();
-      renderEmailLogs();
-      
-      showToast("ProcureMind UAE Healthcare Platform initialized.");
-    }
-
-    // Save and store API Key locally
-    function saveApiKey(val) {
-      globalApiKey = val;
-      localStorage.setItem("procuremind_gemini_key", val);
-      showToast("Gemini API Key saved and registered.");
-    }
-
-    // Dynamic Live Gemini API Fetch Method with Exponential Backoff
-    async function callGeminiAPI(promptText, systemInstructionText = "", jsonMode = false) {
-      const keyToUse = globalApiKey || "";
-      if (!keyToUse) {
-        showToast("Using local deterministic simulated engine. Provide Gemini API Key in the header for real-time live AI!");
-        throw new Error("No API key provided.");
-      }
-
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${keyToUse}`;
-
-      const payload = {
-        contents: [{
-          parts: [{ text: promptText }]
-        }]
-      };
-
-      if (systemInstructionText) {
-        payload.systemInstruction = {
-          parts: [{ text: systemInstructionText }]
-        };
-      }
-
-      if (jsonMode) {
-        payload.generationConfig = {
-          responseMimeType: "application/json"
-        };
-      }
-
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      };
-
-      // Exponential backoff runner (retries up to 5 times)
-      const fetchWithBackoff = async (retries = 5, delay = 1000) => {
-        try {
-          const response = await fetch(url, options);
-          if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            throw new Error(errData.error?.message || `HTTP error! status: ${response.status}`);
-          }
-          const result = await response.json();
-          const extractedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (!extractedText) throw new Error("Could not extract generation text from response.");
-          return extractedText;
-        } catch (error) {
-          if (retries === 0) throw error;
-          await new Promise(resolve => setTimeout(resolve, delay));
-          return fetchWithBackoff(retries - 1, delay * 2);
+        if (storedDocs) {
+          docs = JSON.parse(storedDocs);
+        } else {
+          docs = [...SEED_HEALTHCARE_DOCS];
+          saveToLocalStorage('pm_docs', docs);
         }
-      };
 
-      return await fetchWithBackoff();
+        if (storedLogs) {
+          auditLogs = JSON.parse(storedLogs);
+        } else {
+          logAuditTrail('System', 'ProcureMind workspace storage database mapping initialized.');
+        }
+
+        if (storedMessages) {
+          chatMessages = JSON.parse(storedMessages);
+        } else {
+          chatMessages = [
+            { sender: 'ai', text: "Marhaban! I'm your Procurement Copilot. Ask me anything about the pricing, parameters, or specifications in your active documents!" }
+          ];
+        }
+
+        if (storedApiKey) {
+          geminiApiKey = storedApiKey;
+          document.getElementById('api-key-input').value = geminiApiKey;
+        }
+
+        // Auto select first doc if active
+        if (docs.length > 0) {
+          selectedDocId = docs[0].id;
+        }
+
+      } catch (e) {
+        console.error("Local storage mapping restoration failed, resetting to defaults", e);
+        docs = [...SEED_HEALTHCARE_DOCS];
+      }
+
+      // Initialize icons and render components
+      lucide.createIcons();
+      renderDocumentVaultList();
+      renderShortlistDistributors();
+      renderComparisonMatrix();
+      renderAuditLogsTable();
+      updateNotebookPreviews();
+      renderChatMessages();
+      syncFormPhases();
+
+      showToast("Workspace fully persistent & ready.");
+    };
+
+    // Helper: Save to localStorage safely
+    function saveToLocalStorage(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) {
+        console.error("Failed to commit state to Local Storage persistence", e);
+      }
     }
 
-    // Tab Switching Controller
-    function switchMainTab(tabName) {
-      activeMainTab = tabName;
+    // Help: Append audit log entry
+    function logAuditTrail(module, description) {
+      const timestamp = new Date().toLocaleTimeString() + ' ' + new Date().toLocaleDateString();
+      auditLogs.unshift({
+        timestamp,
+        module,
+        description
+      });
+      saveToLocalStorage('pm_logs', auditLogs);
+      renderAuditLogsTable();
+      updateSavingsPortfolioTotals();
+    }
+
+    // Toast control triggers
+    function showToast(msg) {
+      const toast = document.getElementById('toast-notification');
+      document.getElementById('toast-message').innerText = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      toast.style.pointerEvents = 'auto';
+
+      setTimeout(() => {
+        dismissToast();
+      }, 5000);
+    }
+
+    function dismissToast() {
+      const toast = document.getElementById('toast-notification');
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-20px)';
+      toast.style.pointerEvents = 'none';
+    }
+
+    // Save and register Api Key
+    function saveApiKey(val) {
+      geminiApiKey = val;
+      localStorage.setItem('pm_api_key', val);
+      showToast("Gemini API access key updated & registered.");
+      logAuditTrail("System Settings", "Updated/stored API credential configurations.");
+    }
+
+    // Switch between Main Navigation Views
+    function switchMainTab(tab) {
+      activeTab = tab;
       
-      // DOM Elements
-      const btnLifecycle = document.getElementById('tab-btn-lifecycle');
-      const btnEom = document.getElementById('tab-btn-eom');
-      const btnDocs = document.getElementById('tab-btn-docs');
+      const navLifecycle = document.getElementById('nav-btn-lifecycle');
+      const navReports = document.getElementById('nav-btn-reports');
+      const navPreview = document.getElementById('nav-btn-preview');
 
       const viewLifecycle = document.getElementById('tab-view-lifecycle');
-      const viewEom = document.getElementById('tab-view-eom');
-      const viewDocs = document.getElementById('tab-view-all-docs');
+      const viewReports = document.getElementById('tab-view-reports');
+      const viewPreview = document.getElementById('tab-view-preview');
 
-      // Reset Tabs Buttons
-      btnLifecycle.className = 'btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary';
-      btnEom.className = 'btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary';
-      btnDocs.className = 'btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary';
+      // Reset menu button styles
+      navLifecycle.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+      navReports.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+      navPreview.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
 
-      // Hide all Views
-      viewLifecycle.classList.add('d-none');
-      viewEom.classList.add('d-none');
-      viewDocs.classList.add('d-none');
+      // Hide panels
+      viewLifecycle.classList.add('hidden');
+      viewReports.classList.add('hidden');
+      viewPreview.classList.add('hidden');
 
-      if (tabName === 'lifecycle') {
-        btnLifecycle.className = 'btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white';
-        btnLifecycle.style.backgroundColor = 'var(--pm-primary)';
-        viewLifecycle.classList.remove('d-none');
-      } else if (tabName === 'end_of_month') {
-        btnEom.className = 'btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white';
-        btnEom.style.backgroundColor = 'var(--pm-primary)';
-        viewEom.classList.remove('d-none');
-      } else if (tabName === 'all_docs') {
-        btnDocs.className = 'btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white';
-        btnDocs.style.backgroundColor = 'var(--pm-primary)';
-        viewDocs.classList.remove('d-none');
-        updatePreviewPanel();
+      if (tab === 'lifecycle') {
+        navLifecycle.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-100";
+        viewLifecycle.classList.remove('hidden');
+      } else if (tab === 'reports') {
+        navReports.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-100";
+        viewReports.classList.remove('hidden');
+        updateSavingsPortfolioTotals();
+      } else if (tab === 'preview') {
+        navPreview.className = "px-4 py-2 text-xs font-bold rounded-lg border transition-all bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-100";
+        viewPreview.classList.remove('hidden');
+        updateNotebookPreviews();
       }
+
       lucide.createIcons();
     }
 
-    // Step Wizard Switching
-    function switchWizardStep(stepNr) {
-      currentWizardStep = stepNr;
-      
-      // Update Wizard indicator text
-      document.getElementById('wizard-active-indicator').innerText = `Step ${stepNr} of 5`;
+    // Switch between steps in Lifecycle tab
+    function switchWizardStep(step) {
+      currentStep = step;
+      document.getElementById('wizard-phase-indicator').innerText = `Step ${step} of 5`;
 
-      // Update button styling states
+      // Update button indicators styling
       for (let i = 1; i <= 5; i++) {
-        const btn = document.getElementById(`btn-step-${i}`);
-        if (i === stepNr) {
-          btn.classList.add('active');
+        const btn = document.getElementById(`wizard-btn-${i}`);
+        const content = document.getElementById(`step-content-${i}`);
+
+        if (i === step) {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all bg-indigo-50 text-indigo-700 border-indigo-200";
+          content.classList.remove('hidden');
         } else {
-          btn.classList.remove('active');
-        }
-        
-        // Toggle view container
-        const stepView = document.getElementById(`step-view-${i}`);
-        if (i === stepNr) {
-          stepView.classList.remove('d-none');
-        } else {
-          stepView.classList.add('d-none');
+          btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all text-slate-400 hover:text-slate-700 border-slate-200";
+          content.classList.add('hidden');
         }
       }
 
-      // Sync form if entering specific step
-      if (stepNr === 3 || stepNr === 4) {
-        syncFormFields();
-      }
+      syncFormPhases();
       lucide.createIcons();
     }
 
-    // Sync department values to nego inputs
-    function syncFormFields() {
-      // Fill Department Selection Dropdown
-      const dropdown = document.getElementById('department-selection-dropdown');
-      dropdown.innerHTML = '';
-      docs.forEach(d => {
-        const opt = document.createElement('option');
-        opt.value = d.title;
-        opt.innerText = `${d.title} (${d.productType})`;
-        dropdown.appendChild(opt);
-      });
-
-      // Match selected values to nego sliders
-      const selectedTitle = dropdown.value;
-      const matchedDoc = docs.find(d => d.title === selectedTitle);
-      if (matchedDoc) {
-        document.getElementById('nego-base-input').value = matchedDoc.value;
-        document.getElementById('nego-reneg-input').value = matchedDoc.negotiatedValue;
-        document.getElementById('nego-discount-input').value = matchedDoc.discountedValue;
-        calculateNegoSavings();
-      }
-    }
-
-    function onDepartmentSelectChange() {
-      const selectedTitle = document.getElementById('department-selection-dropdown').value;
-      const matchedDoc = docs.find(d => d.title === selectedTitle);
-      if (matchedDoc) {
-        document.getElementById('nego-base-input').value = matchedDoc.value;
-        document.getElementById('nego-reneg-input').value = matchedDoc.negotiatedValue;
-        document.getElementById('nego-discount-input').value = matchedDoc.discountedValue;
-        calculateNegoSavings();
-      }
-    }
-
-    function calculateNegoSavings() {
-      const base = parseFloat(document.getElementById('nego-base-input').value) || 0;
-      const discount = parseFloat(document.getElementById('nego-discount-input').value) || 0;
-      const savings = Math.max(0, base - discount);
-      document.getElementById('nego-savings-output').innerText = `AED ${savings.toLocaleString()} Savings Target`;
-    }
-
-    // Select Document In list handler
-    function selectActivePreviewDoc(docId) {
-      selectedDocId = docId;
-      renderDocumentList();
-      updatePreviewPanel();
-      showToast(`Selected document preview: ${docs.find(d => d.id === docId).fileName}`);
-    }
-
-    // Update document preview outputs
-    function updatePreviewPanel() {
-      const activeDoc = docs.find(d => d.id === selectedDocId) || docs[0];
-      if (!activeDoc) return;
-
-      document.getElementById('active-filename-preview').innerText = activeDoc.fileName;
-      document.getElementById('ocr-preview-container').innerText = activeDoc.extractedText;
-      
-      document.getElementById('preview-meta-productname').innerText = activeDoc.productName;
-      document.getElementById('preview-meta-vendor').innerText = activeDoc.vendor;
-      document.getElementById('preview-meta-value').innerText = `AED ${activeDoc.value.toLocaleString()}`;
-      
-      const mohBadge = document.getElementById('preview-meta-moh');
-      mohBadge.innerText = activeDoc.mohRegistration;
-      if (activeDoc.mohRegistration.includes('Approved')) {
-        mohBadge.className = 'text-success font-bold d-block mt-0.5';
-      } else {
-        mohBadge.className = 'text-danger font-bold d-block mt-0.5 animate-pulse';
-      }
-
-      // Set product badge type in preview panel
-      const pTypeBadge = document.getElementById('preview-meta-producttype');
-      pTypeBadge.innerText = activeDoc.productType;
-      pTypeBadge.className = 'badge mt-1.5 font-extrabold text-uppercase ' + getProductTypeBadgeClass(activeDoc.productType);
-    }
-
-    // Dynamic Pastel Badging Helper Classes
-    function getProductTypeBadgeClass(type) {
-      switch (type) {
-        case 'Machine': return 'badge-machine';
-        case 'Product': return 'badge-product';
-        case 'Medical Consumables': return 'badge-consumable';
-        case 'Service': return 'badge-service';
-        default: return 'bg-light text-dark';
-      }
-    }
-
-    // Document Renderer
-    function renderDocumentList() {
-      const container = document.getElementById('document-list-container');
+    // Render loaded documents list
+    function renderDocumentVaultList() {
+      const container = document.getElementById('document-vault-list');
       container.innerHTML = '';
-      
-      document.getElementById('doc-counter').innerText = `${docs.length} files`;
+
+      document.getElementById('doc-count-badge').innerText = `${docs.length} files`;
 
       docs.forEach(d => {
+        const isActive = d.id === selectedDocId ? 'bg-indigo-50/40 border-indigo-200' : 'bg-white border-slate-200 hover:border-slate-300';
         const isChecked = d.checked ? 'checked' : '';
-        const isActive = d.id === selectedDocId ? 'active' : '';
-        const badgeClass = getProductTypeBadgeClass(d.productType);
+        const typeStyle = getProductTypeClass(d.productType);
 
-        const itemHTML = `
-          <div class="doc-item p-2.5 d-flex align-items-start gap-2.5 ${isActive}">
-            <input type="checkbox" ${isChecked} onchange="toggleDocSelection('${d.id}')" class="form-check-input mt-1 shadow-sm">
-            <div class="flex-grow-1 min-w-0 text-start" onclick="selectActivePreviewDoc('${d.id}')">
-              <div class="d-flex justify-content-between align-items-center mb-1 text-uppercase text-secondary font-mono" style="font-size: 0.65rem; font-weight: 700;">
+        const html = `
+          <div class="p-3 rounded-xl border transition-all flex items-start gap-2.5 ${isActive}">
+            <input 
+              type="checkbox" 
+              ${isChecked} 
+              onchange="toggleMatrixTargetSelection('${d.id}')"
+              class="h-3.5 w-3.5 mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+            >
+            <div class="flex-1 min-w-0 text-left cursor-pointer" onclick="selectActiveDocument('${d.id}')">
+              <div class="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                 <span>${d.type}</span>
-                <span class="text-primary font-bold">AED ${d.value >= 1000000 ? (d.value / 1000000).toFixed(1) + 'M' : d.value.toLocaleString()}</span>
+                <span class="text-indigo-700">AED ${d.value >= 1000000 ? `${(d.value / 1000000).toFixed(1)}M` : d.value.toLocaleString()}</span>
               </div>
-              <h4 class="text-dark font-bold text-truncate mb-0" style="font-size: 0.72rem; line-height: 1.2;">${d.productName}</h4>
-              <div class="d-flex align-items-center gap-1.5 mt-1 flex-wrap">
-                <span class="badge ${badgeClass}" style="font-size: 0.55rem; padding: 0.15rem 0.35rem; font-weight: 800;">${d.productType}</span>
-                <span class="text-muted text-truncate" style="font-size: 0.65rem; font-family: monospace;">${d.fileName}</span>
+              <h4 class="text-xs font-extrabold text-slate-800 leading-snug truncate">${d.productName}</h4>
+              <div class="flex flex-wrap gap-1 items-center mt-1">
+                <span class="px-1.5 py-0.5 rounded text-[8px] font-extrabold border ${typeStyle}">
+                  ${d.productType}
+                </span>
+                <span class="text-[9px] text-slate-400 font-mono truncate max-w-[120px]">${d.fileName}</span>
               </div>
             </div>
+            <!-- Prevent garbage collection deletion button -->
+            <button 
+              onclick="deleteDocumentRecord('${d.id}')" 
+              class="text-slate-300 hover:text-red-600 p-1 rounded-lg hover:bg-slate-100 transition-all"
+              title="Delete Document"
+            >
+              <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+            </button>
           </div>
         `;
-        container.insertAdjacentHTML('beforeend', itemHTML);
-      });
-    }
-
-    // Toggle Checkbox select
-    function toggleDocSelection(docId) {
-      docs = docs.map(d => d.id === docId ? { ...d, checked: !d.checked } : d);
-      renderDocumentList();
-      renderComparisonMatrix();
-      showToast("Updated comparison matrix selection.");
-    }
-
-    // Select All / Deselect All
-    function selectAllDocs(state) {
-      docs = docs.map(d => ({ ...d, checked: state }));
-      renderDocumentList();
-      renderComparisonMatrix();
-      showToast(state ? "All loaded specifications loaded for side-by-side comparison." : "Deselected comparison parameters.");
-    }
-
-    // Comparison matrix table generator
-    function renderComparisonMatrix() {
-      const container = document.getElementById('comparison-matrix-table-container');
-      const selectedDocs = docs.filter(d => d.checked);
-
-      if (selectedDocs.length === 0) {
-        container.innerHTML = `
-          <div class="p-5 text-center text-muted">
-            <i data-lucide="alert-circle" class="mx-auto text-secondary mb-2" style="width: 24px; height: 24px;"></i>
-            <p class="small fw-medium mb-1">No comparison quotes active.</p>
-            <p class="mb-0 text-xs" style="font-size: 0.7rem;">Check loaded boxes on the left to review parameters side-by-side.</p>
-          </div>
-        `;
-        lucide.createIcons();
-        return;
-      }
-
-      let headerCols = `<th class="p-3 bg-light w-40">Parameter</th>`;
-      let productNameRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Product Name</td>`;
-      let productTypeRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Product Type</td>`;
-      let specsRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Technical Specifications</td>`;
-      let scopeRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Project Scope</td>`;
-      let availRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Availability / Transit</td>`;
-      let basePriceRow = `<tr class="bg-indigo-light" style="background-color: var(--pm-primary-light);"><td class="p-3 bg-light font-bold text-dark border-bottom">Base Quoted Price</td>`;
-      let renegPriceRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom text-primary">Re-negotiated Target</td>`;
-      let discountedPriceRow = `<tr class="bg-emerald-light" style="background-color: #d1fae5; color: #065f46;"><td class="p-3 bg-light font-bold text-dark border-bottom">Final Discounted Price</td>`;
-
-      selectedDocs.forEach(d => {
-        headerCols += `<th class="p-3 border-start"><strong class="text-primary block truncate max-w-xs">${d.title}</strong><span class="text-muted d-block" style="font-size: 0.65rem; font-weight: 500;">${d.vendor}</span></th>`;
-        productNameRow += `<td class="p-3 border-start border-bottom font-bold text-dark">${d.productName}</td>`;
-        productTypeRow += `<td class="p-3 border-start border-bottom"><span class="badge ${getProductTypeBadgeClass(d.productType)} font-extrabold text-uppercase" style="font-size: 0.6rem;">${d.productType}</span></td>`;
-        specsRow += `<td class="p-3 border-start border-bottom italic text-secondary" style="font-size: 0.7rem;">${d.techSpecs}</td>`;
-        scopeRow += `<td class="p-3 border-start border-bottom" style="font-size: 0.7rem;">${d.scope}</td>`;
-        availRow += `<td class="p-3 border-start border-bottom font-bold text-secondary" style="font-size: 0.7rem;">${d.availability}</td>`;
-        basePriceRow += `<td class="p-3 border-start border-bottom font-extrabold text-dark">AED ${d.value.toLocaleString()}</td>`;
-        renegPriceRow += `<td class="p-3 border-start border-bottom font-extrabold text-primary">AED ${d.negotiatedValue.toLocaleString()}</td>`;
-        discountedPriceRow += `<td class="p-3 border-start border-bottom font-extrabold text-success">AED ${d.discountedValue.toLocaleString()}</td>`;
+        container.insertAdjacentHTML('beforeend', html);
       });
 
-      productNameRow += `</tr>`;
-      productTypeRow += `</tr>`;
-      specsRow += `</tr>`;
-      scopeRow += `</tr>`;
-      availRow += `</tr>`;
-      basePriceRow += `</tr>`;
-      renegPriceRow += `</tr>`;
-      discountedPriceRow += `</tr>`;
-
-      container.innerHTML = `
-        <table class="table table-sm table-hover text-left align-middle mb-0" style="font-size: 0.75rem;">
-          <thead>
-            <tr class="border-bottom">${headerCols}</tr>
-          </thead>
-          <tbody>
-            ${productNameRow}
-            ${productTypeRow}
-            ${specsRow}
-            ${scopeRow}
-            ${availRow}
-            ${basePriceRow}
-            ${renegPriceRow}
-            ${discountedPriceRow}
-          </tbody>
-        </table>
-      `;
       lucide.createIcons();
     }
 
-    // Copy TSV Excel Export Action
-    function copyExcelGridToClipboard() {
-      const selectedDocs = docs.filter(d => d.checked);
-      if (selectedDocs.length === 0) return;
-
-      const header = "Product Name\tProduct Type\tVendor\tSpecifications\tScope\tAvailability\tBase Cost\tNegotiated Cost\tFinal Discounted Cost\n";
-      const rows = selectedDocs.map(d => 
-        `${d.productName}\t${d.productType}\t${d.vendor}\t${d.techSpecs}\t${d.scope}\t${d.availability}\t${d.value}\t${d.negotiatedValue}\t${d.discountedValue}`
-      ).join("\n");
-
-      const combined = header + rows;
-      
-      const dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-      dummy.value = combined;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
-
-      showToast("Spreadsheet grid values copied! Paste directly into Microsoft Excel.");
+    // Toggle Checkbox matrix parameters selection
+    function toggleMatrixTargetSelection(id) {
+      docs = docs.map(d => d.id === id ? { ...d, checked: !d.checked } : d);
+      saveToLocalStorage('pm_docs', docs);
+      renderDocumentVaultList();
+      renderComparisonMatrix();
+      showToast("Updated comparison spreadsheet layout matrix.");
     }
 
-    // Live AI Document parsing with Gemini Flash API
-    async function parseDocumentWithGemini(fileName, fileContent) {
-      showToast("AI is reading and extracting clinical product specifications...");
-      
-      const systemPrompt = "You are a professional UAE Medical Sourcing AI. Read the text of an uploaded document and extract accurate structured clinical parameters. Respond ONLY with pure, unformatted JSON matching the target keys. Do not include markdown tags like ```json or similar wrapper text.";
-      
-      const prompt = `
-        Read the following filename and unstructured text extracted from a medical quote, price SLA, or proposal:
-        File Name: ${fileName}
-        Extracted Document Text Content:
-        ${fileContent.substring(0, 4500)}
+    // Delete Document Record to avoid unnecessary garbage
+    function deleteDocumentRecord(id) {
+      const doc = docs.find(d => d.id === id);
+      if (!doc) return;
 
-        Perform OCR and semantic analysis to extract the following exact fields into a raw JSON object:
-        {
-          "productName": "Extract the actual commercial medical product model/name. Do NOT just use the file name.",
-          "productType": "Must classify strictly as one of these: 'Machine', 'Product', 'Medical Consumables', or 'Service'.",
-          "vendor": "Identify the regional UAE medical dealer or global manufacturer.",
-          "value": 150000, // Clean number. If in foreign currencies, convert to AED (1 USD = 3.67 AED).
-          "mohRegistration": "MOHAP registration code or status, e.g., 'Approved (MOHAP-MD-9923)' or 'Under Review'.",
-          "warranty": "SLA warranty coverage, e.g., '3 Years Comprehensive Warranty'.",
-          "deliveryTime": "Lead time in days, e.g., '14 Days'.",
-          "techSpecs": "Technical clinical specifications (e.g. Bore size, processing capacities).",
-          "scope": "Clear installation scope of work and radiologist/clinician training schedules.",
-          "availability": "Local warehouse status (e.g. 'Jebel Ali Reserve stock')."
-        }
-      `;
+      docs = docs.filter(d => d.id !== id);
+      saveToLocalStorage('pm_docs', docs);
 
-      try {
-        const responseText = await callGeminiAPI(prompt, systemPrompt, true);
-        const parsed = JSON.parse(responseText);
+      logAuditTrail("Document Library", `Deleted document archive '${doc.title}' to minimize garbage records.`);
+      showToast(`Deleted document '${doc.title}' successfully.`);
 
-        const newDoc = {
-          id: 'doc_up_' + Date.now(),
-          title: parsed.productName + ' Spec',
-          productName: parsed.productName || fileName.replace(/\.[^/.]+$/, ""),
-          productType: parsed.productType || 'Product',
-          type: parsed.productType === 'Service' ? 'Agreement' : 'Quotation',
-          fileName: fileName,
-          vendor: parsed.vendor || 'Authorized UAE Sourcing Distributor',
-          value: parsed.value || 150000,
-          negotiatedValue: Math.round((parsed.value || 150000) * 0.92),
-          discountedValue: Math.round((parsed.value || 150000) * 0.88),
-          currency: 'AED',
-          mohRegistration: parsed.mohRegistration || 'Approved (MOHAP-MD-CLEARED)',
-          warranty: parsed.warranty || '2 Year DHA Care Standard Included',
-          deliveryTime: parsed.deliveryTime || '15 Days',
-          coldChainRequired: fileName.toLowerCase().includes('cold') || fileName.toLowerCase().includes('pharma') || parsed.productName.toLowerCase().includes('vaccine'),
-          techSpecs: parsed.techSpecs || 'Specs parsed from legal attachment.',
-          scope: parsed.scope || 'Standard installation and commissioning.',
-          availability: parsed.availability || 'In-stock local GCC depot.',
-          extractedText: fileContent || `MANUAL UPLOAD PARSING\nFile: ${fileName}\nProduct: ${parsed.productName}`,
-          checked: true
-        };
+      // Adjust selected focus fallback
+      if (selectedDocId === id && docs.length > 0) {
+        selectedDocId = docs[0].id;
+      } else if (docs.length === 0) {
+        selectedDocId = '';
+      }
 
-        docs.unshift(newDoc);
-        selectedDocId = newDoc.id;
+      renderDocumentVaultList();
+      renderComparisonMatrix();
+      updateNotebookPreviews();
+    }
 
-        renderDocumentList();
-        renderComparisonMatrix();
-        updatePreviewPanel();
-        syncFormFields();
-        showToast(`AI successfully parsed: ${parsed.productName}`);
-      } catch (err) {
-        console.error("Gemini OCR parsing failed, falling back to local heuristic extraction:", err);
-        fallbackParseFile(fileName, fileContent);
+    // Select Active Preview doc
+    function selectActiveDocument(id) {
+      selectedDocId = id;
+      renderDocumentVaultList();
+      updateNotebookPreviews();
+      syncFormPhases();
+    }
+
+    // Checkbox master triggers
+    function toggleAllComparisonTargets(state) {
+      docs = docs.map(d => ({ ...d, checked: state }));
+      saveToLocalStorage('pm_docs', docs);
+      renderDocumentVaultList();
+      renderComparisonMatrix();
+      showToast(state ? "Loaded all documents into active matrix sheet." : "Unchecked all comparison columns.");
+    }
+
+    // Dynamic Pastel Badges Styling helper
+    function getProductTypeClass(type) {
+      switch (type) {
+        case 'Machine': return 'bg-amber-50 text-amber-700 border-amber-100';
+        case 'Product': return 'bg-blue-50 text-blue-700 border-blue-100';
+        case 'Medical Consumables': return 'bg-rose-50 text-rose-700 border-rose-100';
+        case 'Service': return 'bg-teal-50 text-teal-700 border-teal-100';
+        default: return 'bg-slate-100 text-slate-700 border-slate-200';
       }
     }
 
-    // Offline / No-Key Fallback Ingestion Method
-    function fallbackParseFile(fileName, fileContent) {
-      const cleanFileName = fileName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+    // Ingest manual submissions
+    function handleManualSubmission(e) {
+      e.preventDefault();
       
-      let inferredType = 'Product';
-      if (fileName.toLowerCase().includes('mri') || fileName.toLowerCase().includes('scanner') || fileName.toLowerCase().includes('machine')) {
-        inferredType = 'Machine';
-      } else if (fileName.toLowerCase().includes('sla') || fileName.toLowerCase().includes('service') || fileName.toLowerCase().includes('maintenance')) {
-        inferredType = 'Service';
-      } else if (fileName.toLowerCase().includes('consum') || fileName.toLowerCase().includes('suture') || fileName.toLowerCase().includes('implant') || fileName.toLowerCase().includes('glove')) {
-        inferredType = 'Medical Consumables';
-      }
+      const name = document.getElementById('form-product-name').value.trim();
+      const type = document.getElementById('form-product-type').value;
+      const basePrice = parseFloat(document.getElementById('form-product-price').value) || 150000;
 
-      const numberMatches = fileName.match(/\d+/g);
-      const parsedValue = numberMatches ? Math.min(Math.max(parseInt(numberMatches.join('')), 1000), 10000000) : null;
-      const baseValue = parsedValue || Math.floor(Math.random() * (1200000 - 150000 + 1)) + 150000;
+      if (!name) return;
 
       const newDoc = {
-        id: 'doc_uploaded_' + Date.now(),
-        title: cleanFileName.charAt(0).toUpperCase() + cleanFileName.slice(1) + ' Ingestion',
-        productName: cleanFileName.charAt(0).toUpperCase() + cleanFileName.slice(1),
-        productType: inferredType,
-        type: inferredType === 'Service' ? 'Agreement' : 'Quotation',
-        fileName: fileName,
-        vendor: 'Local Authorized UAE Medical Distributor',
-        value: baseValue,
-        negotiatedValue: Math.round(baseValue * 0.92),
-        discountedValue: Math.round(baseValue * 0.88),
+        id: 'doc_man_' + Date.now(),
+        title: `${name} Quote Record`,
+        productName: name,
+        productType: type,
+        type: type === 'Service' ? 'Agreement' : 'Quotation',
+        fileName: `${name.toLowerCase().replace(/\s+/g, '_')}_extract.pdf`,
+        vendor: 'Authorized Local UAE Medical Supplier',
+        value: basePrice,
+        negotiatedValue: Math.round(basePrice * 0.92),
+        discountedValue: Math.round(basePrice * 0.88),
         currency: 'AED',
         mohRegistration: 'Approved (MOHAP-MD-CLEARED)',
-        warranty: '2 Year DHA Care Standard Included',
-        deliveryTime: '15 Days',
-        coldChainRequired: fileName.toLowerCase().includes('cold') || fileName.toLowerCase().includes('pharma'),
-        techSpecs: `Standard specs parsed locally from file name.`,
-        scope: 'On-site installation support and operational commissioning.',
-        availability: 'In-stock local Freezone reserve.',
-        extractedText: fileContent || `Filename: ${fileName}\nParsed with fallback rules.`,
+        warranty: '2 Years Comprehensive Coverage SLA',
+        deliveryTime: '30 Days',
+        coldChainRequired: false,
+        techSpecs: `Specs mapped using manual ingestion panels for ${name}.`,
+        scope: 'On-site system installation, full testing and clinical training support.',
+        availability: 'Ready in reserve warehouse Jebel Ali Free Zone depot.',
+        extractedText: `MANUAL EXTRACTION RECORD\nEquipment: ${name}\nClassification: ${type}\nInitial pricing target: AED ${basePrice.toLocaleString()}`,
         checked: true
       };
 
       docs.unshift(newDoc);
       selectedDocId = newDoc.id;
+      saveToLocalStorage('pm_docs', docs);
 
-      renderDocumentList();
+      logAuditTrail("Manual Ingestion", `Manually logged data parameters for '${name}' into active ledger.`);
+      showToast(`Successfully registered manual quote for ${name}.`);
+
+      // Reset form
+      document.getElementById('form-product-name').value = '';
+      document.getElementById('form-product-price').value = '';
+
+      renderDocumentVaultList();
       renderComparisonMatrix();
-      updatePreviewPanel();
-      syncFormFields();
-      showToast(`Loaded with local mock parser: ${newDoc.productName}`);
+      updateNotebookPreviews();
+      syncFormPhases();
     }
 
-    // Trigger Email Confirm Modal prior to dispatching
-    function triggerEmailConfirmModal(emailType) {
-      activeEmailTypeToDispatch = emailType;
+    // --- COMPARISON ENGINE RENDERING & TRUE INLINE EDITING ---
+    function renderComparisonMatrix() {
+      const headerRow = document.getElementById('matrix-header-row');
+      const body = document.getElementById('matrix-body');
       
-      let toVal = "";
-      let ccVal = "";
-      let subjectVal = "";
+      const targets = docs.filter(d => d.checked);
 
-      if (emailType === 'rfp') {
-        toVal = document.getElementById('rfp-email-to').value || "[No recipients entered]";
-        ccVal = document.getElementById('rfp-email-cc').value || "[None]";
-        subjectVal = document.getElementById('rfp-email-subject').value;
-      } else {
-        toVal = document.getElementById('manager-email-to').value || "[No manager email]";
-        ccVal = document.getElementById('manager-email-cc').value || "[None]";
-        subjectVal = document.getElementById('manager-email-subject').value;
-      }
-
-      document.getElementById('modal-email-to').innerText = toVal;
-      document.getElementById('modal-email-cc').innerText = ccVal;
-      document.getElementById('modal-email-subject').innerText = subjectVal;
-
-      const myModal = new bootstrap.Modal(document.getElementById('emailConfirmModal'));
-      myModal.show();
-    }
-
-    // Execute the dispatch and log email inside visual logs
-    function executeEmailDispatch() {
-      // Hide modal
-      const modalEl = document.getElementById('emailConfirmModal');
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      if (modalInstance) {
-        modalInstance.hide();
-      }
-
-      const timestamp = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " " + new Date().toLocaleDateString();
-      let toField = "";
-      let subjectField = "";
-      let bodyField = "";
-
-      if (activeEmailTypeToDispatch === 'rfp') {
-        toField = document.getElementById('rfp-email-to').value || "Undisclosed Sourcing Distributors";
-        subjectField = document.getElementById('rfp-email-subject').value;
-        bodyField = document.getElementById('rfp-email-textarea').value;
-        
-        showToast("RFP Proposals successfully broadcast to regional dealers.");
-        switchWizardStep(2);
-      } else {
-        toField = document.getElementById('manager-email-to').value || "financial.director@dha.gov.ae";
-        subjectField = document.getElementById('manager-email-subject').value;
-        bodyField = document.getElementById('manager-email-textarea').value;
-        
-        showToast("Dispatched Finalized Sourcing Approval request to Financial Director.");
-        switchMainTab('end_of_month');
-      }
-
-      // Append Log Entry
-      const newLog = {
-        timestamp: timestamp,
-        to: toField,
-        subject: subjectField,
-        body: bodyField
-      };
-      emailLogs.unshift(newLog);
-      renderEmailLogs();
-    }
-
-    // Render dispatched email logs
-    function renderEmailLogs() {
-      const container = document.getElementById('email-log-body');
-      document.getElementById('log-counter').innerText = `${emailLogs.length} Sent`;
-
-      if (emailLogs.length === 0) {
-        container.innerHTML = `
+      if (targets.length === 0) {
+        headerRow.innerHTML = `<th class="p-4">Shortlist Parameter Grid empty</th>`;
+        body.innerHTML = `
           <tr>
-            <td colspan="4" class="p-3 text-center text-muted">No emails have been dispatched during this session.</td>
+            <td class="p-8 text-center text-slate-400 font-medium">
+              <div class="space-y-2">
+                <i data-lucide="info" class="h-6 w-6 text-slate-300 mx-auto"></i>
+                <p class="text-xs">Select active documents in the left vault checkboxes to compare.</p>
+              </div>
+            </td>
           </tr>
         `;
+        lucide.createIcons();
         return;
       }
 
-      container.innerHTML = '';
-      emailLogs.forEach((log, idx) => {
-        container.insertAdjacentHTML('beforeend', `
-          <tr class="hover:bg-slate-50/50">
-            <td class="p-2 text-secondary font-mono">${log.timestamp}</td>
-            <td class="p-2 font-bold text-slate-800">${log.to}</td>
-            <td class="p-2 italic text-secondary">${log.subject}</td>
-            <td class="p-2 text-center">
-              <span class="badge bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5">Dispatched</span>
+      // 1. Build headers
+      let headerHtml = `<th class="p-4 w-48 text-slate-500 uppercase tracking-widest text-[9px]">Acquisition Metrics</th>`;
+      targets.forEach(d => {
+        headerHtml += `
+          <th class="p-4 border-l border-slate-200">
+            <span class="text-indigo-700 font-black block text-xs truncate max-w-[200px]" title="${d.title}">${d.title}</span>
+            <span class="text-[9px] text-slate-400 font-normal font-mono block mt-0.5">${d.vendor}</span>
+          </th>
+        `;
+      });
+      headerRow.innerHTML = headerHtml;
+
+      // Define row schemas to align and edit inline
+      const rows = [
+        { label: 'Product Name', key: 'productName', type: 'text' },
+        { label: 'Vendor Channel', key: 'vendor', type: 'text' },
+        { label: 'Technical Specs', key: 'techSpecs', type: 'text' },
+        { label: 'Scope of Works', key: 'scope', type: 'text' },
+        { label: 'Lead Transit (Days)', key: 'deliveryTime', type: 'text' },
+        { label: 'Local Depot Info', key: 'availability', type: 'text' },
+        { label: 'Initial Baseline (AED)', key: 'value', type: 'number' },
+        { label: 'Negotiated Target (AED)', key: 'negotiatedValue', type: 'number' },
+        { label: 'Finalized Price (AED)', key: 'discountedValue', type: 'number' }
+      ];
+
+      let bodyHtml = '';
+      rows.forEach(r => {
+        // Highlight critical price segments
+        const isPrice = r.key === 'value' || r.key === 'negotiatedValue' || r.key === 'discountedValue';
+        const rowBg = isPrice ? 'bg-indigo-50/10' : 'hover:bg-slate-50/50';
+
+        bodyHtml += `<tr class="${rowBg} border-b border-slate-150">`;
+        bodyHtml += `<td class="p-4 font-bold bg-slate-50/50 text-[11px] text-slate-600">${r.label}</td>`;
+
+        targets.forEach(d => {
+          let rawVal = d[r.key];
+          let displayVal = rawVal;
+          
+          if (r.type === 'number') {
+            displayVal = `AED ${(Number(rawVal) || 0).toLocaleString()}`;
+          }
+
+          bodyHtml += `
+            <td 
+              class="p-4 border-l border-slate-200 font-semibold cursor-pointer group relative hover:bg-slate-100/50 transition-all"
+              ondblclick="startInlineEditing(this, '${d.id}', '${r.key}', '${r.type}')"
+            >
+              <span class="cell-text text-xs text-slate-800 block">${displayVal}</span>
+              <span class="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition-all text-slate-300">
+                <i data-lucide="edit-3" class="h-3 w-3"></i>
+              </span>
             </td>
-          </tr>
-        `);
+          `;
+        });
+
+        bodyHtml += `</tr>`;
+      });
+
+      body.innerHTML = bodyHtml;
+      lucide.createIcons();
+    }
+
+    // Trigger Inline cell modifications
+    function startInlineEditing(element, docId, fieldKey, fieldType) {
+      // Avoid starting another edit on the same cell
+      if (element.querySelector('input')) return;
+
+      const doc = docs.find(d => d.id === docId);
+      if (!doc) return;
+
+      const cellTextSpan = element.querySelector('.cell-text');
+      const originalValue = doc[fieldKey];
+
+      // Replace span content with input focus
+      const input = document.createElement('input');
+      input.type = fieldType === 'number' ? 'number' : 'text';
+      input.value = originalValue;
+      input.className = "w-full bg-white border border-indigo-500 rounded px-2 py-1 text-xs text-slate-900 font-semibold focus:outline-none focus:ring-1 focus:ring-indigo-500 shadow-sm";
+
+      cellTextSpan.style.display = 'none';
+      element.appendChild(input);
+      input.focus();
+
+      // Ensure Lucide edit icons hidden
+      const icon = element.querySelector('span:last-child');
+      if (icon) icon.style.opacity = '0';
+
+      // Capture Enter and Escape actions
+      input.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          saveInlineCellValue(input.value, docId, fieldKey, originalValue, cellTextSpan, input);
+        } else if (event.key === 'Escape') {
+          cancelInlineCellValue(cellTextSpan, input);
+        }
+      });
+
+      // Capture blur focal triggers
+      input.addEventListener('blur', function() {
+        saveInlineCellValue(input.value, docId, fieldKey, originalValue, cellTextSpan, input);
       });
     }
 
-    function shareWithDepartmentHead() {
-      showToast("Forwarded technical parameters to Department Central Sourcing head.");
-      switchWizardStep(3);
-    }
+    // Save modifications to persistent systems
+    function saveInlineCellValue(newValue, docId, fieldKey, oldValue, textSpan, inputEl) {
+      if (newValue.trim() === '') newValue = oldValue;
 
-    function saveNegotiatedPriceAndDraft() {
-      const base = parseFloat(document.getElementById('nego-base-input').value) || 0;
-      const reneg = parseFloat(document.getElementById('nego-reneg-input').value) || 0;
-      const discount = parseFloat(document.getElementById('nego-discount-input').value) || 0;
-      const selectedTitle = document.getElementById('department-selection-dropdown').value;
+      const numVal = Number(newValue);
+      const isNumber = !isNaN(numVal) && inputEl.type === 'number';
+      const parsedValue = isNumber ? numVal : newValue;
 
-      // Update local doc prices
+      // Update matching database state
       docs = docs.map(d => {
-        if (d.title === selectedTitle) {
-          return { ...d, value: base, negotiatedValue: reneg, discountedValue: discount };
+        if (d.id === docId) {
+          const updatedDoc = { ...d };
+          updatedDoc[fieldKey] = parsedValue;
+          
+          // Auto generate negotiation metrics dynamically if base price changes
+          if (fieldKey === 'value' && isNumber) {
+            updatedDoc.negotiatedValue = Math.round(parsedValue * 0.92);
+            updatedDoc.discountedValue = Math.round(parsedValue * 0.88);
+          }
+          return updatedDoc;
         }
         return d;
       });
 
-      // Render update
+      saveToLocalStorage('pm_docs', docs);
+
+      // Log changes to the audit trail
+      if (oldValue !== parsedValue) {
+        const docObj = docs.find(d => d.id === docId);
+        const dispOld = isNumber ? `AED ${oldValue.toLocaleString()}` : oldValue;
+        const dispNew = isNumber ? `AED ${parsedValue.toLocaleString()}` : parsedValue;
+        logAuditTrail(
+          "Inline Spreadsheet Edit", 
+          `Manually adjusted parameter '${fieldKey}' on '${docObj.title}' from '${dispOld}' to '${dispNew}'.`
+        );
+        showToast(`Saved modifications on '${docObj.title}'.`);
+      }
+
+      // Redraw interfaces
+      renderDocumentVaultList();
       renderComparisonMatrix();
-      renderDocumentList();
+      updateNotebookPreviews();
+      syncFormPhases();
+    }
 
-      const savings = base - discount;
-      document.getElementById('manager-email-textarea').value = `Dear Director,\n\nWe have completed our technical and pricing evaluation matrix for our hospital sifting cycle.\n\nFollowing clinical technical selection, the "${selectedTitle}" has been chosen.\n\nFinancial Overview:\n- Original Base Cost: AED ${base.toLocaleString()}\n- Re-negotiated Value: AED ${reneg.toLocaleString()}\n- Final Discounted Price: AED ${discount.toLocaleString()}\n- Net Cost Savings Target: AED ${savings.toLocaleString()}\n\nMOHAP Registration: Active and Verified.\n\nKindly authorize immediate PO draft generation.\n\nBest Regards,\nCentral Sourcing Unit`;
+    function cancelInlineCellValue(textSpan, inputEl) {
+      textSpan.style.display = 'block';
+      if (inputEl.parentNode) {
+        inputEl.parentNode.removeChild(inputEl);
+      }
+      renderComparisonMatrix();
+    }
 
-      showToast("Re-negotiated costs recorded. Created Finance Director approval draft.");
+    // --- WIZARD FORM FIELDS SYNC & EMULATION ---
+    function syncFormPhases() {
+      const activeDoc = docs.find(d => d.id === selectedDocId) || docs[0];
+      if (!activeDoc) return;
+
+      // Set options in review select
+      const select = document.getElementById('department-preferred-select');
+      if (select) {
+        select.innerHTML = '';
+        docs.forEach(d => {
+          select.insertAdjacentHTML('beforeend', `<option value="${d.id}">${d.productName} (${d.vendor})</option>`);
+        });
+        select.value = selectedDocId;
+      }
+
+      // Sync Pricing inputs
+      document.getElementById('nego-initial-input').value = activeDoc.value;
+      document.getElementById('nego-target-input').value = activeDoc.negotiatedValue;
+      document.getElementById('nego-final-input').value = activeDoc.discountedValue;
+      
+      calculateNegoVariance();
+    }
+
+    function syncDepartmentSourcingValues() {
+      const val = document.getElementById('department-preferred-select').value;
+      selectedDocId = val;
+      renderDocumentVaultList();
+      updateNotebookPreviews();
+      syncFormPhases();
+    }
+
+    function calculateNegoVariance() {
+      const initial = parseFloat(document.getElementById('nego-initial-input').value) || 0;
+      const finalVal = parseFloat(document.getElementById('nego-final-input').value) || 0;
+      const savings = Math.max(0, initial - finalVal);
+      
+      document.getElementById('nego-savings-output').innerText = `AED ${savings.toLocaleString()} Sourcing Improvement Margins Registered`;
+    }
+
+    function commitNegotiatedPricing() {
+      const activeDoc = docs.find(d => d.id === selectedDocId) || docs[0];
+      if (!activeDoc) return;
+
+      const initial = parseFloat(document.getElementById('nego-initial-input').value) || 0;
+      const target = parseFloat(document.getElementById('nego-target-input').value) || 0;
+      const finalVal = parseFloat(document.getElementById('nego-final-input').value) || 0;
+
+      docs = docs.map(d => {
+        if (d.id === activeDoc.id) {
+          return {
+            ...d,
+            value: initial,
+            negotiatedValue: target,
+            discountedValue: finalVal
+          };
+        }
+        return d;
+      });
+
+      saveToLocalStorage('pm_docs', docs);
+      
+      const savings = initial - finalVal;
+      logAuditTrail("Negotiations Module", `Committed verified pricing optimization values on '${activeDoc.title}' resulting in AED ${savings.toLocaleString()} savings.`);
+      showToast(`Saved price optimizations on '${activeDoc.title}'.`);
+
+      // Prepare briefing templates
+      document.getElementById('board-email-text').value = `To: board.director@dha.gov.ae\nSubject: Procurement Briefing: Infrastructure Investment Validation\n\nDear Director,\n\nWe have compiled our technical validations and side-by-side matrices regarding the acquisition parameters.\n\nFollowing comprehensive clinical audit, the "${activeDoc.productName}" has been declared optimal for infrastructure integration.\n\nOptimized Capital Layout:\n- Baseline Quotation pricing: AED ${initial.toLocaleString()}\n- Negotiated Agreement terms: AED ${target.toLocaleString()}\n- Finalized Sign-off contract rate: AED ${finalVal.toLocaleString()}\n- Net Portability Savings achieved: AED ${savings.toLocaleString()}\n\nAll components map strictly within MOHAP clearing codes: ${activeDoc.mohRegistration}.\n\nKindly authorize Purchase Order release protocols.\n\nBest Regards,\nCentral Acquisition & Logistics Division`;
+
+      renderComparisonMatrix();
+      renderDocumentVaultList();
       switchWizardStep(5);
     }
 
-    // End Of Month License Log Add In Form
-    function handleLicenseSubmit(e) {
-      e.preventDefault();
-      const vendorName = document.getElementById('lic-vendor').value;
-      const licNo = document.getElementById('lic-no').value;
-      const dateVal = document.getElementById('lic-date').value;
+    // Direct RFP simulations
+    function dispatchRfpMessage() {
+      const target = document.getElementById('rfp-to-input').value;
+      const subject = document.getElementById('rfp-subject-input').value;
+      const text = document.getElementById('rfp-email-text').value;
 
-      if (!vendorName || !licNo) return;
-
-      const newL = {
-        id: 'l' + (licenses.length + 1),
-        vendor: vendorName,
-        licenseNo: licNo,
-        authority: 'Dubai Health Authority',
-        expiryDate: dateVal || '2027-01-01',
-        status: 'Active',
-        color: 'bg-emerald-50 text-emerald-700 border-emerald-200'
-      };
-
-      licenses.unshift(newL);
-      renderLicensesTable();
-      
-      document.getElementById('lic-vendor').value = '';
-      document.getElementById('lic-no').value = '';
-      document.getElementById('lic-date').value = '';
-
-      showToast(`Registered valid Trade License audit entry for: ${vendorName}`);
+      openModal(
+        "Confirm RFP Broadcast", 
+        `Confirm direct dispatch of sourcing requisitions to mapped distributors:`, 
+        `To: ${target}\nSubject: ${subject}\n\n${text}`, 
+        () => {
+          logAuditTrail("RFP Engine", `Broadcasted pricing requisitions to '${target}' regarding medical components.`);
+          showToast("RFP emails sent successfully.");
+          closeModal();
+          switchWizardStep(2);
+        }
+      );
     }
 
-    function renderLicensesTable() {
-      const container = document.getElementById('licenses-table-body');
+    function dispatchBoardSourcingApproval() {
+      const target = document.getElementById('board-to-input').value;
+      const subject = document.getElementById('board-subject-input').value;
+      const text = document.getElementById('board-email-text').value;
+
+      openModal(
+        "Confirm Executive Board Briefing", 
+        `Authorize release of executive briefings to Board of Directors:`, 
+        `To: ${target}\nSubject: ${subject}\n\n${text}`, 
+        () => {
+          logAuditTrail("Board Authorizations", `Dispatched final briefing portfolios to '${target}' for PO releases.`);
+          showToast("Briefings dispatched successfully to Directors.");
+          closeModal();
+          switchMainTab('reports');
+        }
+      );
+    }
+
+    // --- DIALOG MODAL TRIGGERS ---
+    function openModal(title, desc, content, actionCallback) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-description').innerText = desc;
+      document.getElementById('modal-content-area').innerText = content;
+      
+      const btn = document.getElementById('modal-action-btn');
+      btn.onclick = actionCallback;
+
+      document.getElementById('custom-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('custom-modal').classList.add('hidden');
+    }
+
+    // --- SYSTEM REPORT COMPILATIONS & DOWNLOAD CHANNELS ---
+    function updateSavingsPortfolioTotals() {
+      const targets = docs;
+      let totalBaseline = 0;
+      let totalAgreed = 0;
+
+      targets.forEach(d => {
+        totalBaseline += Number(d.value) || 0;
+        totalAgreed += Number(d.discountedValue) || 0;
+      });
+
+      const savings = Math.max(0, totalBaseline - totalAgreed);
+      const ratio = totalBaseline > 0 ? ((savings / totalBaseline) * 100).toFixed(1) : 0;
+
+      document.getElementById('report-total-baseline').innerText = `AED ${totalBaseline.toLocaleString()}`;
+      document.getElementById('report-total-agreed').innerText = `AED ${totalAgreed.toLocaleString()}`;
+      document.getElementById('report-total-savings').innerText = `AED ${savings.toLocaleString()} (${ratio}%)`;
+
+      // Sync dashboard equivalents if displayed
+      const dashboardExposure = document.getElementById('eom-total-exposure-value');
+      const dashboardAgreed = document.getElementById('eom-final-outflow-value');
+      const dashboardSavings = document.getElementById('eom-savings-ratio-value');
+
+      if (dashboardExposure) dashboardExposure.innerText = `AED ${totalBaseline.toLocaleString()}`;
+      if (dashboardAgreed) dashboardAgreed.innerText = `AED ${totalAgreed.toLocaleString()}`;
+      if (dashboardSavings) dashboardSavings.innerText = `AED ${savings.toLocaleString()} (${ratio}%)`;
+    }
+
+    function renderAuditLogsTable() {
+      const container = document.getElementById('audit-logs-table-body');
       container.innerHTML = '';
 
-      licenses.forEach(l => {
+      if (auditLogs.length === 0) {
+        container.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Ledger empty. No edits recorded.</td></tr>`;
+        return;
+      }
+
+      auditLogs.forEach(l => {
         container.insertAdjacentHTML('beforeend', `
-          <tr class="hover:bg-slate-50/50">
-            <td class="py-2.5 font-bold text-dark">${l.vendor}</td>
-            <td class="font-mono text-secondary" style="font-size: 0.7rem;">${l.licenseNo} (${l.authority})</td>
-            <td class="font-semibold text-slate-700">${l.expiryDate}</td>
-            <td class="text-end">
-              <span class="px-2.5 py-0.5 rounded text-[10px] font-bold border ${l.color}">
-                ${l.status}
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 text-slate-400 font-mono text-[10px] whitespace-nowrap">${l.timestamp}</td>
+            <td class="p-3 font-bold text-slate-800 text-xs whitespace-nowrap">${l.module}</td>
+            <td class="p-3 text-slate-600 text-xs">${l.description}</td>
+            <td class="p-3 text-right">
+              <span class="bg-emerald-50 text-emerald-700 text-[10px] px-2 py-0.5 rounded font-bold border border-emerald-100">
+                VERIFIED
               </span>
             </td>
           </tr>
@@ -1649,412 +1467,586 @@
       });
     }
 
-    // Step 1: Resourcing filters matching product names
-    function filterResourcingVendors() {
-      renderResourcingVendors();
+    // Exporting Spreadsheet Data to CSV
+    function downloadComparisonMatrixCsv() {
+      const targets = docs.filter(d => d.checked);
+      if (targets.length === 0) {
+        showToast("No target columns checked to compile.");
+        return;
+      }
+
+      let csv = "Acquisition Metric,";
+      targets.forEach(d => { csv += `"${d.title.replace(/"/g, '""')}",`; });
+      csv += "\n";
+
+      const rows = [
+        { label: 'Product Name', key: 'productName' },
+        { label: 'Vendor Channel', key: 'vendor' },
+        { label: 'Technical Specs', key: 'techSpecs' },
+        { label: 'Scope of Works', key: 'scope' },
+        { label: 'Lead Transit (Days)', key: 'deliveryTime' },
+        { label: 'Local Depot Info', key: 'availability' },
+        { label: 'Initial Baseline Price (AED)', key: 'value' },
+        { label: 'Negotiated Target Price (AED)', key: 'negotiatedValue' },
+        { label: 'Finalized Price (AED)', key: 'discountedValue' }
+      ];
+
+      rows.forEach(r => {
+        csv += `"${r.label}",`;
+        targets.forEach(d => {
+          csv += `"${String(d[r.key]).replace(/"/g, '""')}",`;
+        });
+        csv += "\n";
+      });
+
+      downloadFileBlob(csv, "ProcureMind_Comparison_Matrix.csv", "text/csv");
+      logAuditTrail("Reports Export", "Compiled and downloaded active comparative spreadsheet metrics to CSV file.");
     }
 
-    // Render registered medical dealer directories
-    function renderResourcingVendors() {
-      const query = document.getElementById('resourcing-query').value.toLowerCase();
-      const container = document.getElementById('resourced-vendors-container');
+    // Export Audit logs
+    function downloadAuditLogsCsv() {
+      let csv = "Timestamp,Module,Description Context,Status\n";
+      auditLogs.forEach(l => {
+        csv += `"${l.timestamp}","${l.module.replace(/"/g, '""')}","${l.description.replace(/"/g, '""')}","VERIFIED"\n`;
+      });
+
+      downloadFileBlob(csv, "ProcureMind_Audit_Logs.csv", "text/csv");
+      logAuditTrail("Reports Export", "Compiled and downloaded current system Audit Trail records to CSV file.");
+    }
+
+    // Workspace state backups
+    function downloadBackup() {
+      const state = {
+        docs,
+        auditLogs,
+        chatMessages,
+        geminiApiKey
+      };
+      downloadFileBlob(JSON.stringify(state, null, 2), "ProcureMind_Workspace_Backup.json", "application/json");
+      showToast("Workspace backup JSON generated.");
+    }
+
+    function triggerRestoreBackup() {
+      document.getElementById('backup-picker').click();
+    }
+
+    function restoreBackup(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          const state = JSON.parse(event.target.result);
+          if (state.docs && state.auditLogs) {
+            docs = state.docs;
+            auditLogs = state.auditLogs;
+            chatMessages = state.chatMessages || [];
+            geminiApiKey = state.geminiApiKey || '';
+
+            saveToLocalStorage('pm_docs', docs);
+            saveToLocalStorage('pm_logs', auditLogs);
+            saveToLocalStorage('pm_chat', chatMessages);
+            if (geminiApiKey) localStorage.setItem('pm_api_key', geminiApiKey);
+
+            // Re-render
+            renderDocumentVaultList();
+            renderComparisonMatrix();
+            renderAuditLogsTable();
+            updateNotebookPreviews();
+            renderChatMessages();
+            syncFormPhases();
+
+            showToast("Workspace backup restoration completed successfully.");
+            logAuditTrail("System", "Restored whole workspace configurations from backup archive file.");
+          } else {
+            showToast("Invalid backup parameters detected.");
+          }
+        } catch (err) {
+          showToast("Failed to parse backup JSON file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function downloadFileBlob(content, filename, contentType) {
+      const blob = new Blob([content], { type: contentType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // --- DOCUMENT INTELLIGENCE PREVIEWS ---
+    function updateNotebookPreviews() {
+      const activeDoc = docs.find(d => d.id === selectedDocId) || docs[0];
+      
+      const fileSpan = document.getElementById('active-preview-filename');
+      const ocrDiv = document.getElementById('active-preview-ocr');
+      
+      const scProd = document.getElementById('scorecard-product');
+      const scType = document.getElementById('scorecard-type');
+      const scVend = document.getElementById('scorecard-vendor');
+      const scPrice = document.getElementById('scorecard-price');
+      const scMoh = document.getElementById('scorecard-moh');
+
+      if (!activeDoc) {
+        fileSpan.innerText = "No File Active";
+        ocrDiv.innerText = "Please upload or insert standard quote listings to begin viewing details.";
+        scProd.innerText = "-";
+        scType.innerText = "-";
+        scType.className = "inline-block mt-1.5 px-2 py-0.5 rounded text-[8px] font-extrabold border bg-slate-100 text-slate-700";
+        scVend.innerText = "-";
+        scPrice.innerText = "AED 0";
+        scMoh.innerHTML = "-";
+        return;
+      }
+
+      fileSpan.innerText = activeDoc.fileName;
+      ocrDiv.innerText = activeDoc.extractedText;
+
+      scProd.innerText = activeDoc.productName;
+      scVend.innerText = activeDoc.vendor;
+      scPrice.innerText = `AED ${activeDoc.value.toLocaleString()}`;
+      
+      scType.innerText = activeDoc.productType;
+      scType.className = `inline-block mt-1.5 px-2 py-0.5 rounded text-[8px] font-extrabold border ${getProductTypeClass(activeDoc.productType)}`;
+
+      const mohApproved = activeDoc.mohRegistration.includes('Approved');
+      scMoh.innerHTML = `
+        <span class="h-2 w-2 rounded-full ${mohApproved ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+        <span class="${mohApproved ? 'text-emerald-700' : 'text-rose-700'}">${activeDoc.mohRegistration}</span>
+      `;
+    }
+
+    // Shortlist filters and shortlisting
+    function filterDistributors() {
+      renderShortlistDistributors();
+    }
+
+    function renderShortlistDistributors() {
+      const query = document.getElementById('category-search').value.toLowerCase();
+      const container = document.getElementById('distributor-results-container');
       container.innerHTML = '';
 
-      const partners = [
+      const baseList = [
         { name: 'Siemens Healthineers UAE', rate: 'Premium Machine tier, DHA Approved', checked: true, email: 'info.siemens@gurg.ae' },
         { name: 'GE HealthCare Gulf', rate: 'Machine & Support tier, MOHAP Verified', checked: true, email: 'sourcing.ge@genpharm.ae' },
         { name: 'Medtronic Gulf LLC', rate: 'Consumables, License update pending', checked: false, email: 'medtronic.gulf@imic.ae' },
         { name: 'Aster Pharmacy Logistics', rate: 'Service & Biologics, Cold-chain compliance', checked: false, email: 'aster.logistics@aster.ae' }
       ];
 
-      const rfpToInput = document.getElementById('rfp-email-to');
-      let activeEmails = [];
+      const rfpToInput = document.getElementById('rfp-to-input');
+      let defaultEmails = [];
 
-      partners.forEach(p => {
+      baseList.forEach(p => {
         if (p.name.toLowerCase().includes(query) || p.rate.toLowerCase().includes(query)) {
           const checkId = `partner-check-${p.name.replace(/\s+/g, '-')}`;
           container.insertAdjacentHTML('beforeend', `
-            <div class="d-flex align-items-center justify-content-between p-2.5 bg-light border rounded-3 text-xs">
-              <div class="text-start">
-                <p class="font-bold text-dark mb-0.5" style="font-size: 0.72rem; line-height: 1.2;">${p.name}</p>
-                <p class="text-muted mb-0" style="font-size: 0.65rem;">${p.rate}</p>
+            <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+              <div class="text-start leading-tight">
+                <p class="font-extrabold text-slate-800">${p.name}</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">${p.rate}</p>
               </div>
-              <input type="checkbox" id="${checkId}" class="form-check-input mt-0 shadow-sm partner-checkbox" value="${p.email}" ${p.checked ? 'checked' : ''} onchange="updateRfpRecipients()">
+              <input 
+                type="checkbox" 
+                id="${checkId}" 
+                value="${p.email}" 
+                ${p.checked ? 'checked' : ''} 
+                onchange="syncRfpEmailTargets()"
+                class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 partner-checkbox"
+              >
             </div>
           `);
           if (p.checked) {
-            activeEmails.push(p.email);
+            defaultEmails.push(p.email);
           }
         }
       });
 
-      if (rfpToInput) {
-        rfpToInput.value = activeEmails.join(', ');
+      if (rfpToInput && defaultEmails.length > 0) {
+        rfpToInput.value = defaultEmails.join(', ');
       }
     }
 
-    function updateRfpRecipients() {
+    function syncRfpEmailTargets() {
       const checkboxes = document.querySelectorAll('.partner-checkbox');
-      let selectedEmails = [];
+      let emails = [];
       checkboxes.forEach(cb => {
-        if (cb.checked) {
-          selectedEmails.push(cb.value);
-        }
+        if (cb.checked) emails.push(cb.value);
       });
-      document.getElementById('rfp-email-to').value = selectedEmails.join(', ');
+      document.getElementById('rfp-to-input').value = emails.join(', ');
     }
 
-    // File Ingestion Manual Form Submit
-    function handleManualIngestSubmit(e) {
-      e.preventDefault();
-      const pName = document.getElementById('form-product-name').value;
-      const pType = document.getElementById('form-product-type').value;
-      const pPrice = parseFloat(document.getElementById('form-product-price').value) || 150000;
+    // --- SIMULATED AND DYNAMIC COGNITIVE COPILOT ---
+    async function callGeminiLiveApi(promptText, systemInstructions = "") {
+      if (!geminiApiKey) {
+        throw new Error("No live API key provided.");
+      }
 
-      if (!pName) return;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
+      
+      const payload = {
+        contents: [{
+          parts: [{ text: promptText }]
+        }]
+      };
+
+      if (systemInstructions) {
+        payload.systemInstruction = {
+          parts: [{ text: systemInstructions }]
+        };
+      }
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error?.message || "HTTP Connection Error");
+      }
+
+      const data = await response.json();
+      const outputText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      
+      if (!outputText) throw new Error("Null generation result");
+      return outputText;
+    }
+
+    // Ingest files dynamically locally & optionally with Gemini
+    async function processUploadedDocuments(fileName, fileContent) {
+      document.getElementById('upload-idle').classList.add('hidden');
+      document.getElementById('upload-loading').classList.remove('hidden');
+
+      const fileTitle = fileName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+      const cleanTitle = fileTitle.charAt(0).toUpperCase() + fileTitle.slice(1);
+
+      if (geminiApiKey) {
+        showToast("Gemini AI is parsing and extracting document fields...");
+        const systemPrompt = "You are a professional UAE Medical Sourcing AI. Read the text of an uploaded document and extract accurate structured clinical parameters. Respond ONLY with pure, unformatted JSON matching the target keys. Do not include markdown tags like ```json or similar wrapper text.";
+        const prompt = `
+          Read the following file name and content text:
+          File Name: ${fileName}
+          Text Content:
+          ${fileContent.substring(0, 4000)}
+
+          Perform OCR and semantic analysis to extract these fields into a single JSON:
+          {
+            "productName": "Actual medical device/product name",
+            "productType": "Strictly one of: 'Machine', 'Product', 'Medical Consumables', or 'Service'",
+            "vendor": "UAE medical distributor or manufacturer",
+            "value": 150000, // Clean number. Convert USD to AED if needed (1 USD = 3.67 AED)
+            "mohRegistration": "MOHAP registration code, e.g. 'Approved (MOHAP-MD-9923)'",
+            "warranty": "Warranty description SLA terms",
+            "deliveryTime": "Lead time in days (number or text)",
+            "techSpecs": "Technical clinical specifications",
+            "scope": "Clear installation scope of work",
+            "availability": "Local warehouse status"
+          }
+        `;
+
+        try {
+          const textResponse = await callGeminiLiveApi(prompt, systemPrompt);
+          const parsed = JSON.parse(textResponse);
+
+          const newDoc = {
+            id: 'doc_ai_' + Date.now(),
+            title: parsed.productName + ' Spec',
+            productName: parsed.productName || cleanTitle,
+            productType: parsed.productType || 'Product',
+            type: parsed.productType === 'Service' ? 'Agreement' : 'Quotation',
+            fileName: fileName,
+            vendor: parsed.vendor || 'Regional UAE Medical Distributor',
+            value: parsed.value || 250000,
+            negotiatedValue: Math.round((parsed.value || 250000) * 0.92),
+            discountedValue: Math.round((parsed.value || 250000) * 0.88),
+            currency: 'AED',
+            mohRegistration: parsed.mohRegistration || 'Approved (MOHAP-MD-CLEARED)',
+            warranty: parsed.warranty || '2 Years Standard Comprehensive Coverage SLA',
+            deliveryTime: parsed.deliveryTime || '30 Days',
+            coldChainRequired: fileName.toLowerCase().includes('cold') || fileName.toLowerCase().includes('pharma'),
+            techSpecs: parsed.techSpecs || 'Specs parsed from original proposal text.',
+            scope: parsed.scope || 'Standard system delivery, calibration and deployment support.',
+            availability: parsed.availability || 'In reserve storage local Freezone depots.',
+            extractedText: fileContent,
+            checked: true
+          };
+
+          docs.unshift(newDoc);
+          selectedDocId = newDoc.id;
+          saveToLocalStorage('pm_docs', docs);
+
+          logAuditTrail("AI Document Extraction", `AI successfully extracted specifications for '${parsed.productName}' using live Gemini Flash API.`);
+          showToast(`Ingested '${parsed.productName}' using Gemini OCR.`);
+
+        } catch (err) {
+          console.error("Gemini direct parse failed, falling back to instant parsing", err);
+          fallbackLocalParsing(fileName, fileContent, cleanTitle);
+        }
+      } else {
+        // Instant local extraction
+        setTimeout(() => {
+          fallbackLocalParsing(fileName, fileContent, cleanTitle);
+        }, 1200);
+      }
+    }
+
+    function fallbackLocalParsing(fileName, fileContent, cleanTitle) {
+      let inferredType = 'Product';
+      if (fileName.toLowerCase().includes('mri') || fileName.toLowerCase().includes('scanner') || fileName.toLowerCase().includes('machine')) {
+        inferredType = 'Machine';
+      } else if (fileName.toLowerCase().includes('sla') || fileName.toLowerCase().includes('service') || fileName.toLowerCase().includes('maintenance')) {
+        inferredType = 'Service';
+      } else if (fileName.toLowerCase().includes('consumable') || fileName.toLowerCase().includes('glove') || fileName.toLowerCase().includes('suture')) {
+        inferredType = 'Medical Consumables';
+      }
+
+      const randomVal = Math.floor(Math.random() * (1500000 - 80000 + 1)) + 80000;
 
       const newDoc = {
-        id: 'doc_form_' + Date.now(),
-        title: `${pName} Quotation`,
-        productName: pName,
-        productType: pType,
-        type: pType === 'Service' ? 'Agreement' : 'Quotation',
-        fileName: `${pName.toLowerCase().replace(/\s+/g, '_')}_spec.pdf`,
-        vendor: 'Local Authorized UAE Medical Distributor',
-        value: pPrice,
-        negotiatedValue: Math.round(pPrice * 0.92),
-        discountedValue: Math.round(pPrice * 0.88),
+        id: 'doc_up_' + Date.now(),
+        title: cleanTitle + ' Spec',
+        productName: cleanTitle,
+        productType: inferredType,
+        type: inferredType === 'Service' ? 'Agreement' : 'Quotation',
+        fileName: fileName,
+        vendor: 'Regional Authorized UAE Medical Dealer',
+        value: randomVal,
+        negotiatedValue: Math.round(randomVal * 0.92),
+        discountedValue: Math.round(randomVal * 0.88),
         currency: 'AED',
         mohRegistration: 'Approved (MOHAP-MD-CLEARED)',
-        warranty: '2 Year DHA Care Standard Included',
-        deliveryTime: '15 Days',
-        coldChainRequired: false,
-        techSpecs: `Standard automated configuration matching UAE ${pType} medical guidelines.`,
-        scope: 'Standard installation, testing, and 12-month service level coverage.',
-        availability: 'Ships from local GCC distribution center.',
-        extractedText: `MANUAL INTERACTIVE ENTRY\nProduct: ${pName}\nType: ${pType}\nValue: AED ${pPrice.toLocaleString()}\nStatus: Verified & Synced with Sourcing Database.`,
+        warranty: '2 Years Comprehensive Coverage SLA',
+        deliveryTime: '45 Days',
+        coldChainRequired: fileName.toLowerCase().includes('cold') || fileName.toLowerCase().includes('pharma'),
+        techSpecs: `Standard technical specifications parsed from original proposal filename.`,
+        scope: 'On-site installation support, structural clearance check, and full clinical commissioning.',
+        availability: 'In-stock local Freezone reserve.',
+        extractedText: fileContent || `QUOTATION EXTRACTED DIRECTLY\nFile: ${fileName}\nInferred Type: ${inferredType}\nQuoted Baseline Value: AED ${randomVal.toLocaleString()}`,
         checked: true
       };
 
       docs.unshift(newDoc);
       selectedDocId = newDoc.id;
-      
-      // Reset input fields
-      document.getElementById('form-product-name').value = '';
-      document.getElementById('form-product-price').value = '150000';
+      saveToLocalStorage('pm_docs', docs);
 
-      renderDocumentList();
+      logAuditTrail("Document Library", `Ingested and parsed document specs for '${cleanTitle}' into local databases.`);
+      showToast(`Ingested '${cleanTitle}' instantly.`);
+
+      document.getElementById('upload-idle').classList.remove('hidden');
+      document.getElementById('upload-loading').classList.add('hidden');
+
+      renderDocumentVaultList();
       renderComparisonMatrix();
-      updatePreviewPanel();
-      syncFormFields();
-
-      showToast(`Ingested manual asset record: ${pName}`);
+      updateNotebookPreviews();
+      syncFormPhases();
     }
 
-    // Local file picking & drag-drop handling
+    // Dispatching Copilot chats
+    async function dispatchCopilotMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+
+      // Append user prompt
+      chatMessages.push({ sender: 'user', text });
+      renderChatMessages();
+
+      // Setup dynamic structural context based on currently checked items
+      const selectedDocs = docs.filter(d => d.checked);
+      let context = "The user has shortlisted and checked the following procurement documents in their comparison sheet:\n\n";
+      selectedDocs.forEach((d, i) => {
+        context += `Document ${i + 1}:\n`;
+        context += `- Product Name: ${d.productName}\n`;
+        context += `- Vendor Channel: ${d.vendor}\n`;
+        context += `- Category Type: ${d.productType}\n`;
+        context += `- Base Price Target: AED ${d.value.toLocaleString()}\n`;
+        context += `- Re-negotiated Rate: AED ${d.negotiatedValue.toLocaleString()}\n`;
+        context += `- Finalized Agreement Price: AED ${d.discountedValue.toLocaleString()}\n`;
+        context += `- Technical Specifications: ${d.techSpecs}\n`;
+        context += `- Project Scope: ${d.scope}\n`;
+        context += `- Transit Time: ${d.deliveryTime}\n`;
+        context += `- Warehousing Availability: ${d.availability}\n`;
+        context += `- Warranty SLA Coverage: ${d.warranty}\n`;
+        context += `- MOHAP MD Registration: ${d.mohRegistration}\n\n`;
+      });
+
+      const tempId = 'ai-msg-temp-' + Date.now();
+      chatMessages.push({ id: tempId, sender: 'ai', text: 'Analyzing specifications and comparing columns...' });
+      renderChatMessages();
+
+      if (geminiApiKey) {
+        const systemInstructions = `You are ProcureMind AI, the premier virtual purchase supervisor and sourcing assistant for the Dubai Health Authority (DHA) and UAE Ministry of Health and Prevention (MOHAP).
+        Maintain a professional, highly analytical, and reassuring tone. Emphasize Middle East compliance references (AED currency, JAFZA Freezone, MOHAP MD clearance).
+        Base all of your advice, comparisons, savings parameters, and answers directly on the selected workspace context. If no files are selected, politely notify the user to toggle checkboxes in their loaded files panel.
+        Generate clean Markdown tables for pricing/warranty comparisons when asked to.`;
+        const finalPrompt = `${context}\n\nUser Question:\n${text}`;
+
+        try {
+          const rawResponse = await callGeminiLiveApi(finalPrompt, systemInstructions);
+          chatMessages = chatMessages.map(m => m.id === tempId ? { sender: 'ai', text: rawResponse } : m);
+        } catch (err) {
+          console.error("Gemini chat connection failed, using local semantic answering", err);
+          const reply = localSemanticAnswerResolver(text);
+          chatMessages = chatMessages.map(m => m.id === tempId ? { sender: 'ai', text: reply } : m);
+        }
+      } else {
+        setTimeout(() => {
+          const reply = localSemanticAnswerResolver(text);
+          chatMessages = chatMessages.map(m => m.id === tempId ? { sender: 'ai', text: reply } : m);
+          renderChatMessages();
+        }, 1000);
+      }
+
+      saveToLocalStorage('pm_chat', chatMessages);
+      renderChatMessages();
+    }
+
+    // Local semantic query answer resolver for general queries
+    function localSemanticAnswerResolver(query) {
+      const q = query.toLowerCase();
+      const targets = docs.filter(d => d.checked);
+
+      if (targets.length === 0) {
+        return "I don't see any active documents selected. Please check the checkboxes next to files in the left-hand vault so I can analyze details for you!";
+      }
+
+      // Check keywords for dynamic comparisons
+      if (q.includes('warranty') || q.includes('guarantee') || q.includes('maintenance')) {
+        let text = "Here is an audit of technical warranties for active shortlisted vendors:\n\n";
+        targets.forEach(d => {
+          text += `* **${d.productName}** (${d.vendor}): Offers **${d.warranty}**.\n`;
+        });
+        text += "\nRecommendation: Review if service coverage extends to comprehensive on-site calibiration routines.";
+        return text;
+      }
+
+      if (q.includes('lead time') || q.includes('delivery') || q.includes('transit') || q.includes('days') || q.includes('time')) {
+        let text = "Audit log parameters on logistical transit durations:\n\n";
+        targets.forEach(d => {
+          text += `* **${d.productName}**: Lead time duration is **${d.deliveryTime}** shipping directly from **${d.availability}**.\n`;
+        });
+        return text;
+      }
+
+      if (q.includes('price') || q.includes('cost') || q.includes('value') || q.includes('aed') || q.includes('savings') || q.includes('compare')) {
+        let text = "Sourcing Board Comparative Pricing Grid Matrix (AED):\n\n";
+        text += "| Shortlist Item | Base Quoted | Negotiated Target | Finalized Price |\n";
+        text += "| :--- | :---: | :---: | :---: |\n";
+        targets.forEach(d => {
+          text += `| **${d.productName}** | AED ${d.value.toLocaleString()} | AED ${d.negotiatedValue.toLocaleString()} | AED ${d.discountedValue.toLocaleString()} |\n`;
+        });
+        return text;
+      }
+
+      // Default fallback context synthesis
+      let text = `I've analyzed your question against the shortlisted workspace files (${targets.length} active documents).\n\nKey Parameters parsed:\n`;
+      targets.forEach(d => {
+        text += `* **${d.productName}** has technical specs matching: "${d.techSpecs}". Sourced via ${d.vendor} at a finalized agreement price of AED ${d.discountedValue.toLocaleString()}.\n`;
+      });
+      text += "\nTo explore specific metrics, try asking about 'warranty metrics', 'lead times', or 'price summaries' for these items.";
+      return text;
+    }
+
+    function simulateQuery(text) {
+      document.getElementById('chat-input').value = text;
+      dispatchCopilotMessage();
+    }
+
+    function renderChatMessages() {
+      const container = document.getElementById('chat-messages-container');
+      container.innerHTML = '';
+
+      chatMessages.forEach(m => {
+        const isUser = m.sender === 'user';
+        const justify = isUser ? 'justify-end' : 'justify-start';
+        const bg = isUser ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-slate-50 border border-slate-250 text-slate-700 font-medium whitespace-pre-wrap';
+        
+        const avatar = isUser 
+          ? '' 
+          : `<div class="p-1.5 bg-indigo-50 rounded-lg text-indigo-500 h-7 w-7 flex items-center justify-center border border-indigo-100 shrink-0"><i data-lucide="cpu" class="h-4 w-4"></i></div>`;
+
+        const html = `
+          <div class="flex gap-2.5 text-[11px] leading-relaxed ${justify}">
+            ${!isUser ? avatar : ''}
+            <div class="p-3 rounded-xl max-w-[80%] shadow-sm ${bg}">
+              ${m.text}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+
+      container.scrollTop = container.scrollHeight;
+      lucide.createIcons();
+    }
+
+    function handleChatInputKeydown(e) {
+      if (e.key === 'Enter') {
+        dispatchCopilotMessage();
+      }
+    }
+
+    // --- FILE PICKING DRAG-AND-DROP PROCESSORS ---
     function triggerFilePicker() {
       document.getElementById('file-picker').click();
     }
 
-    function dragOverHandler(e) {
+    function handleDragOver(e) {
       e.preventDefault();
-      document.getElementById('dropzone').classList.add('dragging');
+      document.getElementById('dropzone').classList.add('border-indigo-400', 'bg-indigo-50/20');
     }
 
-    function dragLeaveHandler() {
-      document.getElementById('dropzone').classList.remove('dragging');
+    function handleDragLeave() {
+      document.getElementById('dropzone').classList.remove('border-indigo-400', 'bg-indigo-50/20');
     }
 
-    function dropHandler(e) {
+    function handleDrop(e) {
       e.preventDefault();
-      document.getElementById('dropzone').classList.remove('dragging');
+      handleDragLeave();
       if (e.dataTransfer.files) {
-        processUploadedFiles(e.dataTransfer.files);
+        readIncomingFiles(e.dataTransfer.files);
       }
     }
 
-    function fileSelectionHandler(e) {
+    function handleFileSelection(e) {
       if (e.target.files) {
-        processUploadedFiles(e.target.files);
+        readIncomingFiles(e.target.files);
       }
     }
 
-    // Read real dropped or selected document text parameters
-    function processUploadedFiles(fileList) {
-      if (!fileList || fileList.length === 0) return;
+    function readIncomingFiles(list) {
+      if (!list || list.length === 0) return;
 
-      for (let i = 0; i < fileList.length; i++) {
-        const file = fileList[i];
+      for (let i = 0; i < list.length; i++) {
+        const file = list[i];
         const reader = new FileReader();
 
-        reader.onload = async function(event) {
-          let textContent = event.target.result;
+        reader.onload = function(event) {
+          let text = event.target.result;
           
-          // Fallback context creation if upload is binary or unreadable PDF
-          if (!textContent || textContent.trim().length < 5 || /[\x00-\x08\x0E-\x1F]/.test(textContent)) {
+          // Generate realistic default mock text fallback if file contains invalid characters
+          if (!text || text.trim().length < 5 || /[\x00-\x08\x0E-\x1F]/.test(text)) {
             const cleanTitle = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
-            textContent = `CLINICAL ACQUISITION SPECIFICATION REQUISITION
-            Sourced Item: ${cleanTitle}
-            Submitter: Dubai Central Medical Sourcing Unit
-            Ref: DHA-MED-2026-X99
-            
-            We request quotation metrics and technical parameters for the equipment: ${cleanTitle}. 
-            Required compliance: full MOHAP registry clearance. Comprehensive 2-year warranty SLA including temperature logs.
-            Est. target price margin: AED 450,000. Delivery required to Dubai Academic Health clinics.`;
+            text = `DUBAI CENTRAL HEALTHCARE ACQUISITION DIRECTIVE\nItem: ${cleanTitle}\nSourcing Code: DHA-MED-2026-X99\nMunicipal Regulatory Registry: Approved (MOHAP-MD-MD921)\nLead logistics duration: 14 Days\nWarranty support parameters: 3 Years Comprehensive coverage SLA including parts and clinical testing.`;
           }
 
-          await parseDocumentWithGemini(file.name, textContent);
+          processUploadedDocuments(file.name, text);
         };
 
         reader.readAsText(file);
       }
     }
-
-    // Copilot Interactive Chat Simulation
-    function handleCopilotInputKeydown(e) {
-      if (e.key === 'Enter') {
-        sendCopilotChatMessage();
-      }
-    }
-
-    // Live AI Copilot answering dynamically from actual checked document metadata
-    async function sendCopilotChatMessage() {
-      const input = document.getElementById('copilot-input-field');
-      const text = input.value.trim();
-      if (!text) return;
-
-      input.value = '';
-      appendCopilotChatMessage('user', text);
-
-      // Construct live dynamic workspace context
-      const selectedDocs = docs.filter(d => d.checked);
-      let contextString = "The user has selected the following active healthcare documents in their workspace:\n\n";
-      selectedDocs.forEach((d, idx) => {
-        contextString += `Doc ${idx + 1}:\n`;
-        contextString += `- Product Name: ${d.productName}\n`;
-        contextString += `- Product Type: ${d.productType}\n`;
-        contextString += `- Vendor: ${d.vendor}\n`;
-        contextString += `- Quoted Base Price: AED ${d.value.toLocaleString()}\n`;
-        contextString += `- Negotiated Target: AED ${d.negotiatedValue.toLocaleString()}\n`;
-        contextString += `- Final Discounted Price: AED ${d.discountedValue.toLocaleString()}\n`;
-        contextString += `- MOHAP Status: ${d.mohRegistration}\n`;
-        contextString += `- Warranty SLA: ${d.warranty}\n`;
-        contextString += `- Delivery Time: ${d.deliveryTime}\n`;
-        contextString += `- Technical Specifications: ${d.techSpecs}\n`;
-        contextString += `- Project Scope: ${d.scope}\n`;
-        contextString += `- Logistics Availability: ${d.availability}\n\n`;
-      });
-
-      const systemPrompt = `You are ProcureMind AI, the premier virtual purchase supervisor and sourcing assistant for the Dubai Health Authority (DHA) and UAE Ministry of Health and Prevention (MOHAP).
-      Maintain a professional, highly analytical, and reassuring tone. Emphasize Middle East compliance references (AED currency, JAFZA Freezone, MOHAP MD clearance).
-      Base all of your advice, comparisons, savings parameters, and answers directly on the following selected workspace context. If no files are selected, politely notify the user to toggle checkboxes in their loaded files panel.
-      Generate clean Markdown tables for pricing/warranty comparisons when asked to.
-      
-      Active Sourcing Context:\n${contextString}`;
-
-      // Show processing notification and append placeholder
-      const tempId = appendCopilotChatMessage('system', "Analyzing active specifications and registry data...");
-
-      try {
-        const aiResponse = await callGeminiAPI(text, systemPrompt);
-        updateCopilotChatMessage(tempId, aiResponse);
-      } catch (err) {
-        console.error("Gemini Copilot chat execution failed, falling back to local chat routing:", err);
-        fallbackCopilotChat(text, tempId);
-      }
-    }
-
-    // Clean Local Fallback Chat Logic if API Key is not configured
-    function fallbackCopilotChat(text, tempId) {
-      let reply = "";
-      const q = text.toLowerCase();
-
-      if (q.includes('compare') || q.includes('table') || q.includes('excel')) {
-        reply = `Comparison of active quotes (Local Simulation):\n\n- Siemens MAGNETOM (Machine) leads with 3 Years Warranty.\n- GE Signa Prime (Machine) leads on base price by AED 250,000.\n- Both are MOHAP approved.\n\nRecommend matching Siemens comprehensive SLA against GE's lower valuation bracket.`;
-      } else if (q.includes('saving') || q.includes('report')) {
-        reply = `June 2026 Cost Savings Summary:\n- Active Exposure: AED 9,640,000\n- Final Outflow: AED 9,010,000\n- Savings achieved: AED 630,000 (6.5%)`;
-      } else if (q.includes('onboard') || q.includes('onboarding') || q.includes('register')) {
-        reply = `DHA Onboarding Procedure:\n1. Verify active commercial DED license.\n2. Verify valid MOHAP medical registration code.\n3. Request cold-chain logistics SLA agreement schedules.`;
-      } else {
-        reply = `I am processing your query against our local UAE Healthcare index database. Please specify if you want to analyze cost targets, audit MOHAP compliance registrations, or structure cold-chain SLAs.`;
-      }
-
-      updateCopilotChatMessage(tempId, reply);
-    }
-
-    function triggerCopilotPreset(presetType) {
-      if (presetType === 'compare') {
-        handleCopilotChatInputSimulation("Please compare active loaded quotes and generate Excel spreadsheet representation.");
-      } else if (presetType === 'onboard') {
-        handleCopilotChatInputSimulation("Show me the required DHA Onboarding Registration Process checklist.");
-      } else if (presetType === 'license') {
-        handleCopilotChatInputSimulation("Audit all license registration deadlines and highlight expired suppliers.");
-      } else if (presetType === 'cold') {
-        handleCopilotChatInputSimulation("What custom liability safeguards should we include for cold-chain biological supply storage?");
-      }
-    }
-
-    function handleCopilotChatInputSimulation(text) {
-      document.getElementById('copilot-input-field').value = text;
-      sendCopilotChatMessage();
-    }
-
-    function appendCopilotChatMessage(sender, text) {
-      const container = document.getElementById('copilot-chat-container');
-      const msgId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-      
-      const userMessageHTML = `
-        <div class="d-flex gap-2.5 text-xs align-items-start justify-content-end animate-fade-in" id="${msgId}">
-          <div class="p-3 bg-primary text-white rounded-4 rounded-end-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
-            <p class="mb-0 leading-relaxed">${text}</p>
-          </div>
-        </div>
-      `;
-
-      const systemMessageHTML = `
-        <div class="d-flex gap-2.5 text-xs align-items-start animate-fade-in" id="${msgId}">
-          <div class="p-1.5 bg-indigo-light border rounded-3 text-primary d-flex align-items-center justify-center" style="width: 28px; height: 28px; background-color: var(--pm-primary-light);">
-            <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
-          </div>
-          <div class="p-3 bg-light border text-secondary font-medium rounded-4 rounded-start-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
-            <span class="badge text-primary text-uppercase mb-1" style="font-size: 0.6rem; background-color: var(--pm-primary-light);">Neural System OK</span>
-            <p class="mb-0 leading-relaxed whitespace-pre-line chat-text-content">${text}</p>
-          </div>
-        </div>
-      `;
-
-      container.insertAdjacentHTML('beforeend', sender === 'user' ? userMessageHTML : systemMessageHTML);
-      container.scrollTop = container.scrollHeight;
-      lucide.createIcons();
-      return msgId;
-    }
-
-    function updateCopilotChatMessage(msgId, newText) {
-      const msgEl = document.getElementById(msgId);
-      if (msgEl) {
-        const textContainer = msgEl.querySelector('.chat-text-content');
-        if (textContainer) {
-          textContainer.innerText = newText;
-        }
-      }
-      const container = document.getElementById('copilot-chat-container');
-      container.scrollTop = container.scrollHeight;
-    }
-
-    // Toast triggers
-    function showToast(message) {
-      const toast = document.getElementById('toast-notification');
-      document.getElementById('toast-message').innerText = message;
-      toast.style.display = 'block';
-    }
-
-    // Close system alerts
-    function dismissToast() {
-      document.getElementById('toast-notification').style.display = 'none';
-    }
-
-    // --- SEED SEEDERS (REFACTORED REACT STRUCTURES) ---
-    function INITIAL_HEALTHCARE_DOCS_MOCK() {
-      return [
-        { 
-          id: 'doc1', 
-          title: 'Siemens MAGNETOM MRI Altea Quote', 
-          type: 'Quotation',
-          productName: 'MAGNETOM MRI Altea 1.5T',
-          productType: 'Machine',
-          fileName: 'QT-2026-SIEMENS-MRI.pdf',
-          vendor: 'Siemens Healthineers UAE',
-          value: 4200000, 
-          negotiatedValue: 3900000,
-          discountedValue: 3800000,
-          currency: 'AED',
-          mohRegistration: 'Approved (MOHAP-MD-9923)',
-          warranty: '3 Years Comprehensive',
-          deliveryTime: '60 Days',
-          coldChainRequired: false,
-          techSpecs: '1.5T Active Shield Magnet, BioMatrix Technology, 60cm Bore width.',
-          scope: 'Delivery, full installation, clinical testing & training for 15 radiologists.',
-          availability: 'Immediate dispatch from Munich hub.',
-          extractedText: `QUOTATION Ref: SH-AE-99201-2026\nCustomer: Dubai Health Authority (DHA)\nItem: MAGNETOM Altea 1.5T MRI System\nTotal Capital Cost: AED 4,200,000\nPayment: 10% PO, 90% Delivery.\nWarranty: 3 years.`,
-          checked: true 
-        },
-        { 
-          id: 'doc2', 
-          title: 'GE Signa Prime 1.5T MRI Proposal', 
-          type: 'Quotation',
-          productName: 'Signa Prime 1.5T Magnetic Resonance',
-          productType: 'Machine',
-          fileName: 'GE-SIGNA-MRI-PROPOSAL-V2.pdf',
-          vendor: 'GE HealthCare Gulf',
-          value: 3950000, 
-          negotiatedValue: 3850000,
-          discountedValue: 3750000,
-          currency: 'AED',
-          mohRegistration: 'Approved (MOHAP-MD-8812)',
-          warranty: '2 Years Comprehensive + 3 Years Cold-head',
-          deliveryTime: '45 Days',
-          coldChainRequired: false,
-          techSpecs: '1.5T Eco-Friendly Magnet, Signa Works software suite, 70cm Bore width.',
-          scope: 'Installation, structural shielding assessment, 5 years cold-head protection.',
-          availability: '30 Days lead time from Jebel Ali Free Zone warehouse.',
-          extractedText: `PROPOSAL ID: GE-HC-GULF-2026-11\nCustomer: DHA Central Procurement Office\nItem: Signa Prime 1.5T MRI\nTotal Value: AED 3,950,000`,
-          checked: true 
-        },
-        { 
-          id: 'doc3', 
-          title: 'Pharma Cold-Chain Supply SLA', 
-          type: 'Agreement',
-          productName: 'Refrigerated Biologics Cold Logistics',
-          productType: 'Service',
-          fileName: 'SLA-ASTERSUPPLY-BIOLOGICS.pdf',
-          vendor: 'Aster Pharmacy Group UAE',
-          value: 850000, 
-          negotiatedValue: 800000,
-          discountedValue: 780000,
-          currency: 'AED',
-          mohRegistration: 'Approved (MOHAP-PH-3341)',
-          warranty: 'Temp monitoring guarantee',
-          deliveryTime: '7 Days',
-          coldChainRequired: true,
-          techSpecs: 'Refrigerated Cold-Storage Biologics, strict +2°C to +8°C calibration.',
-          scope: 'Weekly container drop-offs to central DHA pharma storage depots.',
-          availability: 'In-stock local supply logistics chain.',
-          extractedText: `MASTER SUPPLY AGREEMENT\nProduct Scope: Temperature-controlled biological therapeutic agents (+2°C to +8°C).\nSourcing: Weekly container drops.`,
-          checked: false 
-        },
-        { 
-          id: 'doc4', 
-          title: 'Bio-Surgical Consumables Price Sheet', 
-          type: 'Price List',
-          productName: 'Surgical Implant Titanium Plates',
-          productType: 'Medical Consumables',
-          fileName: 'MOHAP_CLEARED_SURG_IMPLANTS.pdf',
-          vendor: 'Medtronic Gulf LLC',
-          value: 640000, 
-          negotiatedValue: 610000,
-          discountedValue: 590000,
-          currency: 'AED',
-          mohRegistration: 'Pending Import License Renewal',
-          warranty: 'Sterility Guarantee',
-          deliveryTime: '14 Days',
-          coldChainRequired: false,
-          techSpecs: 'Surgical Implant kits, Class III sterilized titanium plates.',
-          scope: 'Consolidated supply bulk delivery with medical clearance certs.',
-          availability: 'Subject to active import permit release at port.',
-          extractedText: `MEDTRONIC Standard standard rates.\nPrice: AED 640,000.\nImport Clearance Status: Pending update cycles.`,
-          checked: true 
-        }
-      ];
-    }
-
-    function INITIAL_TRADE_LICENSES_MOCK() {
-      return [
-        { id: 'l1', vendor: 'Siemens Healthineers UAE', licenseNo: 'DED-882910', authority: 'Dubai Economy (DED)', expiryDate: '2026-11-20', status: 'Active', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-        { id: 'l2', vendor: 'GE HealthCare Gulf', licenseNo: 'JAFZA-3341', authority: 'JAFZA Freezone', expiryDate: '2026-07-15', status: 'Action Required (Expires in 25 days)', color: 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse' },
-        { id: 'l3', vendor: 'Aster Pharmacy Group UAE', licenseNo: 'DHA-99128', authority: 'Dubai Health Authority', expiryDate: '2027-04-12', status: 'Active', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-        { id: 'l4', vendor: 'Medtronic Gulf LLC', licenseNo: 'DED-229104', authority: 'Dubai Economy (DED)', expiryDate: '2026-05-30', status: 'EXPIRED', color: 'bg-rose-50 text-rose-700 border-rose-200' },
-      ];
-    }
   </script>
+
 </body>
 </html>
