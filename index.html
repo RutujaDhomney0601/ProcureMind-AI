@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProcureMind AI - UAE Healthcare Edition</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts (Inter) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --pm-primary: #4f46e5;
+      --pm-primary-light: #e0e7ff;
+      --pm-bg: #f8fafc;
+      --pm-card-bg: #ffffff;
+      --pm-text-dark: #0f172a;
+      --pm-text-muted: #64748b;
+      --pm-border: #e2e8f0;
+      
+      /* Premium Pastel Palette */
+      --badge-machine-bg: #fef3c7;
+      --badge-machine-text: #d97706;
+      --badge-machine-border: #fde68a;
+
+      --badge-product-bg: #dbeafe;
+      --badge-product-text: #2563eb;
+      --badge-product-border: #bfdbfe;
+
+      --badge-consumable-bg: #ffe4e6;
+      --badge-consumable-text: #e11d48;
+      --badge-consumable-border: #fecdd3;
+
+      --badge-service-bg: #ccfbf1;
+      --badge-service-text: #0d9488;
+      --badge-service-border: #99f6e4;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--pm-bg);
+      color: var(--pm-text-dark);
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    /* Layout Configurations */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .main-workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    @media (max-width: 991.98px) {
+      .main-workspace {
+        flex-direction: column;
+        overflow: auto;
+        height: auto;
+      }
+      .sidebar-left, .sidebar-right {
+        width: 100% !important;
+        height: auto !important;
+        border: none !important;
+      }
+    }
+
+    .sidebar-left {
+      width: 330px;
+      background: #ffffff;
+      border-right: 1px border var(--pm-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .middle-panel {
+      flex: 1;
+      overflow-y: auto;
+      background-color: #fafbfc;
+    }
+
+    .sidebar-right {
+      width: 360px;
+      background: #ffffff;
+      border-left: 1px solid var(--pm-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* UI Elements styling */
+    .premium-header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--pm-border);
+    }
+
+    .custom-card {
+      background: #ffffff;
+      border: 1px solid var(--pm-border);
+      border-radius: 1rem;
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05);
+      transition: all 0.2s ease-index;
+    }
+
+    /* Pastel Badges */
+    .badge-machine {
+      background-color: var(--badge-machine-bg);
+      color: var(--badge-machine-text);
+      border: 1px solid var(--badge-machine-border);
+    }
+    .badge-product {
+      background-color: var(--badge-product-bg);
+      color: var(--badge-product-text);
+      border: 1px solid var(--badge-product-border);
+    }
+    .badge-consumable {
+      background-color: var(--badge-consumable-bg);
+      color: var(--badge-consumable-text);
+      border: 1px solid var(--badge-consumable-border);
+    }
+    .badge-service {
+      background-color: var(--badge-service-bg);
+      color: var(--badge-service-text);
+      border: 1px solid var(--badge-service-border);
+    }
+
+    /* Active Step Navigation */
+    .step-btn {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--pm-text-muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      transition: all 0.2s;
+    }
+    .step-btn.active {
+      color: var(--pm-primary);
+      background: var(--pm-primary-light);
+      border-color: #c7d2fe;
+    }
+
+    /* Drag & Drop */
+    .dropzone {
+      border: 2px dashed #cbd5e1;
+      background-color: #f8fafc;
+      transition: all 0.2s ease-in-out;
+      border-radius: 1rem;
+      cursor: pointer;
+    }
+    .dropzone.dragging {
+      border-color: var(--pm-primary);
+      background-color: var(--pm-primary-light);
+    }
+
+    /* Toast Container */
+    #toast-notification {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1060;
+      display: none;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Active Doc Item List styling */
+    .doc-item {
+      cursor: pointer;
+      border: 1px solid var(--pm-border);
+      border-radius: 0.75rem;
+      transition: all 0.15s;
+    }
+    .doc-item.active {
+      background-color: #e0e7ff33;
+      border-color: var(--pm-primary);
+      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <div class="app-container">
+    
+    <!-- --- SYSTEM TOAST NOTIFIER --- -->
+    <div id="toast-notification" class="shadow-lg">
+      <div class="alert alert-primary border-0 rounded-4 d-flex align-items-center justify-content-between py-2.5 px-4 mb-0 gap-3" role="alert">
+        <div class="d-flex align-items-center gap-2">
+          <i data-lucide="sparkles" class="text-primary" style="width: 18px; height: 18px;"></i>
+          <span id="toast-message" class="text-dark small fw-medium">Workspace Active</span>
+        </div>
+        <button type="button" class="btn-close ms-2" onclick="dismissToast()" style="font-size: 0.75rem;"></button>
+      </div>
+    </div>
+
+    <!-- --- MAIN APPLICATION HEADER --- -->
+    <header class="premium-header py-3 px-4 shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="p-2.5 bg-primary text-white rounded-3 shadow d-flex align-items-center justify-content-center">
+          <i data-lucide="brain" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <h1 class="h5 fw-bold mb-0 text-slate-900 tracking-tight">ProcureMind AI</h1>
+            <span class="badge text-primary bg-indigo-light border border-indigo-200" style="font-size: 0.7rem; background-color: var(--pm-primary-light);">Healthcare UAE</span>
+          </div>
+          <p class="text-muted small mb-0" style="font-size: 0.75rem;">Virtual Purchase Supervisor & Document Workspace</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <div class="d-flex gap-2">
+        <button id="tab-btn-lifecycle" class="btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border" onclick="switchMainTab('lifecycle')">
+          📋 Sourcing Lifecycle
+        </button>
+        <button id="tab-btn-eom" class="btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary" onclick="switchMainTab('end_of_month')">
+          📊 End of Month & SOPs
+        </button>
+        <button id="tab-btn-docs" class="btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary" onclick="switchMainTab('all_docs')">
+          📁 Notebook Documents
+        </button>
+      </div>
+
+      <!-- Quick UAE Metas -->
+      <div class="d-none d-xl-flex align-items-center gap-3" style="font-size: 0.75rem;">
+        <div class="d-flex align-items-center gap-1.5 bg-light px-3 py-2 rounded-3 border">
+          <i data-lucide="building" class="text-primary" style="width: 16px;"></i>
+          <span>MOHAP Hub: <strong class="text-dark">Linked (AD/DHA)</strong></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- --- MAIN THREE PANEL WORKSPACE --- -->
+    <div class="main-workspace">
+      
+      <!-- ==========================================
+          LEFT PANEL: DOCUMENTS AND INGESTION
+          ========================================== -->
+      <aside class="sidebar-left p-4 d-flex flex-column gap-4 justify-content-between border-end">
+        <div class="space-y-4">
+          <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
+            <span class="text-uppercase tracking-wider fw-bold text-secondary" style="font-size: 0.75rem;">
+              <i data-lucide="folder-open" class="me-1" style="width: 14px;"></i> Loaded Documents
+            </span>
+            <span class="badge bg-light text-dark border rounded-pill" id="doc-counter">0 files</span>
+          </div>
+
+          <!-- Drag and Drop Dropzone -->
+          <div id="dropzone" class="dropzone p-4 text-center d-flex flex-column gap-2" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event)" onclick="triggerFilePicker()">
+            <input type="file" id="file-picker" multiple class="d-none" onchange="fileSelectionHandler(event)">
+            <i data-lucide="upload-cloud" class="text-primary mx-auto" style="width: 32px; height: 32px;"></i>
+            <p class="mb-0 fw-bold text-slate-700" style="font-size: 0.75rem;">Upload or Drag Quotes</p>
+            <p class="text-muted mb-0" style="font-size: 0.65rem;">PDF, Excel, Word or Text formats</p>
+            <button class="btn btn-sm btn-white border mt-1 shadow-sm font-bold text-primary" style="font-size: 0.65rem;">Choose Local Files</button>
+          </div>
+
+          <!-- Select Toggles -->
+          <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-3 border" style="font-size: 0.7rem;">
+            <span class="text-muted font-bold">Compare Targets:</span>
+            <div class="d-flex gap-1.5">
+              <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(true)">All</button>
+              <button class="btn btn-xs btn-white border px-2 py-0.5" style="font-size: 0.65rem;" onclick="selectAllDocs(false)">None</button>
+            </div>
+          </div>
+
+          <!-- Document List Box -->
+          <div class="d-flex flex-column gap-2" id="document-list-container" style="max-height: 220px; overflow-y: auto;">
+            <!-- Rendered Dynamically via JS -->
+          </div>
+
+          <!-- Manual Ingestion Form -->
+          <form id="manual-ingestion-form" onsubmit="handleManualIngestSubmit(event)" class="bg-light p-3 border rounded-4 d-flex flex-column gap-2.5">
+            <div class="fw-bold text-secondary border-bottom pb-1" style="font-size: 0.7rem; text-transform: uppercase;">
+              <i data-lucide="plus" class="me-1 text-primary" style="width: 14px; height: 14px;"></i> Register Ingestion Manually
+            </div>
+            
+            <div class="form-group">
+              <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.65rem;">Product / Service Name</label>
+              <input type="text" id="form-product-name" required placeholder="e.g., Alaris Syringe Pump" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.65rem;">Product Type</label>
+                <select id="form-product-type" class="form-select form-select-sm bg-white" style="font-size: 0.75rem;">
+                  <option value="Machine">Machine</option>
+                  <option value="Product">Product</option>
+                  <option value="Medical Consumables">Medical Consumables</option>
+                  <option value="Service">Service</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.65rem;">Base Cost (AED)</label>
+                <input type="number" id="form-product-price" required placeholder="Cost" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm w-full py-1.5 mt-1 font-bold" style="font-size: 0.75rem;">Add Ingested File</button>
+          </form>
+        </div>
+
+        <div class="border-top pt-3 d-none d-lg-block" style="font-size: 0.65rem; color: var(--pm-text-muted);">
+          <strong class="text-secondary d-flex align-items-center gap-1"><i data-lucide="info" style="width: 12px;"></i> UAE DHA Standard</strong>
+          Our system maps medical items against official guidelines and global cold-chain regulatory schedules.
+        </div>
+      </aside>
+
+      <!-- ==========================================
+          MIDDLE PANEL: ACTIVE WORKSPACE FLOW & MATRIX
+          ========================================== -->
+      <main class="middle-panel p-4 flex-1">
+        
+        <!-- --- HEALTHCARE LIFECYCLE WIZARD TAB --- -->
+        <section id="tab-view-lifecycle" class="lifecycle-workspace d-flex flex-column gap-4">
+          
+          <!-- Lifecycle Step Buttons -->
+          <div class="custom-card bg-white p-3 d-flex flex-wrap align-items-center justify-content-between gap-3 border">
+            <div class="d-flex flex-wrap gap-2">
+              <button class="step-btn active" id="btn-step-1" onclick="switchWizardStep(1)">1. Resourcing & RFP</button>
+              <button class="step-btn" id="btn-step-2" onclick="switchWizardStep(2)">2. Specs Comparison</button>
+              <button class="step-btn" id="btn-step-3" onclick="switchWizardStep(3)">3. Dept Selection</button>
+              <button class="step-btn" id="btn-step-4" onclick="switchWizardStep(4)">4. Re-negotiation</button>
+              <button class="step-btn" id="btn-step-5" onclick="switchWizardStep(5)">5. Manager Approval</button>
+            </div>
+            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.65rem;">
+              Phase State: <span class="text-primary font-bold" id="wizard-active-indicator">Step 1 of 5</span>
+            </div>
+          </div>
+
+          <!-- STEP 1 VIEW -->
+          <div id="step-view-1" class="lifecycle-step-card d-flex flex-column gap-3">
+            <div class="custom-card bg-white p-4 border space-y-4">
+              <div class="mb-3">
+                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 1</span>
+                <h2 class="h6 fw-bold text-dark mt-2 mb-1">Vendor Resourcing & RFP Generator</h2>
+                <p class="text-muted small mb-0">Search active Middle East pharmaceutical and medical device registries and broadcast customizable RFPs via email.</p>
+              </div>
+
+              <div class="row g-4">
+                <div class="col-md-6 d-flex flex-column gap-3">
+                  <div class="form-group">
+                    <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.7rem;">Select/Search Product Category</label>
+                    <input type="text" id="resourcing-query" value="MRI Scanner 1.5T" class="form-control bg-light" style="font-size: 0.8rem;" onkeyup="filterResourcingVendors()">
+                  </div>
+
+                  <div class="space-y-2">
+                    <span class="fw-bold text-secondary text-uppercase block mb-1" style="font-size: 0.7rem;">DHA / MOHAP Certified Registered Distributors:</span>
+                    <div id="resourced-vendors-container" class="d-flex flex-column gap-2">
+                      <!-- Rendered dynamically -->
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 d-flex flex-column gap-2">
+                  <span class="fw-bold text-secondary text-uppercase" style="font-size: 0.7rem;"><i data-lucide="mail" class="me-1 text-primary" style="width: 14px;"></i> Editable RFP Mail Template</span>
+                  <textarea id="rfp-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 230px;"></textarea>
+                  <button class="btn btn-primary w-full py-2.5 font-bold text-xs mt-1 d-flex align-items-center justify-center gap-1.5 shadow" onclick="dispatchRFPEmail()">
+                    <i data-lucide="send" style="width: 14px;"></i> Dispatch RFP to Selected Distributors
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 VIEW -->
+          <div id="step-view-2" class="lifecycle-step-card d-none d-flex flex-column gap-3">
+            <div class="custom-card bg-white p-4 border space-y-4">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                  <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 2</span>
+                  <h2 class="h6 fw-bold text-dark mt-2 mb-1">Cost & Specification Comparison Spreadsheet</h2>
+                  <p class="text-muted small mb-0">Unified comparison comparing parameters on Specs, Scope, Availability, and Multi-tier Pricing.</p>
+                </div>
+                <button class="btn btn-sm btn-indigo-light border font-bold text-primary px-3" onclick="copyExcelGridToClipboard()">
+                  <i data-lucide="clipboard-copy" class="me-1" style="width: 14px; height: 14px;"></i> Copy Structured Excel Grid
+                </button>
+              </div>
+
+              <!-- Comparative Grid Matrix Table -->
+              <div class="table-responsive border rounded-3" id="comparison-matrix-table-container">
+                <!-- Loaded Dynamically via Javascript matrix renderer -->
+              </div>
+
+              <div class="d-flex justify-content-end mt-2">
+                <button class="btn btn-primary font-bold text-xs d-flex align-items-center gap-1.5 shadow" onclick="shareWithDepartmentHead()">
+                  <i data-lucide="user-check" style="width: 14px;"></i> Share Specifications for Department Approval
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 VIEW -->
+          <div id="step-view-3" class="lifecycle-step-card d-none d-flex flex-column gap-3">
+            <div class="custom-card bg-white p-4 border space-y-4">
+              <div class="mb-3">
+                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 3</span>
+                <h2 class="h6 fw-bold text-dark mt-2 mb-1">Department Technical Selection</h2>
+                <p class="text-muted small mb-0">Review the clinical verification decision forwarded by department experts.</p>
+              </div>
+
+              <div class="row g-4">
+                <div class="col-md-6 d-flex flex-column gap-3">
+                  <div class="form-group">
+                    <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.7rem;">Vendor Selection Preferred by Clinic</label>
+                    <select id="department-selection-dropdown" class="form-select bg-light" style="font-size: 0.8rem;" onchange="onDepartmentSelectChange()"></select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.7rem;">Technical Notes</label>
+                    <textarea id="department-specs-notes" class="form-control bg-light" style="font-size: 0.75rem; height: 100px;">Selected comprehensive warranty and maintenance SLA package.</textarea>
+                  </div>
+                </div>
+
+                <div class="col-md-6 bg-light p-4 rounded-4 border d-flex flex-column justify-content-between">
+                  <div class="space-y-2">
+                    <span class="fw-bold text-indigo-700 text-uppercase block flex align-items-center gap-1" style="font-size: 0.75rem;">
+                      <i data-lucide="brain" style="width: 16px;"></i> Copilot Clearance Strategy
+                    </span>
+                    <p class="text-muted leading-relaxed font-medium mb-0" style="font-size: 0.72rem;">
+                      Technical department heads have verified clinical alignment. We now initiate our financial optimization cycle. Click below to load re-negotiated price sliders and target net savings ratios.
+                    </p>
+                  </div>
+                  <button class="btn btn-primary w-full py-2 fw-bold text-xs mt-3 shadow" onclick="switchWizardStep(4)">
+                    Unlock Stage 4 Re-negotiation Calculator
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 VIEW -->
+          <div id="step-view-4" class="lifecycle-step-card d-none d-flex flex-column gap-3">
+            <div class="custom-card bg-white p-4 border space-y-4">
+              <div class="mb-3">
+                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 4</span>
+                <h2 class="h6 fw-bold text-dark mt-2 mb-1">Active Re-negotiation Pricing Ledger</h2>
+                <p class="text-muted small mb-0">Record and verify pricing discounts obtained across consecutive rounds of correspondence.</p>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="fw-bold text-secondary mb-1 block uppercase" style="font-size: 0.65rem;">Original Quoted Cost (AED)</label>
+                  <input type="number" id="nego-base-input" class="form-control bg-light" oninput="calculateNegoSavings()">
+                </div>
+                <div class="col-md-4">
+                  <label class="fw-bold text-secondary mb-1 block uppercase text-primary" style="font-size: 0.65rem;">Re-negotiated Cost Target (AED)</label>
+                  <input type="number" id="nego-reneg-input" class="form-control bg-light text-primary fw-bold" oninput="calculateNegoSavings()">
+                </div>
+                <div class="col-md-4">
+                  <label class="fw-bold text-secondary mb-1 block uppercase text-success" style="font-size: 0.65rem;">Final Discounted Value (AED)</label>
+                  <input type="number" id="nego-discount-input" class="form-control bg-light text-success fw-bold" oninput="calculateNegoSavings()">
+                </div>
+              </div>
+
+              <div class="bg-light p-4 rounded-4 border d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                  <h3 class="fw-bold text-dark mb-0 h6">Verified Cost Savings Saved</h3>
+                  <p class="text-muted mb-0" style="font-size: 0.65rem;">Base Cost minus Final Discounted Target Price</p>
+                </div>
+                <div class="h5 fw-black text-primary mb-0" id="nego-savings-output">
+                  AED 0 Savings Target
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-primary font-bold text-xs shadow" onclick="saveNegotiatedPriceAndDraft()">
+                  Lock Negotiated Values & Draft Approval Email
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 VIEW -->
+          <div id="step-view-5" class="lifecycle-step-card d-none d-flex flex-column gap-3">
+            <div class="custom-card bg-white p-4 border space-y-4">
+              <div class="mb-3">
+                <span class="badge bg-primary text-white text-uppercase" style="font-size: 0.65rem;">Stage 5</span>
+                <h2 class="h6 fw-bold text-dark mt-2 mb-1">DHA Finance Director Approval Dispatch</h2>
+                <p class="text-muted small mb-0">Dispatch formal finalized recommendations and technical comparisons for sign-off.</p>
+              </div>
+
+              <div class="space-y-2">
+                <div class="d-flex align-items-center justify-content-between text-secondary fw-bold" style="font-size: 0.7rem;">
+                  <span>Direct Financial Email Dispatcher</span>
+                  <span class="text-success flex align-items-center gap-1"><i data-lucide="check-circle-2" style="width: 14px;"></i> Finalized and verified</span>
+                </div>
+                <textarea id="manager-email-textarea" class="form-control bg-light font-mono" style="font-size: 0.75rem; height: 230px;"></textarea>
+                <div class="d-flex justify-content-end mt-2">
+                  <button class="btn btn-primary font-bold text-xs d-flex align-items-center gap-1.5 shadow" onclick="sendApprovalToManager()">
+                    <i data-lucide="send" style="width: 14px;"></i> Send Approval Request to Manager
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- --- END OF THE MONTH COMPLIANCE TAB --- -->
+        <section id="tab-view-eom" class="eom-workspace d-none d-flex flex-column gap-4">
+          
+          <!-- Cost Saving Report (EOM #1) -->
+          <div class="custom-card bg-white p-4 border space-y-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 flex-wrap gap-2">
+              <div>
+                <h2 class="h6 fw-bold text-dark d-flex align-items-center gap-2 mb-1">
+                  <i data-lucide="trending-up" class="text-primary" style="width: 18px;"></i>
+                  1) Monthly Cost Saving Analysis & Performance Report
+                </h2>
+                <p class="text-muted small mb-0">Total cost variance breakdown comparing initial vs. finalized pricing margins.</p>
+              </div>
+              <span class="font-mono text-primary fw-bold text-uppercase" style="font-size: 0.7rem;">June 2026 Archive</span>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="bg-light p-3.5 border rounded-4">
+                  <span class="text-muted font-bold uppercase block mb-1" style="font-size: 0.65rem;">TOTAL BUDGET EXPOSURE</span>
+                  <span class="h6 fw-black text-dark" id="eom-total-exposure-value">AED 9,640,000</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="bg-indigo-light p-3.5 border border-indigo-100 rounded-4" style="background-color: var(--pm-primary-light);">
+                  <span class="text-primary font-bold uppercase block mb-1" style="font-size: 0.65rem;">DISCOUNTED CAPITAL OUTFLOW</span>
+                  <span class="h6 fw-black text-primary" id="eom-final-outflow-value">AED 9,010,000</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="bg-emerald-light p-3.5 border border-emerald-200 rounded-4" style="background-color: #d1fae5; color: #065f46;">
+                  <span class="font-bold uppercase block mb-1" style="font-size: 0.65rem;">TOTAL SAVINGS ARCHIVED</span>
+                  <span class="h6 fw-black" id="eom-savings-ratio-value">AED 630,000 (6.5%)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="progress rounded-pill bg-light border mt-3" style="height: 10px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-success" role="progressbar" style="width: 11.5%" aria-valuenow="11.5" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar bg-warning" role="progressbar" style="width: 6.5%" aria-valuenow="6.5" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="d-flex justify-content-between text-muted" style="font-size: 0.65rem;">
+              <span>Outflow allocation (82.3%)</span>
+              <span>Allocated buffers (11.5%)</span>
+              <span>Verified Savings Ratio (6.5%)</span>
+            </div>
+          </div>
+
+          <!-- Trade License Expiry Log (EOM #2) -->
+          <div class="custom-card bg-white p-4 border space-y-4 shadow-sm">
+            <div class="border-bottom pb-3">
+              <h2 class="h6 fw-bold text-dark d-flex align-items-center gap-2 mb-1">
+                <i data-lucide="building" class="text-primary" style="width: 18px;"></i>
+                2) Vendor Trade License Expiry Log & Watchlist
+              </h2>
+              <p class="text-muted small mb-0">Monitor DED commercial validity and medical clearance registry status.</p>
+            </div>
+
+            <div class="row g-4">
+              <div class="col-md-8 table-responsive">
+                <table class="table table-sm table-hover text-left align-middle" style="font-size: 0.75rem;">
+                  <thead>
+                    <tr class="text-secondary font-bold">
+                      <th class="py-2 border-bottom">Vendor</th>
+                      <th class="border-bottom">License Details</th>
+                      <th class="border-bottom">Expiry Date</th>
+                      <th class="border-bottom text-end">License Registry State</th>
+                    </tr>
+                  </thead>
+                  <tbody id="licenses-table-body" class="divide-y">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Quick Registration Expiry Form -->
+              <div class="col-md-4">
+                <form id="license-form" onsubmit="handleLicenseSubmit(event)" class="bg-light p-3 rounded-4 border d-flex flex-column gap-2.5">
+                  <span class="text-uppercase font-bold text-secondary tracking-wider" style="font-size: 0.65rem;">Log Registry Entry</span>
+                  
+                  <div class="form-group">
+                    <label class="text-muted font-bold text-uppercase mb-1" style="font-size: 0.6rem;">Vendor Partner</label>
+                    <input type="text" id="lic-vendor" required placeholder="e.g., Philips Health Care" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="text-muted font-bold text-uppercase mb-1" style="font-size: 0.6rem;">License Registry No</label>
+                    <input type="text" id="lic-no" required placeholder="e.g., DED-99201A" class="form-control form-control-sm bg-white" style="font-size: 0.75rem;">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="text-muted font-bold text-uppercase mb-1" style="font-size: 0.6rem;">Expiry Date</label>
+                    <input type="date" id="lic-date" required class="form-control form-control-sm bg-white text-secondary" style="font-size: 0.75rem;">
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-sm w-full py-1.5 font-bold" style="font-size: 0.75rem;">Record Expiry Log</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Onboarding SOP Document (EOM #3) -->
+          <div class="custom-card bg-white p-4 border space-y-4 shadow-sm">
+            <div class="border-bottom pb-3">
+              <h2 class="h6 fw-bold text-dark d-flex align-items-center gap-2 mb-1">
+                <i data-lucide="file-check" class="text-primary" style="width: 18px;"></i>
+                3) Standard Vendor Onboarding Registration SOP
+              </h2>
+              <p class="text-muted small mb-0">Required operational protocols for registering and credentialing global healthcare suppliers.</p>
+            </div>
+
+            <div class="d-flex flex-column gap-3 text-muted" style="font-size: 0.75rem; line-height: 1.6;">
+              <div class="border-start border-4 border-indigo-600 ps-3">
+                <strong class="text-indigo-900 d-block mb-1">Phase I: Commercial & Legal Credentialing</strong>
+                Submit certified trade licenses, active tax IDs, bank IBAN records, and valid company registration certificates mapping through regional financial networks.
+              </div>
+              <div class="border-start border-4 border-indigo-600 ps-3">
+                <strong class="text-indigo-900 d-block mb-1">Phase II: MOHAP Medical Device Registration</strong>
+                All machinery, surgical tools, and biologics must undergo rigorous testing and possess active MOHAP-MD medical device registrations prior to contract issuance.
+              </div>
+              <div class="border-start border-4 border-indigo-600 ps-3">
+                <strong class="text-indigo-900 d-block mb-1">Phase III: Cold-Chain SLA Guarantees</strong>
+                Biological pharmaceutical supplies must guarantee end-to-end refrigerated cold storage transit timelines, with absolute liability assumed by local vendor channels.
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- --- NOTEBOOK ACTIVE DOCS PREVIEW TAB --- -->
+        <section id="tab-view-all-docs" class="all-docs-workspace d-none d-flex flex-column gap-4">
+          <div class="custom-card bg-white border shadow-sm overflow-hidden">
+            <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-2">
+                <i data-lucide="file-check" class="text-primary" style="width: 18px;"></i>
+                <div>
+                  <h2 class="h6 fw-bold text-dark mb-1">Active Ingested Document Preview</h2>
+                  <p class="text-muted mb-0" style="font-size: 0.7rem;">Neural extraction and cognitive structural stream log previews</p>
+                </div>
+              </div>
+              <span class="badge text-primary border rounded font-mono" id="active-filename-preview" style="font-size: 0.7rem; background-color: var(--pm-primary-light);">no_file_active</span>
+            </div>
+
+            <div class="row g-0">
+              <div class="col-md-8 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 0.7rem; font-weight: 700; color: var(--pm-text-muted);">
+                  <span>OCR Parsed Segment Text Stream</span>
+                  <span class="text-primary">Status: Verified</span>
+                </div>
+                <div id="ocr-preview-container" class="p-4 bg-light rounded-4 font-mono text-secondary leading-relaxed whitespace-pre-line" style="font-size: 0.72rem; min-height: 250px; max-height: 320px; overflow-y: auto; border: 1px solid var(--pm-border);">
+                  <!-- Loaded dynamically -->
+                </div>
+              </div>
+
+              <!-- Right Scorecard Inside Preview -->
+              <div class="col-md-4 p-4 bg-light border-start d-flex flex-column gap-4">
+                <h3 class="fw-bold text-secondary text-uppercase flex align-items-center gap-1.5" style="font-size: 0.7rem;">
+                  <i data-lucide="sparkles" class="text-primary" style="width: 14px;"></i>
+                  MOHAP Compliance Assessment
+                </h3>
+
+                <div class="d-flex flex-column gap-3">
+                  <div class="bg-white p-3 rounded-4 border">
+                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Product Classification</span>
+                    <strong class="text-dark d-block truncate" id="preview-meta-productname" style="font-size: 0.75rem;">-</strong>
+                    <span id="preview-meta-producttype" class="badge mt-1.5 font-extrabold text-uppercase"></span>
+                  </div>
+
+                  <div class="bg-white p-3 rounded-4 border">
+                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Local Dealer Jurisdiction</span>
+                    <strong class="text-dark d-block truncate" id="preview-meta-vendor" style="font-size: 0.75rem;">-</strong>
+                  </div>
+
+                  <div class="bg-white p-3 rounded-4 border">
+                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Quoted Capital Valuation</span>
+                    <strong class="text-primary d-block font-black" id="preview-meta-value" style="font-size: 0.85rem;">AED 0</strong>
+                  </div>
+
+                  <div class="bg-white p-3 rounded-4 border">
+                    <span class="text-muted block text-uppercase mb-1" style="font-size: 0.65rem;">Clearnace / Registry Status</span>
+                    <span id="preview-meta-moh" class="font-bold d-block mt-0.5" style="font-size: 0.75rem;">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ==========================================
+          RIGHT PANEL: GENERAL WORKSPACE COGNITIVE COPILOT
+          ========================================== -->
+      <aside class="sidebar-right p-4 d-flex flex-column justify-content-between border-start">
+        <div class="d-flex flex-column h-100 gap-3 justify-content-between">
+          
+          <!-- Copilot Header -->
+          <div class="border-bottom pb-2">
+            <div class="d-flex align-items-center gap-2">
+              <i data-lucide="brain" class="text-primary animate-pulse" style="width: 20px; height: 20px;"></i>
+              <div>
+                <h2 class="fw-bold uppercase tracking-wider text-slate-600 mb-0" style="font-size: 0.75rem;">AI Procurement Copilot</h2>
+                <p class="text-muted mb-0" style="font-size: 0.65rem;">Continuous context tracking over loaded folder assets</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conversational Dialogue Stream Box -->
+          <div id="copilot-chat-container" class="flex-grow-1 overflow-y-auto d-flex flex-column gap-3 my-2" style="max-height: 400px;">
+            <!-- Seed system message -->
+            <div class="d-flex gap-2.5 text-xs align-items-start">
+              <div class="p-1.5 bg-indigo-light border rounded-3 text-primary d-flex align-items-center justify-center" style="width: 28px; height: 28px; background-color: var(--pm-primary-light);">
+                <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
+              </div>
+              <div class="p-3 bg-light border text-secondary font-medium rounded-4 rounded-start-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
+                <span class="badge text-primary text-uppercase mb-1" style="font-size: 0.6rem; background-color: var(--pm-primary-light);">Neural System OK</span>
+                <p class="mb-0 leading-relaxed">Marhaban! I'm your dedicated UAE Procurement Copilot. I have matched your active quotes, DED registries, and MOHAP codes. Ask me to compare specs or draft email counters!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Templates trigger buttons -->
+          <div class="space-y-1.5 border-top pt-3">
+            <span class="text-uppercase fw-bold text-muted block mb-1" style="font-size: 0.65rem;">Copilot Presets:</span>
+            <div class="row g-2">
+              <div class="col-6">
+                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('compare')">
+                  📊 Compile Comparison Grid
+                </button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('onboard')">
+                  📋 DHA Supplier SOPs
+                </button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('license')">
+                  ⚖️ Audit License Expiry
+                </button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-sm btn-light border w-100 text-start truncate font-bold text-indigo" style="font-size: 0.65rem;" onclick="triggerCopilotPreset('cold')">
+                  ❄️ Cold-chain SLA Rules
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Input Bar -->
+          <div class="pt-2">
+            <div class="bg-light border rounded-4 p-1.5 d-flex gap-2 align-items-center">
+              <input type="text" id="copilot-input-field" class="form-control form-control-sm border-0 bg-transparent flex-grow-1" placeholder="Query medical specifications..." style="font-size: 0.75rem;" onkeydown="handleCopilotInputKeydown(event)">
+              <button class="btn btn-primary btn-sm rounded-3 px-3 py-1.5 font-bold" onclick="sendCopilotChatMessage()">Ask</button>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer class="border-top py-3 px-4 bg-white d-flex flex-column flex-sm-row justify-content-between align-items-center text-muted gap-2" style="font-size: 0.7rem;">
+      <span>© 2026 ProcureMind AI. Dubai Health Authority (DHA) Sourcing Portal Guidelines compliant.</span>
+      <div class="d-flex gap-3">
+        <span class="hover-text-dark cursor-pointer">MOHAP Drug Register</span>
+        <span class="hover-text-dark cursor-pointer">SLA Expiry Policies</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- --- JAVASCRIPT STATE ENGINE --- -->
+  <script>
+    // System Mock Data
+    let docs = [...INITIAL_HEALTHCARE_DOCS_MOCK()];
+    let licenses = [...INITIAL_TRADE_LICENSES_MOCK()];
+    
+    // Core App State
+    let activeMainTab = 'lifecycle';
+    let currentWizardStep = 2; // Set default step to 2 Comparison
+    let selectedDocId = 'doc1';
+
+    // Initalizer
+    window.onload = function() {
+      // Initialize Lucide icon library
+      lucide.createIcons();
+      
+      // Seed default email templates
+      document.getElementById('rfp-email-textarea').value = `Subject: RFP Request: Medical Sourcing Equipment Proposal\n\nDear Partner,\n\nDubai Health Authority (DHA) central procurement is requesting official pricing proposals and comprehensive service scopes for equipment requirements.\n\nPlease provide technical specification details, cold-head logistics parameters, comprehensive warranty options, and pricing breakdowns.\n\nBest Regards,\nCentral Procurement Office | Dubai Health Authority`;
+      
+      // Render components
+      renderDocumentList();
+      renderResourcingVendors();
+      renderComparisonMatrix();
+      renderLicensesTable();
+      updatePreviewPanel();
+      syncFormFields();
+      
+      showToast("ProcureMind UAE Healthcare Platform initialized.");
+    }
+
+    // Tab Switching Controller
+    function switchMainTab(tabName) {
+      activeMainTab = tabName;
+      
+      // DOM Elements
+      const btnLifecycle = document.getElementById('tab-btn-lifecycle');
+      const btnEom = document.getElementById('tab-btn-eom');
+      const btnDocs = document.getElementById('tab-btn-docs');
+
+      const viewLifecycle = document.getElementById('tab-view-lifecycle');
+      const viewEom = document.getElementById('tab-view-eom');
+      const viewDocs = document.getElementById('tab-view-all-docs');
+
+      // Reset Tabs Buttons
+      btnLifecycle.className = 'btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary';
+      btnEom.className = 'btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary';
+      btnDocs.className = 'btn btn-sm btn-light px-3 py-2 fw-bold rounded-3 border text-secondary';
+
+      // Hide all Views
+      viewLifecycle.classList.add('d-none');
+      viewEom.classList.add('d-none');
+      viewDocs.classList.add('d-none');
+
+      if (tabName === 'lifecycle') {
+        btnLifecycle.className = 'btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white';
+        btnLifecycle.style.backgroundColor = 'var(--pm-primary)';
+        viewLifecycle.classList.remove('d-none');
+      } else if (tabName === 'end_of_month') {
+        btnEom.className = 'btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white';
+        btnEom.style.backgroundColor = 'var(--pm-primary)';
+        viewEom.classList.remove('d-none');
+      } else if (tabName === 'all_docs') {
+        btnDocs.className = 'btn btn-sm btn-indigo px-3 py-2 fw-bold rounded-3 shadow-sm border text-white';
+        btnDocs.style.backgroundColor = 'var(--pm-primary)';
+        viewDocs.classList.remove('d-none');
+        updatePreviewPanel();
+      }
+      lucide.createIcons();
+    }
+
+    // Step Wizard Switching
+    function switchWizardStep(stepNr) {
+      currentWizardStep = stepNr;
+      
+      // Update Wizard indicator text
+      document.getElementById('wizard-active-indicator').innerText = `Step ${stepNr} of 5`;
+
+      // Update button styling states
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`btn-step-${i}`);
+        if (i === stepNr) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+        
+        // Toggle view container
+        const stepView = document.getElementById(`step-view-${i}`);
+        if (i === stepNr) {
+          stepView.classList.remove('d-none');
+        } else {
+          stepView.classList.add('d-none');
+        }
+      }
+
+      // Sync form if entering specific step
+      if (stepNr === 3 || stepNr === 4) {
+        syncFormFields();
+      }
+      lucide.createIcons();
+    }
+
+    // Sync department values to nego inputs
+    function syncFormFields() {
+      // Fill Department Selection Dropdown
+      const dropdown = document.getElementById('department-selection-dropdown');
+      dropdown.innerHTML = '';
+      docs.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.title;
+        opt.innerText = `${d.title} (${d.productType})`;
+        dropdown.appendChild(opt);
+      });
+
+      // Match selected values to nego sliders
+      const selectedTitle = dropdown.value;
+      const matchedDoc = docs.find(d => d.title === selectedTitle);
+      if (matchedDoc) {
+        document.getElementById('nego-base-input').value = matchedDoc.value;
+        document.getElementById('nego-reneg-input').value = matchedDoc.negotiatedValue;
+        document.getElementById('nego-discount-input').value = matchedDoc.discountedValue;
+        calculateNegoSavings();
+      }
+    }
+
+    function onDepartmentSelectChange() {
+      const selectedTitle = document.getElementById('department-selection-dropdown').value;
+      const matchedDoc = docs.find(d => d.title === selectedTitle);
+      if (matchedDoc) {
+        document.getElementById('nego-base-input').value = matchedDoc.value;
+        document.getElementById('nego-reneg-input').value = matchedDoc.negotiatedValue;
+        document.getElementById('nego-discount-input').value = matchedDoc.discountedValue;
+        calculateNegoSavings();
+      }
+    }
+
+    function calculateNegoSavings() {
+      const base = parseFloat(document.getElementById('nego-base-input').value) || 0;
+      const discount = parseFloat(document.getElementById('nego-discount-input').value) || 0;
+      const savings = Math.max(0, base - discount);
+      document.getElementById('nego-savings-output').innerText = `AED ${savings.toLocaleString()} Savings Target`;
+    }
+
+    // Select Document In list handler
+    function selectActivePreviewDoc(docId) {
+      selectedDocId = docId;
+      renderDocumentList();
+      updatePreviewPanel();
+      showToast(`Selected document preview: ${docs.find(d => d.id === docId).fileName}`);
+    }
+
+    // Update document preview outputs
+    function updatePreviewPanel() {
+      const activeDoc = docs.find(d => d.id === selectedDocId) || docs[0];
+      if (!activeDoc) return;
+
+      document.getElementById('active-filename-preview').innerText = activeDoc.fileName;
+      document.getElementById('ocr-preview-container').innerText = activeDoc.extractedText;
+      
+      document.getElementById('preview-meta-productname').innerText = activeDoc.productName;
+      document.getElementById('preview-meta-vendor').innerText = activeDoc.vendor;
+      document.getElementById('preview-meta-value').innerText = `AED ${activeDoc.value.toLocaleString()}`;
+      
+      const mohBadge = document.getElementById('preview-meta-moh');
+      mohBadge.innerText = activeDoc.mohRegistration;
+      if (activeDoc.mohRegistration.includes('Approved')) {
+        mohBadge.className = 'text-success font-bold d-block mt-0.5';
+      } else {
+        mohBadge.className = 'text-danger font-bold d-block mt-0.5 animate-pulse';
+      }
+
+      // Set product badge type in preview panel
+      const pTypeBadge = document.getElementById('preview-meta-producttype');
+      pTypeBadge.innerText = activeDoc.productType;
+      pTypeBadge.className = 'badge mt-1.5 font-extrabold text-uppercase ' + getProductTypeBadgeClass(activeDoc.productType);
+    }
+
+    // Dynamic Pastel Badging Helper Classes
+    function getProductTypeBadgeClass(type) {
+      switch (type) {
+        case 'Machine': return 'badge-machine';
+        case 'Product': return 'badge-product';
+        case 'Medical Consumables': return 'badge-consumable';
+        case 'Service': return 'badge-service';
+        default: return 'bg-light text-dark';
+      }
+    }
+
+    // Document Renderer
+    function renderDocumentList() {
+      const container = document.getElementById('document-list-container');
+      container.innerHTML = '';
+      
+      document.getElementById('doc-counter').innerText = `${docs.length} files`;
+
+      docs.forEach(d => {
+        const isChecked = d.checked ? 'checked' : '';
+        const isActive = d.id === selectedDocId ? 'active' : '';
+        const badgeClass = getProductTypeBadgeClass(d.productType);
+
+        const itemHTML = `
+          <div class="doc-item p-2.5 d-flex align-items-start gap-2.5 ${isActive}">
+            <input type="checkbox" ${isChecked} onchange="toggleDocSelection('${d.id}')" class="form-check-input mt-1 shadow-sm">
+            <div class="flex-grow-1 min-w-0 text-start" onclick="selectActivePreviewDoc('${d.id}')">
+              <div class="d-flex justify-content-between align-items-center mb-1 text-uppercase text-secondary font-mono" style="font-size: 0.65rem; font-weight: 700;">
+                <span>${d.type}</span>
+                <span class="text-primary font-bold">AED ${d.value >= 1000000 ? (d.value / 1000000).toFixed(1) + 'M' : d.value.toLocaleString()}</span>
+              </div>
+              <h4 class="text-dark font-bold text-truncate mb-0" style="font-size: 0.72rem; line-height: 1.2;">${d.productName}</h4>
+              <div class="d-flex align-items-center gap-1.5 mt-1 flex-wrap">
+                <span class="badge ${badgeClass}" style="font-size: 0.55rem; padding: 0.15rem 0.35rem; font-weight: 800;">${d.productType}</span>
+                <span class="text-muted text-truncate" style="font-size: 0.65rem; font-family: monospace;">${d.fileName}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', itemHTML);
+      });
+    }
+
+    // Toggle Checkbox select
+    function toggleDocSelection(docId) {
+      docs = docs.map(d => d.id === docId ? { ...d, checked: !d.checked } : d);
+      renderDocumentList();
+      renderComparisonMatrix();
+      showToast("Updated comparison matrix selection.");
+    }
+
+    // Select All / Deselect All
+    function selectAllDocs(state) {
+      docs = docs.map(d => ({ ...d, checked: state }));
+      renderDocumentList();
+      renderComparisonMatrix();
+      showToast(state ? "All loaded specifications loaded for side-by-side comparison." : "Deselected comparison parameters.");
+    }
+
+    // Comparison matrix table generator
+    function renderComparisonMatrix() {
+      const container = document.getElementById('comparison-matrix-table-container');
+      const selectedDocs = docs.filter(d => d.checked);
+
+      if (selectedDocs.length === 0) {
+        container.innerHTML = `
+          <div class="p-5 text-center text-muted">
+            <i data-lucide="alert-circle" class="mx-auto text-secondary mb-2" style="width: 24px; height: 24px;"></i>
+            <p class="small fw-medium mb-1">No comparison quotes active.</p>
+            <p class="mb-0 text-xs" style="font-size: 0.7rem;">Check loaded boxes on the left to review parameters side-by-side.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      let headerCols = `<th class="p-3 bg-light w-40">Parameter</th>`;
+      let productNameRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Product Name</td>`;
+      let productTypeRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Product Type</td>`;
+      let specsRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Technical Specifications</td>`;
+      let scopeRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Project Scope</td>`;
+      let availRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom">Availability / Transit</td>`;
+      let basePriceRow = `<tr class="bg-indigo-light" style="background-color: var(--pm-primary-light);"><td class="p-3 bg-light font-bold text-dark border-bottom">Base Quoted Price</td>`;
+      let renegPriceRow = `<tr><td class="p-3 bg-light font-bold text-dark border-bottom text-primary">Re-negotiated Target</td>`;
+      let discountedPriceRow = `<tr class="bg-emerald-light" style="background-color: #d1fae5; color: #065f46;"><td class="p-3 bg-light font-bold text-dark border-bottom">Final Discounted Price</td>`;
+
+      selectedDocs.forEach(d => {
+        headerCols += `<th class="p-3 border-start"><strong class="text-primary block truncate max-w-xs">${d.title}</strong><span class="text-muted d-block" style="font-size: 0.65rem; font-weight: 500;">${d.vendor}</span></th>`;
+        productNameRow += `<td class="p-3 border-start border-bottom font-bold text-dark">${d.productName}</td>`;
+        productTypeRow += `<td class="p-3 border-start border-bottom"><span class="badge ${getProductTypeBadgeClass(d.productType)} font-extrabold text-uppercase" style="font-size: 0.6rem;">${d.productType}</span></td>`;
+        specsRow += `<td class="p-3 border-start border-bottom italic text-secondary" style="font-size: 0.7rem;">${d.techSpecs}</td>`;
+        scopeRow += `<td class="p-3 border-start border-bottom" style="font-size: 0.7rem;">${d.scope}</td>`;
+        availRow += `<td class="p-3 border-start border-bottom font-bold text-secondary" style="font-size: 0.7rem;">${d.availability}</td>`;
+        basePriceRow += `<td class="p-3 border-start border-bottom font-extrabold text-dark">AED ${d.value.toLocaleString()}</td>`;
+        renegPriceRow += `<td class="p-3 border-start border-bottom font-extrabold text-primary">AED ${d.negotiatedValue.toLocaleString()}</td>`;
+        discountedPriceRow += `<td class="p-3 border-start border-bottom font-extrabold text-success">AED ${d.discountedValue.toLocaleString()}</td>`;
+      });
+
+      productNameRow += `</tr>`;
+      productTypeRow += `</tr>`;
+      specsRow += `</tr>`;
+      scopeRow += `</tr>`;
+      availRow += `</tr>`;
+      basePriceRow += `</tr>`;
+      renegPriceRow += `</tr>`;
+      discountedPriceRow += `</tr>`;
+
+      container.innerHTML = `
+        <table class="table table-sm table-hover text-left align-middle mb-0" style="font-size: 0.75rem;">
+          <thead>
+            <tr class="border-bottom">${headerCols}</tr>
+          </thead>
+          <tbody>
+            ${productNameRow}
+            ${productTypeRow}
+            ${specsRow}
+            ${scopeRow}
+            ${availRow}
+            ${basePriceRow}
+            ${renegPriceRow}
+            ${discountedPriceRow}
+          </tbody>
+        </table>
+      `;
+      lucide.createIcons();
+    }
+
+    // Copy TSV Excel Export Action
+    function copyExcelGridToClipboard() {
+      const selectedDocs = docs.filter(d => d.checked);
+      if (selectedDocs.length === 0) return;
+
+      const header = "Product Name\tProduct Type\tVendor\tSpecifications\tScope\tAvailability\tBase Cost\tNegotiated Cost\tFinal Discounted Cost\n";
+      const rows = selectedDocs.map(d => 
+        `${d.productName}\t${d.productType}\t${d.vendor}\t${d.techSpecs}\t${d.scope}\t${d.availability}\t${d.value}\t${d.negotiatedValue}\t${d.discountedValue}`
+      ).join("\n");
+
+      const combined = header + rows;
+      
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = combined;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      showToast("Spreadsheet grid values copied! Paste directly into Microsoft Excel.");
+    }
+
+    // Step Transition Handlers
+    function dispatchRFPEmail() {
+      showToast("RFP Proposals successfully broadcast to regional dealers.");
+      switchWizardStep(2);
+    }
+
+    function shareWithDepartmentHead() {
+      showToast("Forwarded technical parameters to Department Central Sourcing head.");
+      switchWizardStep(3);
+    }
+
+    function saveNegotiatedPriceAndDraft() {
+      const base = parseFloat(document.getElementById('nego-base-input').value) || 0;
+      const reneg = parseFloat(document.getElementById('nego-reneg-input').value) || 0;
+      const discount = parseFloat(document.getElementById('nego-discount-input').value) || 0;
+      const selectedTitle = document.getElementById('department-selection-dropdown').value;
+
+      // Update local doc prices
+      docs = docs.map(d => {
+        if (d.title === selectedTitle) {
+          return { ...d, value: base, negotiatedValue: reneg, discountedValue: discount };
+        }
+        return d;
+      });
+
+      // Render update
+      renderComparisonMatrix();
+      renderDocumentList();
+
+      const savings = base - discount;
+      document.getElementById('manager-email-textarea').value = `To: financial.director@dha.gov.ae\nSubject: Sourcing Approval Request: Central Equipment Sourcing\n\nDear Director,\n\nWe have completed our technical and pricing evaluation matrix for our hospital sifting cycle.\n\nFollowing clinical technical selection, the "${selectedTitle}" has been chosen.\n\nFinancial Overview:\n- Original Base Cost: AED ${base.toLocaleString()}\n- Re-negotiated Value: AED ${reneg.toLocaleString()}\n- Final Discounted Price: AED ${discount.toLocaleString()}\n- Net Cost Savings Target: AED ${savings.toLocaleString()}\n\nMOHAP Registration: Active and Verified.\n\nKindly authorize immediate PO draft generation.\n\nBest Regards,\nCentral Sourcing Unit`;
+
+      showToast("Re-negotiated costs recorded. Created Finance Director approval draft.");
+      switchWizardStep(5);
+    }
+
+    function sendApprovalToManager() {
+      showToast("Dispatched Finalized Sourcing Approval request to Financial Director.");
+      switchMainTab('end_of_month');
+    }
+
+    // End Of Month License Log Add In Form
+    function handleLicenseSubmit(e) {
+      e.preventDefault();
+      const vendorName = document.getElementById('lic-vendor').value;
+      const licNo = document.getElementById('lic-no').value;
+      const dateVal = document.getElementById('lic-date').value;
+
+      if (!vendorName || !licNo) return;
+
+      const newL = {
+        id: 'l' + (licenses.length + 1),
+        vendor: vendorName,
+        licenseNo: licNo,
+        authority: 'Dubai Health Authority',
+        expiryDate: dateVal || '2027-01-01',
+        status: 'Active',
+        color: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+      };
+
+      licenses.unshift(newL);
+      renderLicensesTable();
+      
+      document.getElementById('lic-vendor').value = '';
+      document.getElementById('lic-no').value = '';
+      document.getElementById('lic-date').value = '';
+
+      showToast(`Registered valid Trade License audit entry for: ${vendorName}`);
+    }
+
+    function renderLicensesTable() {
+      const container = document.getElementById('licenses-table-body');
+      container.innerHTML = '';
+
+      licenses.forEach(l => {
+        container.insertAdjacentHTML('beforeend', `
+          <tr class="hover:bg-slate-50/50">
+            <td class="py-2.5 font-bold text-dark">${l.vendor}</td>
+            <td class="font-mono text-secondary" style="font-size: 0.7rem;">${l.licenseNo} (${l.authority})</td>
+            <td class="font-semibold text-slate-700">${l.expiryDate}</td>
+            <td class="text-end">
+              <span class="px-2.5 py-0.5 rounded text-[10px] font-bold border ${l.color}">
+                ${l.status}
+              </span>
+            </td>
+          </tr>
+        `);
+      });
+    }
+
+    // Step 1: Resourcing filters matching product names
+    function filterResourcingVendors() {
+      renderResourcingVendors();
+    }
+
+    function renderResourcingVendors() {
+      const query = document.getElementById('resourcing-query').value.toLowerCase();
+      const container = document.getElementById('resourced-vendors-container');
+      container.innerHTML = '';
+
+      const partners = [
+        { name: 'Siemens Healthineers UAE', rate: 'Premium Machine tier, DHA Approved', checked: true },
+        { name: 'GE HealthCare Gulf', rate: 'Machine & Support tier, MOHAP Verified', checked: true },
+        { name: 'Medtronic Gulf LLC', rate: 'Consumables, License update pending', checked: false },
+        { name: 'Aster Pharmacy Logistics', rate: 'Service & Biologics, Cold-chain compliance', checked: false }
+      ];
+
+      partners.forEach(p => {
+        if (p.name.toLowerCase().includes(query) || p.rate.toLowerCase().includes(query)) {
+          container.insertAdjacentHTML('beforeend', `
+            <div class="d-flex align-items-center justify-content-between p-2.5 bg-light border rounded-3 text-xs">
+              <div class="text-start">
+                <p class="font-bold text-dark mb-0.5" style="font-size: 0.72rem; line-height: 1.2;">${p.name}</p>
+                <p class="text-muted mb-0" style="font-size: 0.65rem;">${p.rate}</p>
+              </div>
+              <input type="checkbox" class="form-check-input mt-0 shadow-sm" ${p.checked ? 'checked' : ''}>
+            </div>
+          `);
+        }
+      });
+    }
+
+    // File Ingestion Manual Form Submit
+    function handleManualIngestSubmit(e) {
+      e.preventDefault();
+      const pName = document.getElementById('form-product-name').value;
+      const pType = document.getElementById('form-product-type').value;
+      const pPrice = parseFloat(document.getElementById('form-product-price').value) || 150000;
+
+      if (!pName) return;
+
+      const newDoc = {
+        id: 'doc_form_' + Date.now(),
+        title: `${pName} Quotation`,
+        productName: pName,
+        productType: pType,
+        type: pType === 'Service' ? 'Agreement' : 'Quotation',
+        fileName: `${pName.toLowerCase().replace(/\s+/g, '_')}_spec.pdf`,
+        vendor: 'Local Authorized UAE Medical Distributor',
+        value: pPrice,
+        negotiatedValue: Math.round(pPrice * 0.92),
+        discountedValue: Math.round(pPrice * 0.88),
+        currency: 'AED',
+        mohRegistration: 'Approved (MOHAP-MD-CLEARED)',
+        warranty: '2 Year DHA Care Standard Included',
+        deliveryTime: '15 Days',
+        coldChainRequired: false,
+        techSpecs: `Standard automated configuration matching UAE ${pType} medical guidelines.`,
+        scope: 'Standard installation, testing, and 12-month service level coverage.',
+        availability: 'Ships from local GCC distribution center.',
+        extractedText: `MANUAL INTERACTIVE ENTRY\nProduct: ${pName}\nType: ${pType}\nValue: AED ${pPrice.toLocaleString()}\nStatus: Verified & Synced with Sourcing Database.`,
+        checked: true
+      };
+
+      docs.unshift(newDoc);
+      selectedDocId = newDoc.id;
+      
+      // Reset input fields
+      document.getElementById('form-product-name').value = '';
+      document.getElementById('form-product-price').value = '150000';
+
+      renderDocumentList();
+      renderComparisonMatrix();
+      updatePreviewPanel();
+      syncFormFields();
+
+      showToast(`Ingested manual asset record: ${pName}`);
+    }
+
+    // Local file picking & drag-drop handling
+    function triggerFilePicker() {
+      document.getElementById('file-picker').click();
+    }
+
+    function dragOverHandler(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.add('dragging');
+    }
+
+    function dragLeaveHandler() {
+      document.getElementById('dropzone').classList.remove('dragging');
+    }
+
+    function dropHandler(e) {
+      e.preventDefault();
+      document.getElementById('dropzone').classList.remove('dragging');
+      if (e.dataTransfer.files) {
+        processUploadedFiles(e.dataTransfer.files);
+      }
+    }
+
+    function fileSelectionHandler(e) {
+      if (e.target.files) {
+        processUploadedFiles(e.target.files);
+      }
+    }
+
+    function processUploadedFiles(fileList) {
+      if (!fileList || fileList.length === 0) return;
+
+      const newLoaded = [];
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' ');
+        const randomCost = Math.floor(Math.random() * (1500000 - 80000 + 1)) + 80000;
+
+        let inferredType = 'Product';
+        if (file.name.toLowerCase().includes('mri') || file.name.toLowerCase().includes('scanner') || file.name.toLowerCase().includes('machine')) {
+          inferredType = 'Machine';
+        } else if (file.name.toLowerCase().includes('sla') || file.name.toLowerCase().includes('service') || file.name.toLowerCase().includes('maintenance')) {
+          inferredType = 'Service';
+        } else if (file.name.toLowerCase().includes('consum') || file.name.toLowerCase().includes('suture') || file.name.toLowerCase().includes('implant')) {
+          inferredType = 'Medical Consumables';
+        }
+
+        const newDoc = {
+          id: 'doc_up_' + Date.now() + '_' + i,
+          title: cleanName.charAt(0).toUpperCase() + cleanName.slice(1) + ' Ingested Spec',
+          productName: cleanName.charAt(0).toUpperCase() + cleanName.slice(1),
+          productType: inferredType,
+          type: inferredType === 'Service' ? 'Agreement' : 'Quotation',
+          fileName: file.name,
+          vendor: 'Authorized UAE Sourcing Distributor',
+          value: randomCost,
+          negotiatedValue: Math.round(randomCost * 0.92),
+          discountedValue: Math.round(randomCost * 0.88),
+          currency: 'AED',
+          mohRegistration: 'Approved (MOHAP-MD-CLEARED)',
+          warranty: '2 Year DHA Care Standard Included',
+          deliveryTime: '15 Days',
+          coldChainRequired: file.name.toLowerCase().includes('cold') || file.name.toLowerCase().includes('pharma'),
+          techSpecs: `Standard specifications extracted directly from regional OCR metadata scan.`,
+          scope: 'Standard installation, operational training and validation testing.',
+          availability: 'In-stock local GCC depot.',
+          extractedText: `AUTOMATIC FILE PARSER OUTPUT\nFilename: ${file.name}\nSize: ${(file.size / 1024).toFixed(1)} KB\nType: ${inferredType}\n\nSuccessfully scanned parameters with integrated local OCR system.\nCalculated Asset Valuation: AED ${randomCost.toLocaleString()}`,
+          checked: true
+        };
+        newLoaded.push(newDoc);
+      }
+
+      docs = [...newLoaded, ...docs];
+      selectedDocId = newLoaded[0].id;
+
+      renderDocumentList();
+      renderComparisonMatrix();
+      updatePreviewPanel();
+      syncFormFields();
+
+      showToast(`Parsed and loaded ${newLoaded.length} custom file(s) into Active Grid.`);
+    }
+
+    // Copilot Interactive Chat Simulation
+    function handleCopilotInputKeydown(e) {
+      if (e.key === 'Enter') {
+        sendCopilotChatMessage();
+      }
+    }
+
+    function sendCopilotChatMessage() {
+      const input = document.getElementById('copilot-input-field');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      appendCopilotChatMessage('user', text);
+
+      // Trigger simulated AI response
+      setTimeout(() => {
+        let aiReply = '';
+        const q = text.toLowerCase();
+
+        if (q.includes('compare') || q.includes('table') || q.includes('excel')) {
+          aiReply = `I have updated the Excel-Buster comparison matrix comparing Siemens and GE on Pricing, Tech Specs, Scope, and Availability:\n\n- Siemens MAGNETOM (Machine) leads with a 3-Year Warranty.\n- GE Signa Prime (Machine) leads on base price by AED 250,000.\n- Both are MOHAP approved.\n\nI recommend utilizing Siemens' warranty value to negotiate GE down further, or asking Siemens to match GE's base price of AED 3.95M.`;
+        } else if (q.includes('saving') || q.includes('report')) {
+          aiReply = `Monthly Cost Saving Summary:\n\n- Scanned Assets: AED 9,640,000\n- Total Negotiated Savings: AED 630,000 (average discount 7.2% achieved)\n- Selected Best ROI: Siemens MAGNETOM at AED 3,800,000 final negotiated rate.`;
+        } else if (q.includes('onboard') || q.includes('onboarding') || q.includes('register')) {
+          aiReply = `To onboard a new healthcare supplier in DHA:\n1. Verify active Trade License (DED/Freezone).\n2. Request active MOHAP Medical Device Registration.\n3. Supply ISO-13485 sterilization standard certifications.\n4. Complete the DHA Supplier Onboarding Portal Form.`;
+        } else if (q.includes('cold') || q.includes('temperature') || q.includes('pharma')) {
+          aiReply = `Cold-Chain Logistics Alert:\n\nYour selected document **'Pharma Cold-Chain Supply SLA' (Aster)** requires continuous refrigerated transit (+2°C to +8°C).\n\n• **DHA Rule Check:** Aster Pharmacy Logistics has assumed full financial liability for any temperature excursion exceeding 40 minutes. This is highly aligned with standard hospital drug storage mandates.`;
+        } else {
+          aiReply = `I am processing your query against our UAE Healthcare memory base. I can help compile comparison matrices, write professional counter-proposals, or cross-verify cold-chain transit liabilities.`;
+        }
+
+        appendCopilotChatMessage('system', aiReply);
+      }, 700);
+    }
+
+    function triggerCopilotPreset(presetType) {
+      if (presetType === 'compare') {
+        handleCopilotChatInputSimulation("Please compare active loaded quotes and generate Excel spreadsheet representation.");
+      } else if (presetType === 'onboard') {
+        handleCopilotChatInputSimulation("Show me the required DHA Onboarding Registration Process checklist.");
+      } else if (presetType === 'license') {
+        handleCopilotChatInputSimulation("Audit all license registration deadlines and highlight expired suppliers.");
+      } else if (presetType === 'cold') {
+        handleCopilotChatInputSimulation("What custom liability safeguards should we include for cold-chain biological supply storage?");
+      }
+    }
+
+    function handleCopilotChatInputSimulation(text) {
+      document.getElementById('copilot-input-field').value = text;
+      sendCopilotChatMessage();
+    }
+
+    function appendCopilotChatMessage(sender, text) {
+      const container = document.getElementById('copilot-chat-container');
+      
+      const userMessageHTML = `
+        <div class="d-flex gap-2.5 text-xs align-items-start justify-content-end">
+          <div class="p-3 bg-primary text-white rounded-4 rounded-end-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
+            <p class="mb-0 leading-relaxed">${text}</p>
+          </div>
+        </div>
+      `;
+
+      const systemMessageHTML = `
+        <div class="d-flex gap-2.5 text-xs align-items-start">
+          <div class="p-1.5 bg-indigo-light border rounded-3 text-primary d-flex align-items-center justify-center" style="width: 28px; height: 28px; background-color: var(--pm-primary-light);">
+            <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
+          </div>
+          <div class="p-3 bg-light border text-secondary font-medium rounded-4 rounded-start-0 text-start" style="font-size: 0.7rem; max-width: 80%;">
+            <span class="badge text-primary text-uppercase mb-1" style="font-size: 0.6rem; background-color: var(--pm-primary-light);">Neural System OK</span>
+            <p class="mb-0 leading-relaxed whitespace-pre-line">${text}</p>
+          </div>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', sender === 'user' ? userMessageHTML : systemMessageHTML);
+      container.scrollTop = container.scrollHeight;
+      lucide.createIcons();
+    }
+
+    // Toast triggers
+    function showToast(message) {
+      const toast = document.getElementById('toast-notification');
+      document.getElementById('toast-message').innerText = message;
+      toast.style.display = 'block';
+    }
+
+    function dismissToast() {
+      document.getElementById('toast-notification').style.display = 'none';
+    }
+
+    // --- SEED SEEDERS (REFACTORED REACT STRUCTURES) ---
+    function INITIAL_HEALTHCARE_DOCS_MOCK() {
+      return [
+        { 
+          id: 'doc1', 
+          title: 'Siemens MAGNETOM MRI Altea Quote', 
+          type: 'Quotation',
+          productName: 'MAGNETOM MRI Altea 1.5T',
+          productType: 'Machine',
+          fileName: 'QT-2026-SIEMENS-MRI.pdf',
+          vendor: 'Siemens Healthineers UAE',
+          value: 4200000, 
+          negotiatedValue: 3900000,
+          discountedValue: 3800000,
+          currency: 'AED',
+          mohRegistration: 'Approved (MOHAP-MD-9923)',
+          warranty: '3 Years Comprehensive',
+          deliveryTime: '60 Days',
+          coldChainRequired: false,
+          techSpecs: '1.5T Active Shield Magnet, BioMatrix Technology, 60cm Bore width.',
+          scope: 'Delivery, full installation, clinical testing & training for 15 radiologists.',
+          availability: 'Immediate dispatch from Munich hub.',
+          extractedText: `QUOTATION Ref: SH-AE-99201-2026\nCustomer: Dubai Health Authority (DHA)\nItem: MAGNETOM Altea 1.5T MRI System\nTotal Capital Cost: AED 4,200,000\nPayment: 10% PO, 90% Delivery.\nWarranty: 3 years.`,
+          checked: true 
+        },
+        { 
+          id: 'doc2', 
+          title: 'GE Signa Prime 1.5T MRI Proposal', 
+          type: 'Quotation',
+          productName: 'Signa Prime 1.5T Magnetic Resonance',
+          productType: 'Machine',
+          fileName: 'GE-SIGNA-MRI-PROPOSAL-V2.pdf',
+          vendor: 'GE HealthCare Gulf',
+          value: 3950000, 
+          negotiatedValue: 3850000,
+          discountedValue: 3750000,
+          currency: 'AED',
+          mohRegistration: 'Approved (MOHAP-MD-8812)',
+          warranty: '2 Years Comprehensive + 3 Years Cold-head',
+          deliveryTime: '45 Days',
+          coldChainRequired: false,
+          techSpecs: '1.5T Eco-Friendly Magnet, Signa Works software suite, 70cm Bore width.',
+          scope: 'Installation, structural shielding assessment, 5 years cold-head protection.',
+          availability: '30 Days lead time from Jebel Ali Free Zone warehouse.',
+          extractedText: `PROPOSAL ID: GE-HC-GULF-2026-11\nCustomer: DHA Central Procurement Office\nItem: Signa Prime 1.5T MRI\nTotal Value: AED 3,950,000`,
+          checked: true 
+        },
+        { 
+          id: 'doc3', 
+          title: 'Pharma Cold-Chain Supply SLA', 
+          type: 'Agreement',
+          productName: 'Refrigerated Biologics Cold Logistics',
+          productType: 'Service',
+          fileName: 'SLA-ASTERSUPPLY-BIOLOGICS.pdf',
+          vendor: 'Aster Pharmacy Group UAE',
+          value: 850000, 
+          negotiatedValue: 800000,
+          discountedValue: 780000,
+          currency: 'AED',
+          mohRegistration: 'Approved (MOHAP-PH-3341)',
+          warranty: 'Temp monitoring guarantee',
+          deliveryTime: '7 Days',
+          coldChainRequired: true,
+          techSpecs: 'Refrigerated Cold-Storage Biologics, strict +2°C to +8°C calibration.',
+          scope: 'Weekly container drop-offs to central DHA pharma storage depots.',
+          availability: 'In-stock local supply logistics chain.',
+          extractedText: `MASTER SUPPLY AGREEMENT\nProduct Scope: Temperature-controlled biological therapeutic agents (+2°C to +8°C).\nSourcing: Weekly container drops.`,
+          checked: false 
+        },
+        { 
+          id: 'doc4', 
+          title: 'Bio-Surgical Consumables Price Sheet', 
+          type: 'Price List',
+          productName: 'Surgical Implant Titanium Plates',
+          productType: 'Medical Consumables',
+          fileName: 'MOHAP_CLEARED_SURG_IMPLANTS.pdf',
+          vendor: 'Medtronic Gulf LLC',
+          value: 640000, 
+          negotiatedValue: 610000,
+          discountedValue: 590000,
+          currency: 'AED',
+          mohRegistration: 'Pending Import License Renewal',
+          warranty: 'Sterility Guarantee',
+          deliveryTime: '14 Days',
+          coldChainRequired: false,
+          techSpecs: 'Surgical Implant kits, Class III sterilized titanium plates.',
+          scope: 'Consolidated supply bulk delivery with medical clearance certs.',
+          availability: 'Subject to active import permit release at port.',
+          extractedText: `MEDTRONIC Standard standard rates.\nPrice: AED 640,000.\nImport Clearance Status: Pending update cycles.`,
+          checked: true 
+        }
+      ];
+    }
+
+    function INITIAL_TRADE_LICENSES_MOCK() {
+      return [
+        { id: 'l1', vendor: 'Siemens Healthineers UAE', licenseNo: 'DED-882910', authority: 'Dubai Economy (DED)', expiryDate: '2026-11-20', status: 'Active', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'l2', vendor: 'GE HealthCare Gulf', licenseNo: 'JAFZA-3341', authority: 'JAFZA Freezone', expiryDate: '2026-07-15', status: 'Action Required (Expires in 25 days)', color: 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse' },
+        { id: 'l3', vendor: 'Aster Pharmacy Group UAE', licenseNo: 'DHA-99128', authority: 'Dubai Health Authority', expiryDate: '2027-04-12', status: 'Active', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+        { id: 'l4', vendor: 'Medtronic Gulf LLC', licenseNo: 'DED-229104', authority: 'Dubai Economy (DED)', expiryDate: '2026-05-30', status: 'EXPIRED', color: 'bg-rose-50 text-rose-700 border-rose-200' },
+      ];
+    }
+  </script>
+</body>
+</html>
